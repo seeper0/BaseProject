@@ -1,0 +1,10 @@
+.idea
+.vs
+.vsconfig
+Binaries
+DerivedDataCache
+Intermediate
+Saved
+Plugin/*/Binaries
+Plugin/*/Intermediate
+UnrealFoundation.sln
