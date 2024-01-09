@@ -32,6 +32,10 @@ class AUnrealFoundationCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
+	/** Attack Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* AttackAction;
+	
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
@@ -49,6 +53,10 @@ public:
 	
 
 protected:
+
+	void OnPressAttack();
+	void OnTriggerAttack();
+	void OnReleaseAttack();
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);

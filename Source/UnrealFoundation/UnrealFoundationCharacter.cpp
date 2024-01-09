@@ -77,6 +77,11 @@ void AUnrealFoundationCharacter::SetupPlayerInputComponent(UInputComponent* Play
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
+		// Attack
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AUnrealFoundationCharacter::OnPressAttack);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AUnrealFoundationCharacter::OnTriggerAttack);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AUnrealFoundationCharacter::OnReleaseAttack);
+		
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -91,6 +96,18 @@ void AUnrealFoundationCharacter::SetupPlayerInputComponent(UInputComponent* Play
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void AUnrealFoundationCharacter::OnPressAttack()
+{
+}
+
+void AUnrealFoundationCharacter::OnTriggerAttack()
+{
+}
+
+void AUnrealFoundationCharacter::OnReleaseAttack()
+{
 }
 
 void AUnrealFoundationCharacter::Move(const FInputActionValue& Value)
