@@ -13,7 +13,6 @@ UUfSkillComponent::UUfSkillComponent()
 	// ...
 }
 
-
 // Called when the game starts
 void UUfSkillComponent::BeginPlay()
 {
@@ -30,5 +29,10 @@ void UUfSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UUfSkillComponent::SetSkillState(ESkillState InSkillState)
+{
+	SkillState = InSkillState;
 }
 
