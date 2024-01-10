@@ -5,6 +5,9 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
+Plugins/Developer
 Plugin/*/Binaries
 Plugin/*/Intermediate
+Content/Collections
+Content/Developers
 UnrealFoundation.sln
