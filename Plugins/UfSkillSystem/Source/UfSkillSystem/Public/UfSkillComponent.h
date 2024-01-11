@@ -44,7 +44,8 @@ public:
 	void SetSkillState(ESkillState InSkillState);
 
 private:
-	ESkillSlot GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
+	ESkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
+	const struct FUfSkillTable* FindSkill(const ESkillKey SkillKey) const;
 
 	void OnPress(const FInputActionInstance& InputActionInstance);
 	void OnTrigger(const FInputActionInstance& InputActionInstance);
@@ -57,13 +58,16 @@ private:
 
 	/** Slot Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TMap<ESkillSlot, const UInputAction*> SkillSlotMapping;
+	TMap<ESkillKey, const UInputAction*> SkillSlotMapping;
 
 	UPROPERTY()
-	TMap<const UInputAction*, ESkillSlot> SkillSlotCache;
+	TMap<const UInputAction*, ESkillKey> SkillSlotCache;
 	
 	UPROPERTY()
-	ESkillState SkillState;
+	ESkillState SkillState = ESkillState::None;
+
+	UPROPERTY()
+	ACharacter* OwnerChar = nullptr;
 
 	// UPROPERTY()
 	// TQueue<Input> InputQueue;

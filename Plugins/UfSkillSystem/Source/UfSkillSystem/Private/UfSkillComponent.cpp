@@ -4,6 +4,7 @@
 #include "UfSkillComponent.h"
 
 #include "EnhancedInputComponent.h"
+#include "GameFramework/Character.h"
 #include "UfSkillTable.h"
 
 // Sets default values for this component's properties
@@ -22,6 +23,7 @@ void UUfSkillComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	OwnerChar = Cast<ACharacter>(GetOwner());
 }
 
 
@@ -52,36 +54,47 @@ void UUfSkillComponent::SetSkillState(ESkillState InSkillState)
 	SkillState = InSkillState;
 }
 
-ESkillSlot UUfSkillComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
+ESkillKey UUfSkillComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
 {
-	const ESkillSlot* Slot = SkillSlotCache.Find(InputActionInstance.GetSourceAction());
-	if(Slot == nullptr)
-		return ESkillSlot::None;
+	const ESkillKey* SkillKey = SkillSlotCache.Find(InputActionInstance.GetSourceAction());
+	if(SkillKey == nullptr)
+		return ESkillKey::None;
 
-	return *Slot;
+	return *SkillKey;
+}
+
+const FUfSkillTable* UUfSkillComponent::FindSkill(const ESkillKey SkillKey) const
+{
+	const FUfSkillTable* Skill = nullptr;
+	if(SkillTable)
+	{
+		SkillTable->ForeachRow<FUfSkillTable>(TEXT("UUfSkillComponent::OnPress"), [this, SkillKey, Skill](const FName& Key, const FUfSkillTable& Value) mutable
+		{
+			if(Value.Key == SkillKey)
+				Skill = &Value; 
+		});
+	}
+	return Skill;
 }
 
 void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
 {
-	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
-	if(Slot == ESkillSlot::None)
+	const ESkillKey SkillKey = GetSkillSlot(InputActionInstance);
+	if(SkillKey == ESkillKey::None)
 		return;
 
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Started});
-	if(SkillTable)
+	const FUfSkillTable* Skill = FindSkill(SkillKey);
+	if(Skill)
 	{
-		// SkillTable->ForeachRow<FUfSkillTable>(TEXT("UMirrorDataTable::FillMirrorArrays"), [this](const FName& Key, const FUfSkillTable& Value) mutable
-		// {
-		// 	Value
-		// });
-		// SkillTable->FindRow<>()
+		OwnerChar->PlayAnimMontage(Skill->Montage);
 	}
 }
 
 void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstance)
 {
-	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
-	if(Slot == ESkillSlot::None)
+	const ESkillKey SkillKey = GetSkillSlot(InputActionInstance);
+	if(SkillKey == ESkillKey::None)
 		return;
 
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Triggered});
@@ -89,8 +102,8 @@ void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstanc
 
 void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstance)
 {
-	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
-	if(Slot == ESkillSlot::None)
+	const ESkillKey SkillKey = GetSkillSlot(InputActionInstance);
+	if(SkillKey == ESkillKey::None)
 		return;
 
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Completed});

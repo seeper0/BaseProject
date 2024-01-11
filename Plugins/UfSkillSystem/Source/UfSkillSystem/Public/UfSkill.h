@@ -22,7 +22,7 @@ enum class EInputType : uint8
 };
 
 UENUM(BlueprintType)
-enum class ESkillSlot : uint8
+enum class ESkillKey : uint8
 {
 	None,
 	NormalAttack,

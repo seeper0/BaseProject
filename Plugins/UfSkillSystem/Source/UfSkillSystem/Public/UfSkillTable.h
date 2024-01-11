@@ -17,7 +17,7 @@ struct UFSKILLSYSTEM_API FUfSkillTable : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Key;
+	ESkillKey Key;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EInputType InputType;
