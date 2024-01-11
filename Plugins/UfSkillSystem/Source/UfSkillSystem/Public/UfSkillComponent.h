@@ -14,6 +14,11 @@ class UFSKILLSYSTEM_API UUfSkillComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	// struct Input
+	// {
+	// 	ESkillSlot Slot;
+	// 	ETriggerEvent Event;
+	// };
 public:	
 	// Sets default values for this component's properties
 	UUfSkillComponent();
@@ -45,8 +50,13 @@ private:
 	void OnTrigger(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 
+
+	/** Skill Table */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UDataTable* SkillTable = nullptr;
+
 	/** Slot Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TMap<ESkillSlot, const UInputAction*> SkillSlotMapping;
 
 	UPROPERTY()
@@ -54,4 +64,7 @@ private:
 	
 	UPROPERTY()
 	ESkillState SkillState;
+
+	// UPROPERTY()
+	// TQueue<Input> InputQueue;
 };

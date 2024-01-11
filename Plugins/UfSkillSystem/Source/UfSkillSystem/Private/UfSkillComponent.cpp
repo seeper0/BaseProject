@@ -4,6 +4,7 @@
 #include "UfSkillComponent.h"
 
 #include "EnhancedInputComponent.h"
+#include "UfSkillTable.h"
 
 // Sets default values for this component's properties
 UUfSkillComponent::UUfSkillComponent()
@@ -30,6 +31,7 @@ void UUfSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	//InputQueue.Empty();
 }
 
 void UUfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent)
@@ -64,6 +66,16 @@ void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
 	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
 	if(Slot == ESkillSlot::None)
 		return;
+
+	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Started});
+	if(SkillTable)
+	{
+		// SkillTable->ForeachRow<FUfSkillTable>(TEXT("UMirrorDataTable::FillMirrorArrays"), [this](const FName& Key, const FUfSkillTable& Value) mutable
+		// {
+		// 	Value
+		// });
+		// SkillTable->FindRow<>()
+	}
 }
 
 void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstance)
@@ -71,6 +83,8 @@ void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstanc
 	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
 	if(Slot == ESkillSlot::None)
 		return;
+
+	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Triggered});
 }
 
 void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstance)
@@ -78,6 +92,8 @@ void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstanc
 	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
 	if(Slot == ESkillSlot::None)
 		return;
+
+	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Completed});
 }
 
 
