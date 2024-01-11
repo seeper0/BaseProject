@@ -20,3 +20,14 @@ enum class EInputType : uint8
 	Charge,
 	Single,
 };
+
+UENUM(BlueprintType)
+enum class ESkillSlot : uint8
+{
+	None,
+	NormalAttack,
+	Slot1,
+	Slot2,
+	Slot3,
+	Slot4,
+};

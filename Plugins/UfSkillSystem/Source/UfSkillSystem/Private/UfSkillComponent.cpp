@@ -3,6 +3,8 @@
 
 #include "UfSkillComponent.h"
 
+#include "EnhancedInputComponent.h"
+
 // Sets default values for this component's properties
 UUfSkillComponent::UUfSkillComponent()
 {
@@ -19,7 +21,6 @@ void UUfSkillComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 
@@ -31,8 +32,52 @@ void UUfSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	// ...
 }
 
+void UUfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	SkillSlotCache.Empty();
+	for (const auto& SkillSlot : SkillSlotMapping)
+	{
+		EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UUfSkillComponent::OnPress);
+		EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UUfSkillComponent::OnTrigger);
+		EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Completed, this, &UUfSkillComponent::OnRelease);
+		
+		SkillSlotCache.Add(SkillSlot.Value, SkillSlot.Key);
+	}
+}
+
 void UUfSkillComponent::SetSkillState(ESkillState InSkillState)
 {
 	SkillState = InSkillState;
 }
+
+ESkillSlot UUfSkillComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
+{
+	const ESkillSlot* Slot = SkillSlotCache.Find(InputActionInstance.GetSourceAction());
+	if(Slot == nullptr)
+		return ESkillSlot::None;
+
+	return *Slot;
+}
+
+void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
+{
+	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
+	if(Slot == ESkillSlot::None)
+		return;
+}
+
+void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstance)
+{
+	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
+	if(Slot == ESkillSlot::None)
+		return;
+}
+
+void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstance)
+{
+	ESkillSlot Slot = GetSkillSlot(InputActionInstance);
+	if(Slot == ESkillSlot::None)
+		return;
+}
+
 

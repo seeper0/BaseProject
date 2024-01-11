@@ -27,6 +27,8 @@ public class UfSkillSystem : ModuleRules
 			{
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
+				"InputCore",
+				"EnhancedInput",
 			}
 			);
 			
@@ -36,8 +38,6 @@ public class UfSkillSystem : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"Slate",
-				"SlateCore",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

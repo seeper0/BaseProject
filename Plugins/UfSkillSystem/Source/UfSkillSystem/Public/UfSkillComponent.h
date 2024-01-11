@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputAction.h"
 #include "Components/ActorComponent.h"
 #include "UfSkill.h"
 #include "UfSkillComponent.generated.h"
@@ -33,10 +34,24 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent);
 	void PlaySkill();
 	void SetSkillState(ESkillState InSkillState);
 
 private:
+	ESkillSlot GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
+
+	void OnPress(const FInputActionInstance& InputActionInstance);
+	void OnTrigger(const FInputActionInstance& InputActionInstance);
+	void OnRelease(const FInputActionInstance& InputActionInstance);
+
+	/** Slot Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TMap<ESkillSlot, const UInputAction*> SkillSlotMapping;
+
+	UPROPERTY()
+	TMap<const UInputAction*, ESkillSlot> SkillSlotCache;
+	
 	UPROPERTY()
 	ESkillState SkillState;
 };

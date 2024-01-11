@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "UfSkillComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -52,6 +53,7 @@ AUnrealFoundationCharacter::AUnrealFoundationCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	SkillComponent = CreateDefaultSubobject<UUfSkillComponent>(TEXT("SkillComponent"));
 }
 
 void AUnrealFoundationCharacter::BeginPlay()
@@ -77,10 +79,8 @@ void AUnrealFoundationCharacter::SetupPlayerInputComponent(UInputComponent* Play
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
-		// Attack
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AUnrealFoundationCharacter::OnPressAttack);
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AUnrealFoundationCharacter::OnTriggerAttack);
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AUnrealFoundationCharacter::OnReleaseAttack);
+		// Skill
+		SkillComponent->SetupPlayerInputComponent(EnhancedInputComponent);
 		
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
