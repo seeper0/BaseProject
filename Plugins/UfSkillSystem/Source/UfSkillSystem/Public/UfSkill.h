@@ -26,6 +26,7 @@ enum class EUfSkillKey : uint8
 {
 	None,
 	NormalAttack,
+	Jump,
 	Slot1,
 	Slot2,
 	Slot3,

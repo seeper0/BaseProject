@@ -98,18 +98,6 @@ void AUnrealFoundationCharacter::SetupPlayerInputComponent(UInputComponent* Play
 	}
 }
 
-void AUnrealFoundationCharacter::OnPressAttack()
-{
-}
-
-void AUnrealFoundationCharacter::OnTriggerAttack()
-{
-}
-
-void AUnrealFoundationCharacter::OnReleaseAttack()
-{
-}
-
 void AUnrealFoundationCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D

@@ -27,11 +27,6 @@ public class UfSkillSystem : ModuleRules
 			{
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
-				"InputCore",
-				"EnhancedInput",
-				"Json",
-				"JsonUtilities",
-				"UfCommon",
 			}
 			);
 			
@@ -42,6 +37,11 @@ public class UfSkillSystem : ModuleRules
 				"CoreUObject",
 				"Engine",
 				// ... add private dependencies that you statically link with here ...	
+				"InputCore",
+				"EnhancedInput",
+				"Json",
+				"JsonUtilities",
+				"UfCommon",
 			}
 			);
 		

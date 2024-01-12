@@ -53,10 +53,6 @@ public:
 
 protected:
 
-	void OnPressAttack();
-	void OnTriggerAttack();
-	void OnReleaseAttack();
-
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 

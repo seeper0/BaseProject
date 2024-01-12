@@ -51,6 +51,12 @@ private:
 	void OnTrigger(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 
+	void PlayAction(const EUfSkillKey SkillKey);
+	void TickAction();
+	void ClearAction();
+
+	UFUNCTION()
+	void OnMontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
 	/** Skill Table */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -68,6 +74,12 @@ private:
 
 	UPROPERTY()
 	ACharacter* OwnerChar = nullptr;
+
+	UPROPERTY()
+	UAnimInstance* AnimInstance = nullptr; 
+
+	UPROPERTY()
+	class UUfActionBase* Action = nullptr;
 
 	// UPROPERTY()
 	// TQueue<Input> InputQueue;

@@ -5,8 +5,10 @@
 
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
+#include "UfActionBase.h"
 #include "UfLogger.h"
 #include "UfSkillTable.h"
+#include "UfUtil.h"
 
 // Sets default values for this component's properties
 UUfSkillComponent::UUfSkillComponent()
@@ -25,6 +27,14 @@ void UUfSkillComponent::BeginPlay()
 
 	// ...
 	OwnerChar = Cast<ACharacter>(GetOwner());
+	if(OwnerChar && OwnerChar->GetMesh())
+	{
+		AnimInstance = OwnerChar->GetMesh()->GetAnimInstance();
+		if(AnimInstance)
+		{
+			AnimInstance->OnMontageEnded.AddDynamic(this, &UUfSkillComponent::OnMontageEnd);
+		}
+	}
 }
 
 
@@ -35,6 +45,8 @@ void UUfSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	// ...
 	//InputQueue.Empty();
+
+	TickAction();
 }
 
 void UUfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent)
@@ -53,6 +65,8 @@ void UUfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* Enhan
 void UUfSkillComponent::SetSkillState(EUfSkillState InSkillState)
 {
 	SkillState = InSkillState;
+	// if(Action)
+	// 	Action->SetSkillState(InSkillState);
 }
 
 EUfSkillKey UUfSkillComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
@@ -71,9 +85,9 @@ const FUfSkillTable* UUfSkillComponent::FindSkill(const EUfSkillKey SkillKey) co
 	{
 		SkillTable->ForeachRow<FUfSkillTable>(TEXT("UUfSkillComponent::OnPress"), [this, SkillKey, &Skill](const FName& Key, const FUfSkillTable& Value) mutable
 		{
-			UF_LOG(TEXT("Table %s : %s"), *UEnum::GetValueAsString<EUfSkillKey>(Value.Key), *UEnum::GetValueAsString<EUfSkillKey>(SkillKey));
+			//UF_LOG(TEXT("Table %s : %s"), *FUfUtil::GetEnumString(Value.Key), *FUfUtil::GetEnumString(SkillKey));
 			if(Value.Key == SkillKey)
-				Skill = &Value; 
+				Skill = &Value;
 		});
 	}
 	return Skill;
@@ -86,11 +100,9 @@ void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
 		return;
 
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Started});
-	const FUfSkillTable* Skill = FindSkill(SkillKey);
-	if(Skill)
-	{
-		OwnerChar->PlayAnimMontage(Skill->Montage);
-	}
+
+	// 스킬 클래스를 먼저 만들어야겠다.
+	PlayAction(SkillKey);
 }
 
 void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstance)
@@ -109,6 +121,47 @@ void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstanc
 		return;
 
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Completed});
+}
+
+void UUfSkillComponent::PlayAction(const EUfSkillKey SkillKey)
+{
+	const FUfSkillTable* Skill = FindSkill(SkillKey);
+	if(Skill && Skill->Montage)
+	{
+		Action = NewObject<UUfActionBase>();
+		Action->InitAction(OwnerChar, this, Skill->Montage);
+		Action->OnBegin();
+	}
+}
+
+void UUfSkillComponent::TickAction()
+{
+	if(Action)
+	{
+		Action->OnTick();
+		if(Action->IsEnd())
+		{
+			ClearAction();
+		}
+	}
+}
+
+void UUfSkillComponent::ClearAction()
+{
+	if(Action)
+	{
+		Action->OnEnd();
+		Action = nullptr;
+	}
+}
+
+void UUfSkillComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
+{
+	if(Action)
+	{
+		Action->OnMontageEnd();
+		ClearAction();
+	}
 }
 
 
