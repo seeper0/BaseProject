@@ -9,6 +9,7 @@
 #include "UfLogger.h"
 #include "UfSkillTable.h"
 #include "UfUtil.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 // Sets default values for this component's properties
 UUfSkillComponent::UUfSkillComponent()
@@ -46,6 +47,7 @@ void UUfSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	// ...
 	//InputQueue.Empty();
 
+	TickInput();
 	TickAction();
 }
 
@@ -102,7 +104,7 @@ void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Started});
 
 	// 스킬 클래스를 먼저 만들어야겠다.
-	PlayAction(SkillKey);
+	//PlayAction(SkillKey);
 }
 
 void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstance)
@@ -123,14 +125,45 @@ void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstanc
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Completed});
 }
 
+bool UUfSkillComponent::CanAction(const FUfSkillTable* Skill) const
+{
+	if(OwnerChar && OwnerChar->GetMovementComponent()->IsFalling())
+		return false;
+
+	// 게이지 체크는 여기서?
+
+	if(Action == nullptr)
+		return true;
+
+	switch (SkillState)
+	{
+	case EUfSkillState::None:
+		return false;
+	case EUfSkillState::PreDelay:
+		return false;
+	case EUfSkillState::PreInput:
+		return true;
+	case EUfSkillState::Cancel:
+		return true;
+	case EUfSkillState::End:
+		return true;
+	}
+
+	return true;
+}
+
 void UUfSkillComponent::PlayAction(const EUfSkillKey SkillKey)
 {
 	const FUfSkillTable* Skill = FindSkill(SkillKey);
-	if(Skill && Skill->Montage)
+	if(Skill)
 	{
-		Action = NewObject<UUfActionBase>();
-		Action->InitAction(OwnerChar, this, Skill->Montage);
-		Action->OnBegin();
+		if(CanAction(Skill))
+		{
+			ClearAction();
+			Action = NewObject<UUfActionBase>();
+			Action->InitAction(OwnerChar, this, Skill->Montage);
+			Action->OnBegin();
+		}
 	}
 }
 
@@ -162,6 +195,22 @@ void UUfSkillComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
 		Action->OnMontageEnd();
 		ClearAction();
 	}
+}
+
+void UUfSkillComponent::TickInput()
+{
+	// switch (SkillState)
+	// {
+	// case EUfSkillState::None:
+	// case EUfSkillState::PreDelay:
+	// 	return false;
+	// case EUfSkillState::PreInput:
+	// 	return true;
+	// case EUfSkillState::Cancel:
+	// 	return true;
+	// case EUfSkillState::End:
+	// 	return true;
+	// }
 }
 
 

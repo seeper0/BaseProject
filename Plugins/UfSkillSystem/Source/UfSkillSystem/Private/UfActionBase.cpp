@@ -25,6 +25,7 @@ void UUfActionBase::OnTick()
 
 void UUfActionBase::OnMontageEnd()
 {
+	Montage = nullptr;
 }
 
 void UUfActionBase::OnEnd()

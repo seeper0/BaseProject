@@ -35,7 +35,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -51,6 +51,7 @@ private:
 	void OnTrigger(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 
+	bool CanAction(const FUfSkillTable* Skill) const;
 	void PlayAction(const EUfSkillKey SkillKey);
 	void TickAction();
 	void ClearAction();
@@ -58,6 +59,8 @@ private:
 	UFUNCTION()
 	void OnMontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
+	void TickInput();
+	
 	/** Skill Table */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UDataTable* SkillTable = nullptr;
