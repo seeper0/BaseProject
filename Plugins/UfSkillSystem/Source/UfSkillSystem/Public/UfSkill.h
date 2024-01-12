@@ -3,7 +3,7 @@
 #pragma once
 
 UENUM(BlueprintType)
-enum class ESkillState : uint8
+enum class EUfSkillState : uint8
 {
 	None,
 	PreDelay,
@@ -13,7 +13,7 @@ enum class ESkillState : uint8
 };
 
 UENUM(BlueprintType)
-enum class EInputType : uint8
+enum class EUfInputType : uint8
 {
 	None,
 	AutoCombo,
@@ -22,7 +22,7 @@ enum class EInputType : uint8
 };
 
 UENUM(BlueprintType)
-enum class ESkillKey : uint8
+enum class EUfSkillKey : uint8
 {
 	None,
 	NormalAttack,
@@ -31,3 +31,13 @@ enum class ESkillKey : uint8
 	Slot3,
 	Slot4,
 };
+
+UENUM(BlueprintType)
+enum class EUfMobileType : uint8
+{
+	None,
+	Montage,
+	Input,
+	Curve,
+};
+

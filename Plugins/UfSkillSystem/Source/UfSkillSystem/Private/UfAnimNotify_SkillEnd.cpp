@@ -19,6 +19,6 @@ void UUfAnimNotify_SkillEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 	if(UUfSkillComponent* Skill = UUfSkillComponent::GetSkillComponent(MeshComp))
 	{
-		Skill->SetSkillState(ESkillState::End);
+		Skill->SetSkillState(EUfSkillState::End);
 	}
 }

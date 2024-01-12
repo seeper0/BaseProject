@@ -19,6 +19,6 @@ void UUfAnimNotify_SkillInput::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 
 	if(UUfSkillComponent* Skill = UUfSkillComponent::GetSkillComponent(MeshComp))
 	{
-		Skill->SetSkillState(ESkillState::PreInput);
+		Skill->SetSkillState(EUfSkillState::PreInput);
 	}
 }

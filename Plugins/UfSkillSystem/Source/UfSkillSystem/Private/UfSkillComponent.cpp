@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "GameFramework/Character.h"
+#include "UfLogger.h"
 #include "UfSkillTable.h"
 
 // Sets default values for this component's properties
@@ -49,27 +50,28 @@ void UUfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* Enhan
 	}
 }
 
-void UUfSkillComponent::SetSkillState(ESkillState InSkillState)
+void UUfSkillComponent::SetSkillState(EUfSkillState InSkillState)
 {
 	SkillState = InSkillState;
 }
 
-ESkillKey UUfSkillComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
+EUfSkillKey UUfSkillComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
 {
-	const ESkillKey* SkillKey = SkillSlotCache.Find(InputActionInstance.GetSourceAction());
+	const EUfSkillKey* SkillKey = SkillSlotCache.Find(InputActionInstance.GetSourceAction());
 	if(SkillKey == nullptr)
-		return ESkillKey::None;
+		return EUfSkillKey::None;
 
 	return *SkillKey;
 }
 
-const FUfSkillTable* UUfSkillComponent::FindSkill(const ESkillKey SkillKey) const
+const FUfSkillTable* UUfSkillComponent::FindSkill(const EUfSkillKey SkillKey) const
 {
 	const FUfSkillTable* Skill = nullptr;
 	if(SkillTable)
 	{
-		SkillTable->ForeachRow<FUfSkillTable>(TEXT("UUfSkillComponent::OnPress"), [this, SkillKey, Skill](const FName& Key, const FUfSkillTable& Value) mutable
+		SkillTable->ForeachRow<FUfSkillTable>(TEXT("UUfSkillComponent::OnPress"), [this, SkillKey, &Skill](const FName& Key, const FUfSkillTable& Value) mutable
 		{
+			UF_LOG(TEXT("Table %s : %s"), *UEnum::GetValueAsString<EUfSkillKey>(Value.Key), *UEnum::GetValueAsString<EUfSkillKey>(SkillKey));
 			if(Value.Key == SkillKey)
 				Skill = &Value; 
 		});
@@ -79,8 +81,8 @@ const FUfSkillTable* UUfSkillComponent::FindSkill(const ESkillKey SkillKey) cons
 
 void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
 {
-	const ESkillKey SkillKey = GetSkillSlot(InputActionInstance);
-	if(SkillKey == ESkillKey::None)
+	const EUfSkillKey SkillKey = GetSkillSlot(InputActionInstance);
+	if(SkillKey == EUfSkillKey::None)
 		return;
 
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Started});
@@ -93,8 +95,8 @@ void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
 
 void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstance)
 {
-	const ESkillKey SkillKey = GetSkillSlot(InputActionInstance);
-	if(SkillKey == ESkillKey::None)
+	const EUfSkillKey SkillKey = GetSkillSlot(InputActionInstance);
+	if(SkillKey == EUfSkillKey::None)
 		return;
 
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Triggered});
@@ -102,8 +104,8 @@ void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstanc
 
 void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstance)
 {
-	const ESkillKey SkillKey = GetSkillSlot(InputActionInstance);
-	if(SkillKey == ESkillKey::None)
+	const EUfSkillKey SkillKey = GetSkillSlot(InputActionInstance);
+	if(SkillKey == EUfSkillKey::None)
 		return;
 
 	//InputQueue.Enqueue(Input{Slot, ETriggerEvent::Completed});

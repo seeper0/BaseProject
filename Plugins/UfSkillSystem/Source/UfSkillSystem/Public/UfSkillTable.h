@@ -17,11 +17,14 @@ struct UFSKILLSYSTEM_API FUfSkillTable : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ESkillKey Key;
+	EUfSkillKey Key;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EInputType InputType;
+	EUfInputType InputType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EUfMobileType MobileType;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAnimMontage* Montage = nullptr;
 };

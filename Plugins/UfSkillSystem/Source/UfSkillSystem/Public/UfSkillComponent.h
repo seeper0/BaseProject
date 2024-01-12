@@ -41,11 +41,11 @@ public:
 
 	void SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent);
 	void PlaySkill();
-	void SetSkillState(ESkillState InSkillState);
+	void SetSkillState(EUfSkillState InSkillState);
 
 private:
-	ESkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
-	const struct FUfSkillTable* FindSkill(const ESkillKey SkillKey) const;
+	EUfSkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
+	const struct FUfSkillTable* FindSkill(const EUfSkillKey SkillKey) const;
 
 	void OnPress(const FInputActionInstance& InputActionInstance);
 	void OnTrigger(const FInputActionInstance& InputActionInstance);
@@ -58,13 +58,13 @@ private:
 
 	/** Slot Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TMap<ESkillKey, const UInputAction*> SkillSlotMapping;
+	TMap<EUfSkillKey, const UInputAction*> SkillSlotMapping;
 
 	UPROPERTY()
-	TMap<const UInputAction*, ESkillKey> SkillSlotCache;
+	TMap<const UInputAction*, EUfSkillKey> SkillSlotCache;
 	
 	UPROPERTY()
-	ESkillState SkillState = ESkillState::None;
+	EUfSkillState SkillState = EUfSkillState::None;
 
 	UPROPERTY()
 	ACharacter* OwnerChar = nullptr;

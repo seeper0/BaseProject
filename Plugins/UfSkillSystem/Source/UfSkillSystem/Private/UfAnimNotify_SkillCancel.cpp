@@ -20,6 +20,6 @@ void UUfAnimNotify_SkillCancel::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 
 	if(UUfSkillComponent* Skill = UUfSkillComponent::GetSkillComponent(MeshComp))
 	{
-		Skill->SetSkillState(ESkillState::Cancel);
+		Skill->SetSkillState(EUfSkillState::Cancel);
 	}
 }

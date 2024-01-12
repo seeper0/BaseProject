@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class UfSkillSystem : ModuleRules
+public class UfCommon : ModuleRules
 {
-	public UfSkillSystem(ReadOnlyTargetRules Target) : base(Target)
+	public UfCommon(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
@@ -27,11 +27,6 @@ public class UfSkillSystem : ModuleRules
 			{
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
-				"InputCore",
-				"EnhancedInput",
-				"Json",
-				"JsonUtilities",
-				"UfCommon",
 			}
 			);
 			
