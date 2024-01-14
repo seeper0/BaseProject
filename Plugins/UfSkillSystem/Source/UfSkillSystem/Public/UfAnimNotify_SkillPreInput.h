@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "UfAnimNotify_SkillInput.generated.h"
+#include "UfAnimNotify_SkillPreInput.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UFSKILLSYSTEM_API UUfAnimNotify_SkillInput : public UAnimNotify
+class UFSKILLSYSTEM_API UUfAnimNotify_SkillPreInput : public UAnimNotify
 {
 	GENERATED_BODY()
 
-	UUfAnimNotify_SkillInput(const FObjectInitializer& ObjectInitializer);
-	virtual FString GetNotifyName_Implementation() const override { return TEXT("1_Input"); }
+	UUfAnimNotify_SkillPreInput(const FObjectInitializer& ObjectInitializer);
+	virtual FString GetNotifyName_Implementation() const override { return TEXT("1_PreInput"); }
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

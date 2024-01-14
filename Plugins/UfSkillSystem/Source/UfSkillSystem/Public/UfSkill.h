@@ -2,14 +2,17 @@
 
 #pragma once
 
+#include "InputAction.h"
+
 UENUM(BlueprintType)
 enum class EUfSkillState : uint8
 {
-	None,
-	PreDelay,
-	PreInput,
-	Cancel,
-	End
+	None,		/// 스킬을 실행하지 않은 상태
+	PreDelay,	/// 스킬이 시작된 상태
+	PreInput,	/// 선입력을 받을 수 있는 상태
+	CanCancel,	/// 스킬을 캔슬 할 수 있는 상태
+	End,
+	Over
 };
 
 UENUM(BlueprintType)
@@ -42,3 +45,8 @@ enum class EUfMobileType : uint8
 	Curve,
 };
 
+struct FUfInput
+{
+	EUfSkillKey SkillKey;
+	ETriggerEvent Event;
+};

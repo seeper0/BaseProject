@@ -1,11 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UfAnimNotify_SkillCancel.h"
-
+#include "UfAnimNotify_SkillCanCancel.h"
 #include "UfSkillComponent.h"
 
-UUfAnimNotify_SkillCancel::UUfAnimNotify_SkillCancel(const FObjectInitializer& ObjectInitializer)
+UUfAnimNotify_SkillCanCancel::UUfAnimNotify_SkillCanCancel(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 #if WITH_EDITORONLY_DATA
@@ -13,13 +12,13 @@ UUfAnimNotify_SkillCancel::UUfAnimNotify_SkillCancel(const FObjectInitializer& O
 #endif // WITH_EDITORONLY_DATA
 }
 
-void UUfAnimNotify_SkillCancel::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+void UUfAnimNotify_SkillCanCancel::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
 	const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
 	if(UUfSkillComponent* Skill = UUfSkillComponent::GetSkillComponent(MeshComp))
 	{
-		Skill->SetSkillState(EUfSkillState::Cancel);
+		Skill->SetSkillState(EUfSkillState::CanCancel);
 	}
 }

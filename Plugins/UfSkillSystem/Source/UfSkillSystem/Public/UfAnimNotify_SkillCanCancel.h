@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "UfAnimNotify_SkillCancel.generated.h"
+#include "UfAnimNotify_SkillCanCancel.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UFSKILLSYSTEM_API UUfAnimNotify_SkillCancel : public UAnimNotify
+class UFSKILLSYSTEM_API UUfAnimNotify_SkillCanCancel : public UAnimNotify
 {
 	GENERATED_BODY()
 	
-	UUfAnimNotify_SkillCancel(const FObjectInitializer& ObjectInitializer);
-	virtual FString GetNotifyName_Implementation() const override { return TEXT("2_Cancel"); }
+	UUfAnimNotify_SkillCanCancel(const FObjectInitializer& ObjectInitializer);
+	virtual FString GetNotifyName_Implementation() const override { return TEXT("2_CanCancel"); }
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };

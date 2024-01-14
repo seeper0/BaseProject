@@ -14,7 +14,8 @@ class UFSKILLSYSTEM_API UUfActionBase : public UObject
 {
 	GENERATED_BODY()
 public:
-	virtual void InitAction(ACharacter* InOwner, class UUfSkillComponent* InComponent, UAnimMontage* InMontage);
+	virtual void InitAction(ACharacter* InOwner, class UUfSkillComponent* InComponent, UAnimMontage* InMontage, const struct FUfSkillData* InSkillTable /* 임시 */);
+	virtual FString ToString() const;
 
 	virtual void OnBegin();
 	virtual void OnTick();
@@ -22,6 +23,7 @@ public:
 	virtual void OnEnd();
 
 	bool IsEnd() const;
+	const struct FUfSkillData* GetSkillTable() const { return SkillTable; }
 
 private:
 	UPROPERTY()
@@ -32,4 +34,6 @@ private:
 
 	UPROPERTY();
 	UAnimMontage* Montage = nullptr;
+	
+	const struct FUfSkillData* SkillTable = nullptr;
 };

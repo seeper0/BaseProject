@@ -14,11 +14,6 @@ class UFSKILLSYSTEM_API UUfSkillComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	// struct Input
-	// {
-	// 	ESkillSlot Slot;
-	// 	ETriggerEvent Event;
-	// };
 public:	
 	// Sets default values for this component's properties
 	UUfSkillComponent();
@@ -40,26 +35,30 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent);
-	void PlaySkill();
 	void SetSkillState(EUfSkillState InSkillState);
 
 private:
 	EUfSkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
-	const struct FUfSkillTable* FindSkill(const EUfSkillKey SkillKey) const;
+	const struct FUfSkillData* FindSkill(const EUfSkillKey SkillKey) const;
+	const FUfSkillData* FindChainSkill(EUfSkillKey SkillKey) const;
 
 	void OnPress(const FInputActionInstance& InputActionInstance);
 	void OnTrigger(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 
-	bool CanAction(const FUfSkillTable* Skill) const;
-	void PlayAction(const EUfSkillKey SkillKey);
+	bool CanCancelSkill(EUfSkillKey SkillKey, ETriggerEvent Started) const;
+	bool CanPlaySkill(const FUfSkillData* Skill) const;
+	void PlaySkill(EUfSkillKey SkillKey, ETriggerEvent Started);
+	void PlayAction(UAnimMontage* InMontage, const FUfSkillData* Skill /* 임시 */);
 	void TickAction();
 	void ClearAction();
 
 	UFUNCTION()
 	void OnMontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
+	void QueueSkill(EUfSkillKey SkillKey, ETriggerEvent Started);
 	void TickInput();
+	void ProcessPreInputKey(const FUfInput& Input);
 	
 	/** Skill Table */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -82,8 +81,7 @@ private:
 	UAnimInstance* AnimInstance = nullptr; 
 
 	UPROPERTY()
-	class UUfActionBase* Action = nullptr;
+	class UUfActionBase* CurrentAction = nullptr;
 
-	// UPROPERTY()
-	// TQueue<Input> InputQueue;
+	TQueue<FUfInput> InputQueue;
 };

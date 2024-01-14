@@ -2,13 +2,25 @@
 
 
 #include "UfActionBase.h"
+
+#include "UfSkillData.h"
 #include "GameFramework/Character.h"
 
-void UUfActionBase::InitAction(ACharacter* InOwner, UUfSkillComponent* InComponent, UAnimMontage* InMontage)
+void UUfActionBase::InitAction(ACharacter* InOwner, UUfSkillComponent* InComponent, UAnimMontage* InMontage, const FUfSkillData* InSkillTable)
 {
 	Owner = InOwner;
 	Component = InComponent;
 	Montage = InMontage;
+	SkillTable = InSkillTable;
+}
+
+FString UUfActionBase::ToString() const
+{
+	if(GetSkillTable())
+	{
+		return GetSkillTable()->RowName.ToString();
+	}
+	return TEXT("Not Skill");
 }
 
 void UUfActionBase::OnBegin()
@@ -30,13 +42,34 @@ void UUfActionBase::OnMontageEnd()
 
 void UUfActionBase::OnEnd()
 {
+	// 액션이 종료되는 세가지 조건
+	// 1. 몽타주 종료 : OnMontageEnd
+	// 2. Tick 종료 : OnEnd
+	// 3. 새로운 스킬 시작시 삭제 :
+	// 모두 OnEnd를 마지막으로 호출되게 수정해야한다.
+	// OnMontageEnd 가 호출되어도 잔여타임이 있다면 OnEnd가 호출되지 않는다.
+	// 스킬이 강제 중단된다면 OnEnd가 호출되고 OnMontageEnd가 호출될 수 있다. 
+	
+	// if(Owner && Montage)
+	// {
+	// 	if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
+	// 	{
+	// 		Owner->GetMesh()->GetAnimInstance()->Montage_Stop(0.05f, Montage);
+	// 	}
+	// }
 }
 
 bool UUfActionBase::IsEnd() const
 {
-	// if(Montage)
-	// {
-	// 	Montage->Is
-	// }
+	//return Montage == nullptr;
+	
+	if(Owner && Montage)
+	{
+		if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
+		{
+			return !Owner->GetMesh()->GetAnimInstance()->Montage_IsPlaying(Montage);
+		}
+	}	
+
 	return false;
 }

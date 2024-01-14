@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UfAnimNotify_SkillInput.h"
+#include "UfAnimNotify_SkillPreInput.h"
 #include "UfSkillComponent.h"
 
-UUfAnimNotify_SkillInput::UUfAnimNotify_SkillInput(const FObjectInitializer& ObjectInitializer)
+UUfAnimNotify_SkillPreInput::UUfAnimNotify_SkillPreInput(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 #if WITH_EDITORONLY_DATA
@@ -12,8 +12,7 @@ UUfAnimNotify_SkillInput::UUfAnimNotify_SkillInput(const FObjectInitializer& Obj
 #endif // WITH_EDITORONLY_DATA
 }
 
-void UUfAnimNotify_SkillInput::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	const FAnimNotifyEventReference& EventReference)
+void UUfAnimNotify_SkillPreInput::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
