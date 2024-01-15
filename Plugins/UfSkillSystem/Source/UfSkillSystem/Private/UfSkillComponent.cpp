@@ -70,12 +70,17 @@ void UUfSkillComponent::SetSkillState(EUfSkillState InSkillState)
 	// if(Action)
 	// 	Action->SetSkillState(InSkillState);
 
-	if(SkillState == EUfSkillState::CanCancel)
+	// 선입력으로 예약된 스킬을 발동한다.
+	if(SkillTable && SkillState == EUfSkillState::CanCancel)
 	{
-		FUfInput Input;
-		while(InputQueue.Dequeue(Input))
+		if(ReservedRowName != NAME_None)
 		{
-			ProcessPreInputKey(Input);
+			const FUfSkillData* SkillData = SkillTable->FindRow<FUfSkillData>(ReservedRowName, UF_FUNCTION);
+			if(CanCancelSkill(SkillData))
+			{
+				PlaySkill(SkillData);
+			}
+			ReservedRowName = NAME_None;
 		}
 	}
 }
@@ -89,25 +94,51 @@ EUfSkillKey UUfSkillComponent::GetSkillSlot(const FInputActionInstance& InputAct
 	return *SkillKey;
 }
 
-const FUfSkillData* UUfSkillComponent::FindSkill(const EUfSkillKey SkillKey) const
+const FUfSkillData* UUfSkillComponent::FindSkill(const EUfSkillKey SkillKey, const ETriggerEvent KeyEvent) const
 {
 	if(SkillTable == nullptr)
 		return nullptr;
 
-	TArray<FName> RowNames = SkillTable->GetRowNames();
-	for (const FName RowName : RowNames)
+	const TArray<FName> RowNames = SkillTable->GetRowNames();
+	switch (SkillState)
 	{
-		const FUfSkillData* RowData = SkillTable->FindRow<FUfSkillData>(RowName, UF_FUNCTION);
-		if(RowData == nullptr)
-			continue;
-		
-		UF_LOG(TEXT("Table %s : %s"), *FUfUtil::GetEnumString(RowData->Key), *FUfUtil::GetEnumString(SkillKey));
-		if(RowData->Key == SkillKey)
+	case EUfSkillState::PreDelay:
+		break;
+	case EUfSkillState::None:
+	case EUfSkillState::PreInput:
+	case EUfSkillState::CanCancel:
+	case EUfSkillState::End:
+	case EUfSkillState::Over:
 		{
-			return RowData;
-		}
-	}
+			for (const FName RowName : RowNames)
+			{
+				const FUfSkillData* RowData = SkillTable->FindRow<FUfSkillData>(RowName, UF_FUNCTION);
+				if(RowData == nullptr)
+					continue;
 
+				//UF_LOG(TEXT("Table %s : %s (%s/%s)"), *FUfUtil::GetEnumString(RowData->Key), *FUfUtil::GetEnumString(SkillKey), *RowData->GetRequireSkill(0).ToString(), *CurrentAction->GetSkillTable()->RowName.ToString());
+				// CurrentAction, SkillKey, KeyEvent 조합으로 찾는다.
+				// 1. SkillKey가 맞는가?
+				// 2. 이벤트가 맞는가?
+				// 3. GetRequireSkill() 스킬이 없다면 볼것 없고...
+				// 3. GetRequireSkill() 스킬이 있다면 CurrentAction 과 조건이 맞는지 봐야함.
+				if(RowData->Key == SkillKey)
+				{
+					if(KeyEvent == ETriggerEvent::Started ||
+						RowData->InputType == EUfInputType::AutoCombo && KeyEvent == ETriggerEvent::Triggered)
+					{
+						if((CurrentAction && RowData->CanChain(CurrentAction->GetSkillTable()->RowName)) ||
+							RowData->NotChain())
+						{
+							return RowData;
+						}
+					}
+				}
+			}
+		}
+		break;
+	}
+	
 	return nullptr;
 }
 
@@ -142,23 +173,26 @@ void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
 	if(SkillKey == EUfSkillKey::None)
 		return;
 
+	// 키를 눌렀을때 다음에 뭐쓸지 여기서 결정이 나야한다. 중간에 키만넘기다 바꾸면 스킬을 여러번 바꿔야하는 불상사가 나올수 있다.
+	const FUfSkillData* SkillData = FindSkill(SkillKey, ETriggerEvent::Started);
+
 	switch (SkillState)
 	{
 	case EUfSkillState::None:
 	case EUfSkillState::End:
-		PlaySkill(SkillKey, ETriggerEvent::Started);
+	case EUfSkillState::Over:
+		PlaySkill(SkillData);
 		break;
 	case EUfSkillState::PreInput:
-		QueueSkill(SkillKey, ETriggerEvent::Started);
+		ReserveSkill(SkillData);
 		break;
 	case EUfSkillState::CanCancel:
-		if(CanCancelSkill(SkillKey, ETriggerEvent::Started))
+		if(CanCancelSkill(SkillData))
 		{
-			PlaySkill(SkillKey, ETriggerEvent::Started);
+			PlaySkill(SkillData);
 		}
 		break;
 	}
-	
 }
 
 void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstance)
@@ -167,7 +201,26 @@ void UUfSkillComponent::OnTrigger(const FInputActionInstance& InputActionInstanc
 	if(SkillKey == EUfSkillKey::None)
 		return;
 
-	//InputQueue.Enqueue({SkillKey, ETriggerEvent::Triggered});
+	// 키를 눌렀을때 다음에 뭐쓸지 여기서 결정이 나야한다. 중간에 키만넘기다 바꾸면 스킬을 여러번 바꿔야하는 불상사가 나올수 있다.
+	const FUfSkillData* SkillData = FindSkill(SkillKey, ETriggerEvent::Triggered);
+
+	switch (SkillState)
+	{
+	case EUfSkillState::None:
+	case EUfSkillState::End:
+	case EUfSkillState::Over:
+		PlaySkill(SkillData);
+		break;
+	case EUfSkillState::PreInput:
+		ReserveSkill(SkillData);
+		break;
+	case EUfSkillState::CanCancel:
+		if(CanCancelSkill(SkillData))
+		{
+			PlaySkill(SkillData);
+		}
+		break;
+	}
 }
 
 void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstance)
@@ -175,18 +228,19 @@ void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstanc
 	const EUfSkillKey SkillKey = GetSkillSlot(InputActionInstance);
 	if(SkillKey == EUfSkillKey::None)
 		return;
-
-	//InputQueue.Enqueue({SkillKey, ETriggerEvent::Completed});
 }
 
-bool UUfSkillComponent::CanCancelSkill(EUfSkillKey SkillKey, ETriggerEvent Started) const
+bool UUfSkillComponent::CanCancelSkill(const FUfSkillData* SkillData) const
 {
 	// 특정 조건일때만 Cancel 되어야한다.
 	return true;
 }
 
-bool UUfSkillComponent::CanPlaySkill(const FUfSkillData* Skill) const
+bool UUfSkillComponent::CanPlaySkill(const FUfSkillData* SkillData) const
 {
+	if(SkillData == nullptr)
+		return false;
+
 	if(OwnerChar && OwnerChar->GetMovementComponent()->IsFalling())
 		return false;
 
@@ -198,46 +252,14 @@ bool UUfSkillComponent::CanPlaySkill(const FUfSkillData* Skill) const
 	return true;
 }
 
-void UUfSkillComponent::PlaySkill(EUfSkillKey SkillKey, ETriggerEvent Started)
+void UUfSkillComponent::PlaySkill(const FUfSkillData* SkillData)
 {
-	// 현재상태와 키를 비교해서 스킬을 찾아낸다.
-	// Chain Skill 일 경우 Chain Skill을 가져온다.
-
-	// 1. 그냥 이면 스킬 쓴다.
-	// 2. 체인 조건이면 체인을 쓴다.
-	// 3. 가장 합리적인 찾는건 무엇일까?
-	// 4. 쿨타임이나 자원을 소모하면 어떻게 될까?
-
-	//조건들을 정리하자
-	// 땅에 있다면
-	// 사용하는 스킬이 없다면
-	// 쿨타임이 가능하다면
-	// 자원이 가능하다면
-	// 특정 타이밍 입력 조건이 맞춰줬다면
-	// 선입력 or 즉시 발동?
-
-	UF_LOG(TEXT("A [%p]"), CurrentAction);
-	const FUfSkillData* SkillData = nullptr;
-	// 현재 스킬이 없다면...
-	if(CurrentAction)
-	{
-		UF_LOG(TEXT("CurrentAction : %s"), *CurrentAction->ToString());
-		SkillData = FindChainSkill(SkillKey);
-	}
-	UF_LOG(TEXT("B"));
-
 	if(SkillData == nullptr)
+		return;
+	
+	if(CanPlaySkill(SkillData))
 	{
-	UF_LOG(TEXT("C"));
-		SkillData = FindSkill(SkillKey);
-	}
-
-	if(SkillData)
-	{
-		if(CanPlaySkill(SkillData))
-		{
-			PlayAction(SkillData->Montage, SkillData);
-		}
+		PlayAction(SkillData->Montage, SkillData);
 	}
 }
 
@@ -283,13 +305,10 @@ void UUfSkillComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
 	// }
 }
 
-void UUfSkillComponent::QueueSkill(EUfSkillKey SkillKey, ETriggerEvent Started)
+void UUfSkillComponent::ReserveSkill(const FUfSkillData* SkillData)
 {
-	// 일단 1개만 받자
-	if(InputQueue.IsEmpty())
-	{
-		InputQueue.Enqueue({SkillKey, ETriggerEvent::Started});
-	}
+	if(ReservedRowName == NAME_None && SkillData)
+		ReservedRowName = SkillData->RowName;
 }
 
 void UUfSkillComponent::TickInput()
@@ -299,15 +318,6 @@ void UUfSkillComponent::TickInput()
 	// {
 	// 	ProcessInputKey(Input);
 	// }
-}
-
-void UUfSkillComponent::ProcessPreInputKey(const FUfInput& Input)
-{
-	if(CanCancelSkill(Input.SkillKey, Input.Event))
-	{
-		PlaySkill(Input.SkillKey, Input.Event);
-		InputQueue.Empty();
-	}
 }
 
 

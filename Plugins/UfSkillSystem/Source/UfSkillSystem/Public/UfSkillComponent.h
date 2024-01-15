@@ -14,6 +14,12 @@ class UFSKILLSYSTEM_API UUfSkillComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	struct FSkillInfo
+	{
+		bool PreInput = false;
+		const struct FUfSkillData* SkillData = nullptr;
+	};
+
 public:	
 	// Sets default values for this component's properties
 	UUfSkillComponent();
@@ -39,16 +45,17 @@ public:
 
 private:
 	EUfSkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
-	const struct FUfSkillData* FindSkill(const EUfSkillKey SkillKey) const;
+	/// CurrentAction, SkillState, SkillKey, KeyEvent 조합으로 적절한 스킬을 찾는다.
+	const FUfSkillData* FindSkill(const EUfSkillKey SkillKey, const ETriggerEvent KeyEvent) const;
 	const FUfSkillData* FindChainSkill(EUfSkillKey SkillKey) const;
 
 	void OnPress(const FInputActionInstance& InputActionInstance);
 	void OnTrigger(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 
-	bool CanCancelSkill(EUfSkillKey SkillKey, ETriggerEvent Started) const;
-	bool CanPlaySkill(const FUfSkillData* Skill) const;
-	void PlaySkill(EUfSkillKey SkillKey, ETriggerEvent Started);
+	bool CanCancelSkill(const FUfSkillData* SkillData) const;
+	bool CanPlaySkill(const FUfSkillData* SkillData) const;
+	void PlaySkill(const FUfSkillData* SkillData);
 	void PlayAction(UAnimMontage* InMontage, const FUfSkillData* Skill /* 임시 */);
 	void TickAction();
 	void ClearAction();
@@ -56,9 +63,8 @@ private:
 	UFUNCTION()
 	void OnMontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
-	void QueueSkill(EUfSkillKey SkillKey, ETriggerEvent Started);
+	void ReserveSkill(const FUfSkillData* SkillData);
 	void TickInput();
-	void ProcessPreInputKey(const FUfInput& Input);
 	
 	/** Skill Table */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -83,5 +89,6 @@ private:
 	UPROPERTY()
 	class UUfActionBase* CurrentAction = nullptr;
 
-	TQueue<FUfInput> InputQueue;
+	UPROPERTY()
+	FName ReservedRowName;
 };

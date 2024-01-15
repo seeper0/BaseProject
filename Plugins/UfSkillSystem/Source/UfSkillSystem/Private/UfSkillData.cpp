@@ -3,6 +3,25 @@
 
 #include "UfSkillData.h"
 
+bool FUfSkillData::NotChain() const
+{
+	return (RequireSkill1 == NAME_None);
+}
+
+bool FUfSkillData::CanChain(const FName CurrentRowName) const
+{
+	if(NotChain())
+		return false;
+
+	for(int32 i=0; i<GetMaxRequireSkill(); ++i)
+	{
+		if(GetRequireSkill(i) == CurrentRowName)
+			return true;
+	}
+
+	return false;
+}
+
 FName FUfSkillData::GetRequireSkill(int32 Index) const
 {
 	switch (Index)

@@ -16,6 +16,8 @@ struct UFSKILLSYSTEM_API FUfSkillData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
+	bool NotChain() const;
+	bool CanChain(const FName CurrentRowName) const;
 	FName GetRequireSkill(int32 Index) const;
 	int32 GetMaxRequireSkill() const { return 3; }
 
