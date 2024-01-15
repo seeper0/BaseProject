@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "UfSkillSystem",
+	"FriendlyName": "UfCameraSystem",
 	"Description": "",
 	"Category": "Foundation",
 	"CreatedBy": "",
@@ -16,22 +16,14 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "UfSkillSystem",
+			"Name": "UfCameraSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
 		{
-			"Name": "EnhancedInput",
-			"Enabled": true
-		},
-		{
 			"Name": "UfCommon",
-			"Enabled": true
-		},
-		{
-			"Name": "UfCameraSystem",
 			"Enabled": true
 		}
 	]
