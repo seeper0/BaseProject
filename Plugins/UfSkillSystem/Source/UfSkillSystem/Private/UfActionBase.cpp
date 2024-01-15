@@ -55,13 +55,13 @@ void UUfActionBase::OnEnd()
 	// 2. 자동으로 끝날때
 	
 	UF_LOG(TEXT("END"));
-	if(Owner && Montage)
-	{
-		if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
-		{
-			Owner->GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, Montage);
-		}
-	}
+	// if(Owner && Montage)
+	// {
+	// 	if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
+	// 	{
+	// 		Owner->GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, Montage); // 강제로 멈추고 다른 몽타주 실행하면 튈 수 있다.
+	// 	}
+	// }
 }
 
 bool UUfActionBase::IsEnd() const
