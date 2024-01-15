@@ -3,6 +3,7 @@
 
 #include "UfActionBase.h"
 
+#include "UfLogger.h"
 #include "UfSkillData.h"
 #include "GameFramework/Character.h"
 
@@ -25,6 +26,7 @@ FString UUfActionBase::ToString() const
 
 void UUfActionBase::OnBegin()
 {
+	UF_LOG(TEXT("BEGIN"));
 	if(Owner && Montage)
 	{
 		Owner->PlayAnimMontage(Montage);
@@ -37,7 +39,7 @@ void UUfActionBase::OnTick()
 
 void UUfActionBase::OnMontageEnd()
 {
-	Montage = nullptr;
+	//Montage = nullptr;
 }
 
 void UUfActionBase::OnEnd()
@@ -48,15 +50,18 @@ void UUfActionBase::OnEnd()
 	// 3. 새로운 스킬 시작시 삭제 :
 	// 모두 OnEnd를 마지막으로 호출되게 수정해야한다.
 	// OnMontageEnd 가 호출되어도 잔여타임이 있다면 OnEnd가 호출되지 않는다.
-	// 스킬이 강제 중단된다면 OnEnd가 호출되고 OnMontageEnd가 호출될 수 있다. 
+	// 스킬이 강제 중단된다면 OnEnd가 호출되고 OnMontageEnd가 호출될 수 있다.
+	// 1. 다른거 시작되기 직전
+	// 2. 자동으로 끝날때
 	
-	// if(Owner && Montage)
-	// {
-	// 	if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
-	// 	{
-	// 		Owner->GetMesh()->GetAnimInstance()->Montage_Stop(0.05f, Montage);
-	// 	}
-	// }
+	UF_LOG(TEXT("END"));
+	if(Owner && Montage)
+	{
+		if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
+		{
+			Owner->GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, Montage);
+		}
+	}
 }
 
 bool UUfActionBase::IsEnd() const

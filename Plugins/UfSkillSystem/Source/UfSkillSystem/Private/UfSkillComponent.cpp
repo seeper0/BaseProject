@@ -28,14 +28,14 @@ void UUfSkillComponent::BeginPlay()
 
 	// ...
 	OwnerChar = Cast<ACharacter>(GetOwner());
-	if(OwnerChar && OwnerChar->GetMesh())
-	{
-		AnimInstance = OwnerChar->GetMesh()->GetAnimInstance();
-		if(AnimInstance)
-		{
-			AnimInstance->OnMontageEnded.AddDynamic(this, &UUfSkillComponent::OnMontageEnd);
-		}
-	}
+	// if(OwnerChar && OwnerChar->GetMesh())
+	// {
+	// 	AnimInstance = OwnerChar->GetMesh()->GetAnimInstance();
+	// 	if(AnimInstance)
+	// 	{
+	// 		AnimInstance->OnMontageEnded.AddDynamic(this, &UUfSkillComponent::OnMontageEnd);
+	// 	}
+	// }
 }
 
 
@@ -248,7 +248,6 @@ void UUfSkillComponent::PlayAction(UAnimMontage* InMontage, const FUfSkillData* 
 	CurrentAction = NewObject<UUfActionBase>();
 	CurrentAction->InitAction(OwnerChar, this, InMontage, Skill);
 	CurrentAction->OnBegin();
-	UF_LOG(TEXT("BEGIN"));
 }
 
 void UUfSkillComponent::TickAction()
@@ -270,19 +269,18 @@ void UUfSkillComponent::ClearAction()
 	{
 		CurrentAction->OnEnd();
 		CurrentAction = nullptr;
-		UF_LOG(TEXT("END"));
 	}
 }
 
 void UUfSkillComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
 {
-		UF_LOG(TEXT("OnMontageEnd1"));
-	if(CurrentAction)
-	{
-		// 여기서 CurrentAction 을 지우면 CurrentAction 이 사라지게 된다. 체인인지 아닌지 알수 없게 된다. 
-		CurrentAction->OnMontageEnd();
-		UF_LOG(TEXT("OnMontageEnd"));
-	}
+	// UF_LOG(TEXT("OnMontageEnd1"));
+	// if(CurrentAction)
+	// {
+	// 	// 여기서 CurrentAction 을 지우면 CurrentAction 이 사라지게 된다. 체인인지 아닌지 알수 없게 된다. 
+	// 	CurrentAction->OnMontageEnd();
+	// 	UF_LOG(TEXT("OnMontageEnd"));
+	// }
 }
 
 void UUfSkillComponent::QueueSkill(EUfSkillKey SkillKey, ETriggerEvent Started)
