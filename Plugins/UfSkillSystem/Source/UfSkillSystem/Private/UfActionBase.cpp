@@ -2,11 +2,10 @@
 
 
 #include "UfActionBase.h"
-
+#include "GameFramework/Character.h"
 #include "UfLogger.h"
 #include "UfSkillComponent.h"
 #include "UfSkillData.h"
-#include "GameFramework/Character.h"
 
 void UUfActionBase::InitAction(ACharacter* InOwner, UUfSkillComponent* InComponent, UAnimMontage* InMontage, const FUfSkillData* InSkillTable)
 {
