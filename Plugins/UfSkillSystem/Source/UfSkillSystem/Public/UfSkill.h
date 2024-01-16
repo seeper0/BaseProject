@@ -19,7 +19,7 @@ UENUM(BlueprintType)
 enum class EUfInputType : uint8
 {
 	None,
-	AutoCombo,
+	AutoRapid,
 	Charge,
 	Single,
 };
@@ -28,7 +28,9 @@ UENUM(BlueprintType)
 enum class EUfSkillKey : uint8
 {
 	None,
-	NormalAttack,
+	Move,
+	Look,
+	Attack,
 	Jump,
 	Slot1,
 	Slot2,

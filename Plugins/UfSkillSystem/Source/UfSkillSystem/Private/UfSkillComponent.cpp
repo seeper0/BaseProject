@@ -55,11 +55,25 @@ void UUfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* Enhan
 	SkillSlotCache.Empty();
 	for (const auto& SkillSlot : SkillSlotMapping)
 	{
-		EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UUfSkillComponent::OnPress);
-		EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Ongoing, this, &UUfSkillComponent::OnHold);
-		EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Completed, this, &UUfSkillComponent::OnRelease);
-		
-		SkillSlotCache.Add(SkillSlot.Value, SkillSlot.Key);
+		switch (SkillSlot.Key)
+		{
+		case EUfSkillKey::Move: // Moving
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UUfSkillComponent::Move);
+			break;
+		case EUfSkillKey::Look: // Looking
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UUfSkillComponent::Look);
+			break;
+		case EUfSkillKey::Jump: // Jumping
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, OwnerChar, &ACharacter::Jump);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Completed, OwnerChar, &ACharacter::StopJumping);
+			break;
+		default:
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UUfSkillComponent::OnPress);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Ongoing, this, &UUfSkillComponent::OnHold);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Completed, this, &UUfSkillComponent::OnRelease);
+			SkillSlotCache.Add(SkillSlot.Value, SkillSlot.Key);
+			break;
+		}
 	}
 }
 
@@ -120,7 +134,7 @@ TArray<FName> UUfSkillComponent::FetchSkillsByInput(const EUfSkillKey SkillKey, 
 					continue;
 
 				if(KeyEvent == ETriggerEvent::Started || // 첫입력일 경우
-					(KeyEvent == ETriggerEvent::Ongoing && RowData->InputType == EUfInputType::AutoCombo) ) // 오토콤보 설정이 있다면 누르고 있을때도 가능 
+					(KeyEvent == ETriggerEvent::Ongoing && RowData->InputType == EUfInputType::AutoRapid) ) // 오토콤보 설정이 있다면 누르고 있을때도 가능 
 				{
 					FetchedSkills.Add(RowName);
 				}
@@ -160,6 +174,45 @@ const FUfSkillData* UUfSkillComponent::GetDesiredSkill(const TArray<FName>& RowN
 	// 스킬이 많아지면 Priority 로... Chain 이 먼저, Cancel기 다음, 마지막 평타...
 
 	return nullptr;
+}
+
+void UUfSkillComponent::Move(const FInputActionValue& Value)
+{
+	if(SkillState != EUfSkillState::None)
+		return;
+
+	// input is a Vector2D
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	if (OwnerChar && OwnerChar->Controller)
+	{
+		// find out which way is forward
+		const FRotator Rotation = OwnerChar->Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get forward vector
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	
+		// get right vector 
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		// add movement 
+		OwnerChar->AddMovementInput(ForwardDirection, MovementVector.Y);
+		OwnerChar->AddMovementInput(RightDirection, MovementVector.X);
+	}
+}
+
+void UUfSkillComponent::Look(const FInputActionValue& Value)
+{
+	// input is a Vector2D
+	FVector2D LookAxisVector = Value.Get<FVector2D>();
+
+	if (OwnerChar && OwnerChar->Controller)
+	{
+		// add yaw and pitch input to controller
+		OwnerChar->AddControllerYawInput(LookAxisVector.X);
+		OwnerChar->AddControllerPitchInput(LookAxisVector.Y);
+	}
 }
 
 void UUfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)

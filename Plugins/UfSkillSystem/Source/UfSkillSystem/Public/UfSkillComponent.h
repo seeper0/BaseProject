@@ -45,10 +45,14 @@ public:
 
 private:
 	EUfSkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
-	/// CurrentAction, SkillState, SkillKey, KeyEvent 조합으로 적절한 스킬을 찾는다.
+	/** CurrentAction, SkillState, SkillKey, KeyEvent 조합으로 적절한 스킬을 찾는다. */
 	TArray<FName> FetchSkillsByInput(const EUfSkillKey SkillKey, const ETriggerEvent KeyEvent) const;
 	const FUfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
 
+	/** Called for movement input */
+	void Move(const FInputActionValue& InputActionValue);
+	/** Called for looking input */
+	void Look(const FInputActionValue& InputActionValue);
 	void OnPress(const FInputActionInstance& InputActionInstance);
 	void OnHold(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
@@ -72,7 +76,7 @@ private:
 	UDataTable* SkillTable = nullptr;
 
 	/** Slot Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TMap<EUfSkillKey, const UInputAction*> SkillSlotMapping;
 
 	UPROPERTY()
