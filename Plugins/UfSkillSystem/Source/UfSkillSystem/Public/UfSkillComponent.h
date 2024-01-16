@@ -46,15 +46,16 @@ public:
 private:
 	EUfSkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
 	/// CurrentAction, SkillState, SkillKey, KeyEvent 조합으로 적절한 스킬을 찾는다.
-	const FUfSkillData* FindSkill(const EUfSkillKey SkillKey, const ETriggerEvent KeyEvent) const;
-	const FUfSkillData* FindChainSkill(EUfSkillKey SkillKey) const;
+	TArray<FName> FetchSkillsByInput(const EUfSkillKey SkillKey, const ETriggerEvent KeyEvent) const;
+	const FUfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
 
 	void OnPress(const FInputActionInstance& InputActionInstance);
-	void OnTrigger(const FInputActionInstance& InputActionInstance);
+	void OnHold(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 
 	bool CanCancelSkill(const FUfSkillData* SkillData) const;
 	bool CanPlaySkill(const FUfSkillData* SkillData) const;
+	void InputSkill(const FUfSkillData* SkillData);
 	void PlaySkill(const FUfSkillData* SkillData);
 	void PlayAction(UAnimMontage* InMontage, const FUfSkillData* Skill /* 임시 */);
 	void TickAction();

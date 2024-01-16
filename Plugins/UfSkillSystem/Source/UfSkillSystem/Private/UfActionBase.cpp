@@ -4,6 +4,7 @@
 #include "UfActionBase.h"
 
 #include "UfLogger.h"
+#include "UfSkillComponent.h"
 #include "UfSkillData.h"
 #include "GameFramework/Character.h"
 
@@ -26,8 +27,8 @@ FString UUfActionBase::ToString() const
 
 void UUfActionBase::OnBegin()
 {
-	UF_LOG(TEXT("BEGIN"));
-	if(Owner && Montage)
+	//UF_LOG(TEXT("BEGIN"));
+	if(Owner && Montage && Component)
 	{
 		Owner->PlayAnimMontage(Montage);
 	}
@@ -54,7 +55,7 @@ void UUfActionBase::OnEnd()
 	// 1. 다른거 시작되기 직전
 	// 2. 자동으로 끝날때
 	
-	UF_LOG(TEXT("END"));
+	//UF_LOG(TEXT("END"));
 	// if(Owner && Montage)
 	// {
 	// 	if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
