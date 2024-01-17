@@ -2,6 +2,7 @@
 
 #include "UnrealFoundationGameMode.h"
 #include "UfHud.h"
+#include "UfPlayerController.h"
 #include "UnrealFoundationCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -11,9 +12,11 @@ AUnrealFoundationGameMode::AUnrealFoundationGameMode()
 	HUDClass = AUfHud::StaticClass();
 #endif
 
+	PlayerControllerClass = AUfPlayerController::StaticClass();
+
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
+	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}

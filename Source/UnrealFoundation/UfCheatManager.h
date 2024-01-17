@@ -14,4 +14,6 @@ class UNREALFOUNDATION_API UUfCheatManager : public UCheatManager
 {
 	GENERATED_BODY()
 	
+	UFUNCTION(Exec)
+	void MoveSpeed( int32 ChangeType );
 };
