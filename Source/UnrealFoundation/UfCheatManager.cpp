@@ -4,7 +4,7 @@
 #include "UfCheatManager.h"
 #include "UfLogger.h"
 
-void UUfCheatManager::MoveSpeed(int32 ChangeType)
+void UUfCheatManager::ChangeSpeed(int32 ChangeType)
 {
 	switch(ChangeType)
 	{
