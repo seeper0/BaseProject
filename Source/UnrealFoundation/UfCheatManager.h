@@ -16,4 +16,7 @@ class UNREALFOUNDATION_API UUfCheatManager : public UCheatManager
 	
 	UFUNCTION(Exec)
 	void ChangeSpeed( int32 ChangeType );
+
+	UFUNCTION(Exec)
+	void TogglePlayerInfo();
 };

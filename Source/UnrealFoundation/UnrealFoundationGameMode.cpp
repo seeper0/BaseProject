@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "UnrealFoundationGameMode.h"
-#include "UfHud.h"
+#include "UfHUD.h"
 #include "UfPlayerController.h"
 #include "UnrealFoundationCharacter.h"
 #include "UObject/ConstructorHelpers.h"
@@ -9,7 +9,7 @@
 AUnrealFoundationGameMode::AUnrealFoundationGameMode()
 {
 #if !UE_BUILD_SHIPPING
-	HUDClass = AUfHud::StaticClass();
+	HUDClass = AUfHUD::StaticClass();
 #endif
 
 	PlayerControllerClass = AUfPlayerController::StaticClass();
