@@ -42,6 +42,7 @@ public:
 
 	void SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent);
 	void SetSkillState(EUfSkillState InSkillState);
+	EUfSkillState GetSkillState() const { return SkillState; }
 
 private:
 	EUfSkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
