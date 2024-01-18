@@ -2,18 +2,60 @@
 
 #include "UfSkillSystemEditor.h"
 
+#include "UfLogger.h"
+#include "Editor/Persona/Public/PersonaModule.h"
+#include "Editor/Persona/Public/IPersonaPreviewScene.h"
+#include "Editor/Persona/Private/AnimationEditorPreviewScene.h"
+#include "UfNotifyDetails.h"
+
 #define LOCTEXT_NAMESPACE "FUfSkillSystemEditorModule"
 
 void FUfSkillSystemEditorModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	if ( FModuleManager::Get().IsModuleLoaded( "Persona" ) )
+	{
+		FPersonaModule& PersonaModule = FModuleManager::GetModuleChecked< FPersonaModule >( "Persona" );
+		PreviewSceneCreatedHandle = PersonaModule.OnPreviewSceneCreated().AddRaw( this, &FUfSkillSystemEditorModule::OnPreviewSceneCreated );
+	}
+
+	{
+		const FName PropertyTypeName = TEXT("AnimNotifyEvent");
+		static FName propertyEditor( "PropertyEditor" );
+		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked< FPropertyEditorModule >( propertyEditor );
+		PropertyModule.RegisterCustomPropertyTypeLayout( PropertyTypeName, FOnGetPropertyTypeCustomizationInstance::CreateRaw( this, &FUfSkillSystemEditorModule::OnAnimNotifyEvent ) );
+	}
 }
 
 void FUfSkillSystemEditorModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	if ( FModuleManager::Get().IsModuleLoaded( "Persona" ) )
+	{
+		FPersonaModule& PersonaModule = FModuleManager::GetModuleChecked< FPersonaModule >( "Persona" );
+		if ( PreviewSceneCreatedHandle.IsValid() )
+		{
+			PersonaModule.OnPreviewSceneCreated().Remove( PreviewSceneCreatedHandle );
+			PreviewSceneCreatedHandle.Reset();
+			PreviewSceneWorld = nullptr;
+		}
+	}
 }
+
+#pragma region OnPreviewSceneCreated
+void FUfSkillSystemEditorModule::OnPreviewSceneCreated(const TSharedRef<IPersonaPreviewScene>& Shared)
+{
+	const TSharedRef< FAnimationEditorPreviewScene >& AnimationEditorPreviewScene = StaticCastSharedRef<FAnimationEditorPreviewScene>( Shared );
+	PreviewSceneWorld = AnimationEditorPreviewScene->GetWorld();
+}
+#pragma endregion
+
+#pragma region OnAnimNotifyEvent
+
+TSharedRef<IPropertyTypeCustomization> FUfSkillSystemEditorModule::OnAnimNotifyEvent()
+{
+	TSharedRef< IPropertyTypeCustomization > PropertyTypeCustomization = MakeShareable( new FUfNotifyDetails );
+	return PropertyTypeCustomization;
+}
+#pragma endregion
 
 #undef LOCTEXT_NAMESPACE
 	

@@ -36,7 +36,9 @@ public class UfSkillSystemEditor : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				// ... add private dependencies that you statically link with here ...	
+				"UnrealEd",
+				// ... add private dependencies that you statically link with here ...
+				"Persona",
 				"UfCommon",
 				"UfSkillSystem",
 			}
@@ -49,5 +51,7 @@ public class UfSkillSystemEditor : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
+		
+		//PrivateIncludePaths.Add( ModuleDirectory );
 	}
 }

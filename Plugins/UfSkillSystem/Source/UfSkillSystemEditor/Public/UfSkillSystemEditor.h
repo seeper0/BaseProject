@@ -8,8 +8,21 @@
 class FUfSkillSystemEditorModule : public IModuleInterface
 {
 public:
-
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
+
+private:
+#pragma region OnPreviewSceneCreated
+	void OnPreviewSceneCreated(const TSharedRef<class IPersonaPreviewScene>& Shared);
+	UPROPERTY()
+	FDelegateHandle PreviewSceneCreatedHandle;
+	UPROPERTY()
+	UWorld* PreviewSceneWorld = nullptr;
+#pragma endregion
+	
+#pragma region OnAnimNotifyEvent
+	TSharedRef< IPropertyTypeCustomization > OnAnimNotifyEvent();
+	uint32 AnimNotifyId = 0;
+#pragma endregion
 };
