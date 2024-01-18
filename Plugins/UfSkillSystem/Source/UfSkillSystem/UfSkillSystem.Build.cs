@@ -39,6 +39,7 @@ public class UfSkillSystem : ModuleRules
 				// ... add private dependencies that you statically link with here ...	
 				"InputCore",
 				"EnhancedInput",
+				"UMG",
 				"Json",
 				"JsonUtilities",
 				"UfCommon",

@@ -8,9 +8,7 @@
 
 AUnrealFoundationGameMode::AUnrealFoundationGameMode()
 {
-#if !UE_BUILD_SHIPPING
 	HUDClass = AUfHUD::StaticClass();
-#endif
 
 	PlayerControllerClass = AUfPlayerController::StaticClass();
 
@@ -19,5 +17,11 @@ AUnrealFoundationGameMode::AUnrealFoundationGameMode()
 	if (PlayerPawnBPClass.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UUfHUDWidget> HudWidgetBPClass(TEXT("/Game/ThirdPerson/Blueprints/WBP_HUD"));
+	if (HudWidgetBPClass.Class != nullptr)
+	{
+		HudWidgetClass = HudWidgetBPClass.Class;
 	}
 }

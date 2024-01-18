@@ -14,7 +14,8 @@ UCLASS()
 class UNREALFOUNDATION_API AUfHUD : public AHUD, public IUfHudDebuggable
 {
 	GENERATED_BODY()
-	
+
+	virtual void BeginPlay();
 	virtual void DrawHUD() override;
 
 #pragma region PlayerInfo

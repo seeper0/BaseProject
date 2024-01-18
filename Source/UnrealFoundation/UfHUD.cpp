@@ -3,9 +3,25 @@
 
 #include "UfHUD.h"
 #include "EngineUtils.h"
+#include "Blueprint/UserWidget.h"
 #include "UfUtil.h"
 #include "UfSkillComponent.h"
+#include "UfHUDWidget.h"
 #include "UnrealFoundationCharacter.h"
+#include "UnrealFoundationGameMode.h"
+
+void AUfHUD::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if(AUnrealFoundationGameMode* Mode = Cast<AUnrealFoundationGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		if ( const TObjectPtr< UUfHUDWidget > Widget = CreateWidget< UUfHUDWidget >( GetWorld(), Mode->HudWidgetClass ) )
+		{
+			Widget->AddToViewport();
+		}
+	}
+}
 
 void AUfHUD::DrawHUD()
 {
@@ -38,4 +54,5 @@ void AUfHUD::DrawPlayerInfo()
 	}
 }
 #pragma endregion
+
 
