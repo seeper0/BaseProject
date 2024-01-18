@@ -14,4 +14,6 @@ class UFSKILLSYSTEM_API UUfHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+	UPROPERTY(meta = (BindWidget))
+	class UUfCrossHairWidget* CrossHair = nullptr;
 };

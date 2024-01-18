@@ -13,5 +13,5 @@ UCLASS()
 class UFSKILLSYSTEM_API UUfCrossHairWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 };
