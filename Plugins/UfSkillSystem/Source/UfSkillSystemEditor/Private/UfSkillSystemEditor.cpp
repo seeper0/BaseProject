@@ -18,16 +18,27 @@ void FUfSkillSystemEditorModule::StartupModule()
 		PreviewSceneCreatedHandle = PersonaModule.OnPreviewSceneCreated().AddRaw( this, &FUfSkillSystemEditorModule::OnPreviewSceneCreated );
 	}
 
+	const FName PropertyEditor(TEXT("PropertyEditor"));
+	if ( FModuleManager::Get().IsModuleLoaded( PropertyEditor ) )
 	{
-		const FName PropertyTypeName = TEXT("AnimNotifyEvent");
-		static FName propertyEditor( "PropertyEditor" );
-		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked< FPropertyEditorModule >( propertyEditor );
+		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked< FPropertyEditorModule >( PropertyEditor );
+
+		const FName PropertyTypeName(TEXT("AnimNotifyEvent"));
 		PropertyModule.RegisterCustomPropertyTypeLayout( PropertyTypeName, FOnGetPropertyTypeCustomizationInstance::CreateRaw( this, &FUfSkillSystemEditorModule::OnAnimNotifyEvent ) );
 	}
 }
 
 void FUfSkillSystemEditorModule::ShutdownModule()
 {
+	const FName PropertyEditor(TEXT("PropertyEditor"));
+	if ( FModuleManager::Get().IsModuleLoaded( PropertyEditor ) )
+	{
+		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked< FPropertyEditorModule >( PropertyEditor );
+
+		const FName PropertyTypeName(TEXT("AnimNotifyEvent"));
+		PropertyModule.UnregisterCustomPropertyTypeLayout(PropertyTypeName);
+	}
+
 	if ( FModuleManager::Get().IsModuleLoaded( "Persona" ) )
 	{
 		FPersonaModule& PersonaModule = FModuleManager::GetModuleChecked< FPersonaModule >( "Persona" );
