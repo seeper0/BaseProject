@@ -63,10 +63,6 @@ void UUfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* Enhan
 		case EUfSkillKey::Look: // Looking
 			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UUfSkillComponent::Look);
 			break;
-		case EUfSkillKey::Jump: // Jumping
-			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, OwnerChar, &ACharacter::Jump);
-			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Completed, OwnerChar, &ACharacter::StopJumping);
-			break;
 		default:
 			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UUfSkillComponent::OnPress);
 			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Ongoing, this, &UUfSkillComponent::OnHold);
@@ -178,7 +174,7 @@ const FUfSkillData* UUfSkillComponent::GetDesiredSkill(const TArray<FName>& RowN
 
 void UUfSkillComponent::Move(const FInputActionValue& Value)
 {
-	if(SkillState != EUfSkillState::None)
+	if(CurrentAction && !CurrentAction->CanMove())
 		return;
 
 	// input is a Vector2D
@@ -233,10 +229,13 @@ void UUfSkillComponent::OnHold(const FInputActionInstance& InputActionInstance)
 	if(SkillKey == EUfSkillKey::None)
 		return;
 
-	// 키를 눌렀을때 다음에 뭐쓸지 여기서 결정하자. 결정을 바꾸면 로직이 복잡해진다.
-	const TArray<FName> FetchedSkills = FetchSkillsByInput(SkillKey, ETriggerEvent::Ongoing);
-	const FUfSkillData* SkillData = GetDesiredSkill(FetchedSkills);
-	InputSkill(SkillData);
+	if(CurrentAction->GetSkillTable()->InputType != EUfInputType::Charge) // 차지 스킬일때는 딱히 아무것도 안해도 됨
+	{
+		// 키를 눌렀을때 다음에 뭐쓸지 여기서 결정하자. 결정을 바꾸면 로직이 복잡해진다.
+		const TArray<FName> FetchedSkills = FetchSkillsByInput(SkillKey, ETriggerEvent::Ongoing);
+		const FUfSkillData* SkillData = GetDesiredSkill(FetchedSkills);
+		InputSkill(SkillData);
+	}
 }
 
 void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstance)
@@ -244,6 +243,11 @@ void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstanc
 	const EUfSkillKey SkillKey = GetSkillSlot(InputActionInstance);
 	if(SkillKey == EUfSkillKey::None)
 		return;
+
+	if(CurrentAction)
+	{
+		CurrentAction->OnButtonReleased();
+	}
 }
 
 bool UUfSkillComponent::CanCancelSkill(const FUfSkillData* SkillData) const

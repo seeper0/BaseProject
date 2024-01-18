@@ -6,6 +6,7 @@
 #include "UfLogger.h"
 #include "UfSkillComponent.h"
 #include "UfSkillData.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 void UUfActionBase::InitAction(ACharacter* InOwner, UUfSkillComponent* InComponent, UAnimMontage* InMontage, const FUfSkillData* InSkillTable)
 {
@@ -30,6 +31,10 @@ void UUfActionBase::OnBegin()
 	if(Owner && Montage && Component)
 	{
 		Owner->PlayAnimMontage(Montage);
+	}
+	else if(SkillTable && SkillTable->Key == EUfSkillKey::Jump)
+	{
+		Owner->Jump();
 	}
 }
 
@@ -64,6 +69,14 @@ void UUfActionBase::OnEnd()
 	// }
 }
 
+void UUfActionBase::OnButtonReleased()
+{
+	if(SkillTable && SkillTable->Key == EUfSkillKey::Jump)
+	{
+		Owner->StopJumping();
+	}
+}
+
 bool UUfActionBase::IsEnd() const
 {
 	//return Montage == nullptr;
@@ -74,7 +87,16 @@ bool UUfActionBase::IsEnd() const
 		{
 			return !Owner->GetMesh()->GetAnimInstance()->Montage_IsPlaying(Montage);
 		}
-	}	
+	}
+	else if(Owner && SkillTable && SkillTable->Key == EUfSkillKey::Jump)
+	{
+		return !Owner->GetMovementComponent()->IsFalling();
+	}
 
 	return false;
+}
+
+bool UUfActionBase::CanMove() const
+{
+	return (Owner && SkillTable && SkillTable->MobileType == EUfMobileType::Input);
 }

@@ -21,8 +21,10 @@ public:
 	virtual void OnTick();
 	virtual void OnMontageEnd();
 	virtual void OnEnd();
+	virtual void OnButtonReleased();
 
 	bool IsEnd() const;
+	bool CanMove() const;
 	const struct FUfSkillData* GetSkillTable() const { return SkillTable; }
 
 private:
