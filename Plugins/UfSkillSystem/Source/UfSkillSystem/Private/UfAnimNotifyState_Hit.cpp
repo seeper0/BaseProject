@@ -10,7 +10,6 @@ UUfAnimNotifyState_Hit::UUfAnimNotifyState_Hit(const FObjectInitializer& ObjectI
 {
 #if WITH_EDITORONLY_DATA
 	NotifyColor = HitColor;
-	bShouldFireInEditor = false;
 #endif // WITH_EDITORONLY_DATA
 }
 

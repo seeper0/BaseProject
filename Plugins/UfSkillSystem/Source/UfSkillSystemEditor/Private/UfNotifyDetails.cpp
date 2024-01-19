@@ -34,7 +34,6 @@ void FUfNotifyDetails::CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandl
 		{
 			if(UUfAnimNotifyState_Hit* HitAnimNotifyState = Cast< UUfAnimNotifyState_Hit >( EditorNotifyObject->Event.NotifyStateClass ))
 			{
-				World = HitAnimNotifyState->GetWorld();
 				HitShape = HitAnimNotifyState->GetHitShape();
 				TickHandle = FTSTicker::GetCoreTicker().AddTicker( FTickerDelegate::CreateRaw( this, &FUfNotifyDetails::Tick ) );				
 			}
@@ -53,4 +52,9 @@ bool FUfNotifyDetails::Tick(float DeltaSeconds)
 		UUfAnimNotifyState_Hit::DrawHitShape(World, HitShape);
 	}
 	return true;
+}
+
+void FUfNotifyDetails::SetPreviewWorld(UWorld* InWorld)
+{
+	World = InWorld;
 }

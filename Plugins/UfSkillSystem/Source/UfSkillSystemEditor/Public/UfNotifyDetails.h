@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UfAnimNotifyState_Hit.h"
+#include "UfSkillSystemEditor.h"
 #include "UObject/Interface.h"
 
 class FUfNotifyDetails : public IPropertyTypeCustomization
@@ -14,6 +15,8 @@ public:
 	virtual void CustomizeChildren( TSharedRef<IPropertyHandle> PropertyHandle, IDetailChildrenBuilder& ChildBuilder, IPropertyTypeCustomizationUtils& CustomizationUtils ) override;
 
 	bool Tick(float DeltaSeconds);
+	void SetPreviewWorld(UWorld* InWorld);
+
 private:
 	FTSTicker::FDelegateHandle TickHandle;
 	UPROPERTY()

@@ -63,7 +63,9 @@ void FUfSkillSystemEditorModule::OnPreviewSceneCreated(const TSharedRef<IPersona
 
 TSharedRef<IPropertyTypeCustomization> FUfSkillSystemEditorModule::OnAnimNotifyEvent()
 {
-	TSharedRef< IPropertyTypeCustomization > PropertyTypeCustomization = MakeShareable( new FUfNotifyDetails );
+	TSharedRef< FUfNotifyDetails > NotifyDetails = MakeShareable( new FUfNotifyDetails );
+	TSharedRef< IPropertyTypeCustomization > PropertyTypeCustomization = NotifyDetails;
+	NotifyDetails->SetPreviewWorld(PreviewSceneWorld);
 	return PropertyTypeCustomization;
 }
 #pragma endregion

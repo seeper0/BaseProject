@@ -23,7 +23,7 @@
 		{
 			"Name": "UfSkillSystemEditor",
 			"Type": "Editor",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PostEngineInit"
 		}
 	],
 	"Plugins": [
