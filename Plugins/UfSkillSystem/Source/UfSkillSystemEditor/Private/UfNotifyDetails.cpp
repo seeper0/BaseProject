@@ -2,13 +2,17 @@
 
 
 #include "UfNotifyDetails.h"
-
-#include "UfLogger.h"
 #include "Animation/EditorNotifyObject.h"
+#include "UfLogger.h"
+#include "UfAnimNotifyState_Hit.h"
 
 FUfNotifyDetails::~FUfNotifyDetails()
 {
 	// Deselect
+	if (TickHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker( TickHandle );
+	}
 }
 
 void FUfNotifyDetails::CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandle, FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& CustomizationUtils)
@@ -28,11 +32,25 @@ void FUfNotifyDetails::CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandl
 		UEditorNotifyObject* EditorNotifyObject = Cast< UEditorNotifyObject >( NotifyPtr );
 		if( EditorNotifyObject != nullptr )
 		{
-			//UUfAnimNotifyState_Hit* HitAnimNotifyState = Cast< UUfAnimNotifyState_Hit >( EditorNotifyObject->Event.NotifyStateClass );
+			if(UUfAnimNotifyState_Hit* HitAnimNotifyState = Cast< UUfAnimNotifyState_Hit >( EditorNotifyObject->Event.NotifyStateClass ))
+			{
+				World = HitAnimNotifyState->GetWorld();
+				HitShape = HitAnimNotifyState->GetHitShape();
+				TickHandle = FTSTicker::GetCoreTicker().AddTicker( FTickerDelegate::CreateRaw( this, &FUfNotifyDetails::Tick ) );				
+			}
 		}
 	}
 }
 
 void FUfNotifyDetails::CustomizeChildren(TSharedRef<IPropertyHandle> PropertyHandle, IDetailChildrenBuilder& ChildBuilder, IPropertyTypeCustomizationUtils& CustomizationUtils)
 {
+}
+
+bool FUfNotifyDetails::Tick(float DeltaSeconds)
+{
+	if(World)
+	{
+		UUfAnimNotifyState_Hit::DrawHitShape(World, HitShape);
+	}
+	return true;
 }

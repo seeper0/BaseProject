@@ -9,7 +9,7 @@
 #include "UfSkillComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Uf), meta=(BlueprintSpawnableComponent) )
 class UFSKILLSYSTEM_API UUfSkillComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -97,4 +97,16 @@ private:
 
 	UPROPERTY()
 	FName ReservedRowName;
+
+#pragma region
+public:
+	bool HasActorInHitList(const ACharacter* InVictim) const;
+	void PushHitActorList(ACharacter* InVictim);
+	void ClearHitActorList();
+
+private:
+	UPROPERTY()
+	TSet<ACharacter*> HitActorList;
+
+#pragma endregion
 };

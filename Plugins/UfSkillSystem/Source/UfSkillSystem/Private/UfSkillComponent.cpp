@@ -358,4 +358,19 @@ void UUfSkillComponent::TickInput()
 {
 }
 
+bool UUfSkillComponent::HasActorInHitList(const ACharacter* InVictim) const
+{
+	return HitActorList.Contains(InVictim);
+}
+
+void UUfSkillComponent::PushHitActorList(ACharacter* InVictim)
+{
+	HitActorList.Add(InVictim);
+}
+
+void UUfSkillComponent::ClearHitActorList()
+{
+	HitActorList.Empty();
+}
+
 
