@@ -58,18 +58,18 @@ private:
 	void OnHold(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 
-	bool CanCancelSkill(const FUfSkillData* SkillData) const;
-	bool CanPlaySkill(const FUfSkillData* SkillData) const;
-	void InputSkill(const FUfSkillData* SkillData);
-	void PlaySkill(const FUfSkillData* SkillData);
-	void PlayAction(UAnimMontage* InMontage, const FUfSkillData* Skill /* 임시 */);
+	bool CanCancelSkill(const FUfSkillData* InSkillData) const;
+	bool CanPlaySkill(const FUfSkillData* InSkillData) const;
+	void InputSkill(const FUfSkillData* InSkillData);
+	void PlaySkill(const FUfSkillData* InSkillData);
+	void PlayAction(UAnimMontage* InMontage, const FUfSkillData* InSkillData);
 	void TickAction();
 	void ClearAction();
 
 	UFUNCTION()
 	void OnMontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
-	void ReserveSkill(const FUfSkillData* SkillData);
+	void ReserveSkill(const FUfSkillData* InSkillData);
 	void TickInput();
 	
 	/** Skill Table */

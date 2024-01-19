@@ -6,22 +6,42 @@
 #include "UfLogger.h"
 #include "UfSkillComponent.h"
 #include "UfSkillData.h"
-#include "GameFramework/PawnMovementComponent.h"
+#include "UfActionJump.h"
 
-void UUfActionBase::InitAction(ACharacter* InOwner, UUfSkillComponent* InComponent, UAnimMontage* InMontage, const FUfSkillData* InSkillTable)
+UUfActionBase* UUfActionBase::NewSkill(ACharacter* InOwner, UUfSkillComponent* InComponent, const FUfSkillData* InSkillData)
+{
+	UUfActionSkill* ActionSkill = nullptr;
+	switch (InSkillData->Key)
+	{
+	case EUfSkillKey::Jump:
+		ActionSkill = NewObject<UUfActionJump>();
+		break;
+	default:
+		ActionSkill = NewObject<UUfActionSkill>();
+		break;
+	}
+
+	if(ActionSkill)
+	{
+		ActionSkill->InitSkill(InOwner, InComponent, InSkillData);
+	}
+	return ActionSkill;
+}
+
+void UUfActionBase::InitAction(ACharacter* InOwner, UUfSkillComponent* InComponent, UAnimMontage* InMontage)
 {
 	Owner = InOwner;
 	Component = InComponent;
 	Montage = InMontage;
-	SkillTable = InSkillTable;
+}
+
+FName UUfActionBase::GetActionName() const
+{
+	return NAME_None;
 }
 
 FString UUfActionBase::ToString() const
 {
-	if(GetSkillTable())
-	{
-		return GetSkillTable()->RowName.ToString();
-	}
 	return TEXT("Not Skill");
 }
 
@@ -31,10 +51,6 @@ void UUfActionBase::OnBegin()
 	if(Owner && Montage && Component)
 	{
 		Owner->PlayAnimMontage(Montage);
-	}
-	else if(SkillTable && SkillTable->Key == EUfSkillKey::Jump)
-	{
-		Owner->Jump();
 	}
 }
 
@@ -69,18 +85,12 @@ void UUfActionBase::OnEnd()
 	// }
 }
 
-void UUfActionBase::OnButtonReleased()
+void UUfActionBase::OnButtonReleased(const EUfSkillKey InSkillKey)
 {
-	if(SkillTable && SkillTable->Key == EUfSkillKey::Jump)
-	{
-		Owner->StopJumping();
-	}
 }
 
 bool UUfActionBase::IsEnd() const
 {
-	//return Montage == nullptr;
-	
 	if(Owner && Montage)
 	{
 		if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
@@ -88,15 +98,15 @@ bool UUfActionBase::IsEnd() const
 			return !Owner->GetMesh()->GetAnimInstance()->Montage_IsPlaying(Montage);
 		}
 	}
-	else if(Owner && SkillTable && SkillTable->Key == EUfSkillKey::Jump)
-	{
-		return !Owner->GetMovementComponent()->IsFalling();
-	}
-
 	return false;
 }
 
-bool UUfActionBase::CanMove() const
+bool UUfActionBase::CanMoveDuring() const
 {
-	return (Owner && SkillTable && SkillTable->MobileType == EUfMobileType::Input);
+	return false;
+}
+
+bool UUfActionBase::CanInputDuring() const
+{
+	return false;
 }

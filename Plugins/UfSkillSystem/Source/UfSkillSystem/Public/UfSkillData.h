@@ -36,7 +36,7 @@ public:
 	FName RowName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EUfSkillKey Key;
+	EUfSkillKey Key; // InputKey로 바꿔야한다.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EUfInputType InputType;

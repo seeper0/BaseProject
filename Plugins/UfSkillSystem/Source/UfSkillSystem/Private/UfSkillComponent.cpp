@@ -147,7 +147,7 @@ const FUfSkillData* UUfSkillComponent::GetDesiredSkill(const TArray<FName>& RowN
 	// 체인 조건이 있다면 먼저 찾는다. (일단 현재 실행되는 스킬이 있어야함)
 	if(CurrentAction)
 	{
-		const FName CurrentName = CurrentAction->GetSkillTable()->RowName;
+		const FName CurrentName = CurrentAction->GetActionName();
 		for (const FName RowName : RowNames)
 		{
 			const FUfSkillData* RowData = SkillTable->FindRow<FUfSkillData>(RowName, UF_FUNCTION);
@@ -174,7 +174,7 @@ const FUfSkillData* UUfSkillComponent::GetDesiredSkill(const TArray<FName>& RowN
 
 void UUfSkillComponent::Move(const FInputActionValue& Value)
 {
-	if(CurrentAction && !CurrentAction->CanMove())
+	if(CurrentAction && !CurrentAction->CanMoveDuring())
 		return;
 
 	// input is a Vector2D
@@ -229,7 +229,7 @@ void UUfSkillComponent::OnHold(const FInputActionInstance& InputActionInstance)
 	if(SkillKey == EUfSkillKey::None)
 		return;
 
-	if(CurrentAction->GetSkillTable()->InputType != EUfInputType::Charge) // 차지 스킬일때는 딱히 아무것도 안해도 됨
+	if(CurrentAction->CanInputDuring()) // 차지 스킬일때는 딱히 아무것도 안해도 됨
 	{
 		// 키를 눌렀을때 다음에 뭐쓸지 여기서 결정하자. 결정을 바꾸면 로직이 복잡해진다.
 		const TArray<FName> FetchedSkills = FetchSkillsByInput(SkillKey, ETriggerEvent::Ongoing);
@@ -246,19 +246,19 @@ void UUfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstanc
 
 	if(CurrentAction)
 	{
-		CurrentAction->OnButtonReleased();
+		CurrentAction->OnButtonReleased(SkillKey);
 	}
 }
 
-bool UUfSkillComponent::CanCancelSkill(const FUfSkillData* SkillData) const
+bool UUfSkillComponent::CanCancelSkill(const FUfSkillData* InSkillData) const
 {
 	// 특정 조건일때만 Cancel 되어야한다.
 	return true;
 }
 
-bool UUfSkillComponent::CanPlaySkill(const FUfSkillData* SkillData) const
+bool UUfSkillComponent::CanPlaySkill(const FUfSkillData* InSkillData) const
 {
-	if(SkillData == nullptr)
+	if(InSkillData == nullptr)
 		return false;
 
 	if(OwnerChar && OwnerChar->GetMovementComponent()->IsFalling())
@@ -272,46 +272,45 @@ bool UUfSkillComponent::CanPlaySkill(const FUfSkillData* SkillData) const
 	return true;
 }
 
-void UUfSkillComponent::InputSkill(const FUfSkillData* SkillData)
+void UUfSkillComponent::InputSkill(const FUfSkillData* InSkillData)
 {
 	switch (SkillState)
 	{
 	case EUfSkillState::None:
 	case EUfSkillState::End:
 	case EUfSkillState::Over:
-		PlaySkill(SkillData);
+		PlaySkill(InSkillData);
 		break;
 	case EUfSkillState::PreInput:
-		ReserveSkill(SkillData);
+		ReserveSkill(InSkillData);
 		break;
 	case EUfSkillState::CanCancel:
-		if(CanCancelSkill(SkillData))
+		if(CanCancelSkill(InSkillData))
 		{
-			PlaySkill(SkillData);
+			PlaySkill(InSkillData);
 		}
 		break;
 	}
 }
 
-void UUfSkillComponent::PlaySkill(const FUfSkillData* SkillData)
+void UUfSkillComponent::PlaySkill(const FUfSkillData* InSkillData)
 {
-	if(SkillData == nullptr)
+	if(InSkillData == nullptr)
 		return;
-	
-	if(CanPlaySkill(SkillData))
+
+	if(CanPlaySkill(InSkillData))
 	{
-		PlayAction(SkillData->Montage, SkillData);
+		PlayAction(InSkillData->Montage, InSkillData);
 	}
 }
 
-void UUfSkillComponent::PlayAction(UAnimMontage* InMontage, const FUfSkillData* Skill)
+void UUfSkillComponent::PlayAction(UAnimMontage* InMontage, const FUfSkillData* InSkillData)
 {
 	// 평타, 스킬, 점프, 맞기등 몽타주 관련된건 여기서 해야한다.
 	ClearAction();
-	
+
 	SetSkillState(EUfSkillState::PreDelay);
-	CurrentAction = NewObject<UUfActionBase>();
-	CurrentAction->InitAction(OwnerChar, this, InMontage, Skill);
+	CurrentAction = UUfActionBase::NewSkill(OwnerChar, this, InSkillData);
 	CurrentAction->OnBegin();
 }
 
@@ -349,10 +348,10 @@ void UUfSkillComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
 	// }
 }
 
-void UUfSkillComponent::ReserveSkill(const FUfSkillData* SkillData)
+void UUfSkillComponent::ReserveSkill(const FUfSkillData* InSkillData)
 {
-	if(ReservedRowName == NAME_None && SkillData)
-		ReservedRowName = SkillData->RowName;
+	if(ReservedRowName == NAME_None && InSkillData)
+		ReservedRowName = InSkillData->RowName;
 }
 
 void UUfSkillComponent::TickInput()

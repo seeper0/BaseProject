@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
+#include "UfSkill.h"
 #include "UfActionBase.generated.h"
 
 /**
@@ -14,20 +14,24 @@ class UFSKILLSYSTEM_API UUfActionBase : public UObject
 {
 	GENERATED_BODY()
 public:
-	virtual void InitAction(ACharacter* InOwner, class UUfSkillComponent* InComponent, UAnimMontage* InMontage, const struct FUfSkillData* InSkillTable /* 임시 */);
+	static UUfActionBase* NewSkill(ACharacter* InOwner, class UUfSkillComponent* InComponent, const struct FUfSkillData* InSkillData);
+protected:
+	void InitAction(ACharacter* InOwner, class UUfSkillComponent* InComponent, UAnimMontage* InMontage);
+public:
+	virtual FName GetActionName() const;
 	virtual FString ToString() const;
 
 	virtual void OnBegin();
 	virtual void OnTick();
 	virtual void OnMontageEnd();
 	virtual void OnEnd();
-	virtual void OnButtonReleased();
+	virtual void OnButtonReleased(const EUfSkillKey InSkillKey);
 
-	bool IsEnd() const;
-	bool CanMove() const;
-	const struct FUfSkillData* GetSkillTable() const { return SkillTable; }
+	virtual bool IsEnd() const;
+	virtual bool CanMoveDuring() const;
+	virtual bool CanInputDuring() const;
 
-private:
+protected:
 	UPROPERTY()
 	ACharacter* Owner = nullptr;
 
@@ -36,6 +40,4 @@ private:
 
 	UPROPERTY();
 	UAnimMontage* Montage = nullptr;
-	
-	const struct FUfSkillData* SkillTable = nullptr;
 };
