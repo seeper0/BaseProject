@@ -11,7 +11,7 @@
 UUfActionBase* UUfActionBase::NewSkill(ACharacter* InOwner, UUfSkillComponent* InComponent, const FUfSkillData* InSkillData)
 {
 	UUfActionSkill* ActionSkill = nullptr;
-	switch (InSkillData->Key)
+	switch (InSkillData->InputKey)
 	{
 	case EUfSkillKey::Jump:
 		ActionSkill = NewObject<UUfActionJump>();

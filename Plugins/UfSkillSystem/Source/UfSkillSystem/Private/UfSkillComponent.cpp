@@ -126,7 +126,7 @@ TArray<FName> UUfSkillComponent::FetchSkillsByInput(const EUfSkillKey SkillKey, 
 				if(RowData == nullptr)
 					continue;
 
-				if(RowData->Key != SkillKey) // 입력키가 맞을 경우만 체크
+				if(RowData->InputKey != SkillKey) // 입력키가 맞을 경우만 체크
 					continue;
 
 				if(KeyEvent == ETriggerEvent::Started || // 첫입력일 경우
@@ -356,11 +356,6 @@ void UUfSkillComponent::ReserveSkill(const FUfSkillData* InSkillData)
 
 void UUfSkillComponent::TickInput()
 {
-	// FUfInput Input;
-	// while(InputQueue.Dequeue(Input))
-	// {
-	// 	ProcessInputKey(Input);
-	// }
 }
 
 

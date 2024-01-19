@@ -47,8 +47,10 @@ enum class EUfMobileType : uint8
 	Curve,
 };
 
-struct FUfInput
+UENUM(BlueprintType)
+enum class EUfSkillOrientation : uint8
 {
-	EUfSkillKey SkillKey;
-	ETriggerEvent Event;
+	None,				// 추적 무시하고 즉시 사용한다.
+	AimOriented,		// Aim이 가리키는곳 또는 LockOn 된곳을 추적한다.
+	ForwardOriented,	// 캐릭터의 전방에서 추척이 된다.
 };

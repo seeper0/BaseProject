@@ -36,13 +36,16 @@ public:
 	FName RowName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EUfSkillKey Key; // InputKey로 바꿔야한다.
+	EUfSkillKey InputKey;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EUfInputType InputType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EUfMobileType MobileType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EUfSkillOrientation Orientation;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAnimMontage* Montage = nullptr;

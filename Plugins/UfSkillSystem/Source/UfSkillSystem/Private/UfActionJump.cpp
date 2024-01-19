@@ -8,7 +8,7 @@
 
 void UUfActionJump::OnBegin()
 {
-	if(SkillTable && SkillTable->Key == EUfSkillKey::Jump)
+	if(SkillTable && SkillTable->InputKey == EUfSkillKey::Jump)
 	{
 		Owner->Jump();
 	}
@@ -21,7 +21,7 @@ void UUfActionJump::OnEnd()
 
 void UUfActionJump::OnButtonReleased(const EUfSkillKey InSkillKey)
 {
-	if(SkillTable && SkillTable->Key == InSkillKey)
+	if(SkillTable && SkillTable->InputKey == InSkillKey)
 	{
 		Owner->StopJumping();
 	}
