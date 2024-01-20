@@ -15,8 +15,8 @@ public class UnrealFoundation : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"UMG",
-			"UfCommon",
-			"UfSkillSystem",
+			"CfCommon",
+			"CfSkillSystem",
 		});
 	}
 }

@@ -2,7 +2,7 @@
 
 
 #include "UfCheatManager.h"
-#include "..\..\Plugins\UfCommon\Source\UfCommon\Public\CfLogger.h"
+#include "CfLogger.h"
 #include "UfHUD.h"
 
 void UUfCheatManager::ChangeSpeed(int32 ChangeType)

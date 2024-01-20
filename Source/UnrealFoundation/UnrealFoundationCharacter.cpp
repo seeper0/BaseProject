@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "UnrealFoundationCharacter.h"
+
+#include "CfLogger.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -11,8 +13,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "CfSkillComponent.h"
-
-DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // AUnrealFoundationCharacter
@@ -84,6 +84,6 @@ void AUnrealFoundationCharacter::SetupPlayerInputComponent(UInputComponent* Play
 	}
 	else
 	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		CF_LOG(TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 }
