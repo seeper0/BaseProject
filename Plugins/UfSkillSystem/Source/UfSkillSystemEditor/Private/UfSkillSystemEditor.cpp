@@ -10,6 +10,8 @@
 
 #define LOCTEXT_NAMESPACE "FUfSkillSystemEditorModule"
 
+DECLARE_DELEGATE_OneParam(FOnGetPreviewSceneDelegate, FAnimationEditorPreviewScene*);
+
 void FUfSkillSystemEditorModule::StartupModule()
 {
 	if ( FModuleManager::Get().IsModuleLoaded( "Persona" ) )

@@ -32,9 +32,9 @@ void FUfNotifyDetails::CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandl
 		UEditorNotifyObject* EditorNotifyObject = Cast< UEditorNotifyObject >( NotifyPtr );
 		if( EditorNotifyObject != nullptr )
 		{
-			if(UUfAnimNotifyState_Hit* HitAnimNotifyState = Cast< UUfAnimNotifyState_Hit >( EditorNotifyObject->Event.NotifyStateClass ))
+			HitAnimNotifyState = Cast< UUfAnimNotifyState_Hit >( EditorNotifyObject->Event.NotifyStateClass );
+			if(HitAnimNotifyState)
 			{
-				HitShape = HitAnimNotifyState->GetHitShape();
 				TickHandle = FTSTicker::GetCoreTicker().AddTicker( FTickerDelegate::CreateRaw( this, &FUfNotifyDetails::Tick ) );				
 			}
 		}
@@ -47,9 +47,9 @@ void FUfNotifyDetails::CustomizeChildren(TSharedRef<IPropertyHandle> PropertyHan
 
 bool FUfNotifyDetails::Tick(float DeltaSeconds)
 {
-	if(World)
+	if(World && HitAnimNotifyState)
 	{
-		UUfAnimNotifyState_Hit::DrawHitShape(World, HitShape);
+		UUfAnimNotifyState_Hit::DrawHitShape(World, HitAnimNotifyState->GetHitShape());
 	}
 	return true;
 }

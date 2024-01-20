@@ -22,5 +22,5 @@ private:
 	UPROPERTY()
 	UWorld* World = nullptr;
 	UPROPERTY()
-	FUfHitShape HitShape;
+	class UUfAnimNotifyState_Hit* HitAnimNotifyState = nullptr;
 };

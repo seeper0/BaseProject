@@ -54,7 +54,7 @@ void UUfAnimNotifyState_Hit::DrawHitShape(UWorld* InWorld, const FUfHitShape& In
 	{
 	case EUfHitShapeType::Box:
 		::DrawDebugPoint(InWorld, InHitShape.Location, 10, HitColor);
-		::DrawDebugBox(InWorld, InHitShape.Location, InHitShape.GetBoxSize(), HitColor);
+		::DrawDebugBox(InWorld, InHitShape.Location, InHitShape.GetBoxSize(), InHitShape.Rotation.Quaternion(), HitColor);
 		break;
 	case EUfHitShapeType::Fan:
 		break;

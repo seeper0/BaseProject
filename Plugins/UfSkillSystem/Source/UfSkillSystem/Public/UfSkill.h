@@ -129,7 +129,7 @@ struct UFSKILLSYSTEM_API FUfHitShape
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", EditCondition="ShapeType==EUfHitShapeType::Fan", EditConditionHides, DisplayName="Angle"))
 	float Angle = 90.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="1", EditCondition="ShapeType==EUfHitShapeType::Fan || ShapeType==EUfHitShapeType::Donut", EditConditionHides, DisplayName="HalfHeight"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="1", DisplayName="HalfHeight"))
 	float HalfHeight = 50.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(DisplayName="Location"))
