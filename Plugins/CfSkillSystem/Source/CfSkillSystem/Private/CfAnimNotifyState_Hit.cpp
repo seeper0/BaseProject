@@ -38,6 +38,10 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 		{
 			DrawHitShape(Skill->GetWorld(), HitShape, Skill->GetOwner()->GetTransform());
 		}
+
+		if(IsHitSuccessful(Skill->GetWorld(), HitShape, Skill->GetOwner()->GetTransform()))
+		{
+		}
 	}
 	//MeshComp->GetWorld()->WorldType : EWorldType::Type::EditorPreview
 }
@@ -72,4 +76,25 @@ void UCfAnimNotifyState_Hit::DrawHitShape(UWorld* InWorld, const FCfHitShape& In
 	default:
 		break;
 	}
+}
+
+bool UCfAnimNotifyState_Hit::IsHitSuccessful(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform)
+{
+	if(InWorld == nullptr)
+		return false;
+	
+	const FTransform Transform = ActorTransform * InHitShape.GetTransform();
+	switch(InHitShape.ShapeType)
+	{
+	case ECfHitShapeType::Box:
+		break;
+	case ECfHitShapeType::Fan:
+		break;
+	case ECfHitShapeType::Donut:
+		break;
+	default:
+		break;
+	}
+
+	return false;
 }

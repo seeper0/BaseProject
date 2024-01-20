@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "CfSkill.h"
+#include "CfSkillComponent.h"
 #include "CfAnimNotifyState_Hit.generated.h"
 
 /**
@@ -27,6 +28,7 @@ public:
 	
 	static void DrawHitShape(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform);
 	inline static FColor HitColor = FColor(230, 175, 20, 255);
+	static bool IsHitSuccessful(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
