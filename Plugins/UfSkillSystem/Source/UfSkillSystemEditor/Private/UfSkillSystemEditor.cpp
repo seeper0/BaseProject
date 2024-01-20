@@ -1,12 +1,11 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "UfSkillSystemEditor.h"
-
-#include "UfLogger.h"
 #include "Editor/Persona/Public/PersonaModule.h"
 #include "Editor/Persona/Public/IPersonaPreviewScene.h"
 #include "Editor/Persona/Private/AnimationEditorPreviewScene.h"
-#include "UfNotifyDetails.h"
+#include "CfLogger.h"
+#include "CfNotifyDetails.h"
 
 #define LOCTEXT_NAMESPACE "FUfSkillSystemEditorModule"
 
@@ -65,7 +64,7 @@ void FUfSkillSystemEditorModule::OnPreviewSceneCreated(const TSharedRef<IPersona
 
 TSharedRef<IPropertyTypeCustomization> FUfSkillSystemEditorModule::OnAnimNotifyEvent()
 {
-	TSharedRef< FUfNotifyDetails > NotifyDetails = MakeShareable( new FUfNotifyDetails );
+	TSharedRef< FCfNotifyDetails > NotifyDetails = MakeShareable( new FCfNotifyDetails );
 	TSharedRef< IPropertyTypeCustomization > PropertyTypeCustomization = NotifyDetails;
 	NotifyDetails->SetPreviewWorld(PreviewSceneWorld);
 	return PropertyTypeCustomization;

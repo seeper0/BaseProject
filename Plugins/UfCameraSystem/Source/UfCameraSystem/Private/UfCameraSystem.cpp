@@ -4,12 +4,12 @@
 
 #define LOCTEXT_NAMESPACE "FUfCameraSystemModule"
 
-void FUfCameraSystemModule::StartupModule()
+void FCfCameraSystemModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 }
 
-void FUfCameraSystemModule::ShutdownModule()
+void FCfCameraSystemModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
@@ -17,4 +17,4 @@ void FUfCameraSystemModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FUfCameraSystemModule, UfCameraSystem)
+IMPLEMENT_MODULE(FCfCameraSystemModule, UfCameraSystem)

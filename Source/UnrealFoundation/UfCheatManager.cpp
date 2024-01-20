@@ -2,7 +2,7 @@
 
 
 #include "UfCheatManager.h"
-#include "UfLogger.h"
+#include "..\..\Plugins\UfCommon\Source\UfCommon\Public\CfLogger.h"
 #include "UfHUD.h"
 
 void UUfCheatManager::ChangeSpeed(int32 ChangeType)
@@ -10,10 +10,10 @@ void UUfCheatManager::ChangeSpeed(int32 ChangeType)
 	switch(ChangeType)
 	{
 	case 1: // speed up
-		UF_LOG(TEXT("+++"));
+		CF_LOG(TEXT("+++"));
 		break;
 	case 2: // speed down
-		UF_LOG(TEXT("---"));
+		CF_LOG(TEXT("---"));
 		break;
 	}
 }

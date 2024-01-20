@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "UfHUDWidget.h"
+#include "CfHUDWidget.h"
 #include "UnrealFoundationGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -17,7 +17,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Classes)
-	TSubclassOf<UUfHUDWidget> HudWidgetClass;
+	TSubclassOf<UCfHUDWidget> HudWidgetClass;
 };
 
 

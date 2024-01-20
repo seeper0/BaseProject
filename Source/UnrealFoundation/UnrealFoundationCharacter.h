@@ -29,7 +29,7 @@ class AUnrealFoundationCharacter : public ACharacter
 	UCameraComponent* FollowCamera;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UUfSkillComponent* SkillComponent;
+	class UCfSkillComponent* SkillComponent;
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -52,6 +52,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	/** Returns SkillComponent subobject **/
-	FORCEINLINE class UUfSkillComponent* GetSkillComponent() const { return SkillComponent; }
+	FORCEINLINE class UCfSkillComponent* GetSkillComponent() const { return SkillComponent; }
 };
 

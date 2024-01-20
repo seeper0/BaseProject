@@ -4,9 +4,9 @@
 #include "UfHUD.h"
 #include "EngineUtils.h"
 #include "Blueprint/UserWidget.h"
-#include "UfUtil.h"
-#include "UfSkillComponent.h"
-#include "UfHUDWidget.h"
+#include "CfUtil.h"
+#include "CfSkillComponent.h"
+#include "CfHUDWidget.h"
 #include "UnrealFoundationCharacter.h"
 #include "UnrealFoundationGameMode.h"
 
@@ -16,7 +16,7 @@ void AUfHUD::BeginPlay()
 
 	if(AUnrealFoundationGameMode* Mode = Cast<AUnrealFoundationGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		if ( const TObjectPtr< UUfHUDWidget > Widget = CreateWidget< UUfHUDWidget >( GetWorld(), Mode->HudWidgetClass ) )
+		if ( const TObjectPtr< UCfHUDWidget > Widget = CreateWidget< UCfHUDWidget >( GetWorld(), Mode->HudWidgetClass ) )
 		{
 			Widget->AddToViewport();
 		}
@@ -45,10 +45,10 @@ void AUfHUD::DrawPlayerInfo()
 	{
 		if(AUnrealFoundationCharacter* Char = *ActorItr)
 		{
-			if(UUfSkillComponent* SkillComponent = Char->GetSkillComponent())
+			if(UCfSkillComponent* SkillComponent = Char->GetSkillComponent())
 			{
 				//FString::Printf()
-				DrawActorInfo(Char, FColor::Cyan, 1.0f, TEXT("State : %s"),* FUfUtil::GetEnumString(SkillComponent->GetSkillState()));
+				DrawActorInfo(Char, FColor::Cyan, 1.0f, TEXT("State : %s"),* FCfUtil::GetEnumString(SkillComponent->GetSkillState()));
 			}
 		}
 	}

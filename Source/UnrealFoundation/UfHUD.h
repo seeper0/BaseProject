@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "UfHudDebuggable.h"
+#include "CfHudDebuggable.h"
 #include "UfHUD.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALFOUNDATION_API AUfHUD : public AHUD, public IUfHudDebuggable
+class UNREALFOUNDATION_API AUfHUD : public AHUD, public ICfHudDebuggable
 {
 	GENERATED_BODY()
 

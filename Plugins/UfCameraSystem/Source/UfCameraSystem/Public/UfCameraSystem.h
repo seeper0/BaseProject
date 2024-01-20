@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FUfCameraSystemModule : public IModuleInterface
+class FCfCameraSystemModule : public IModuleInterface
 {
 public:
 
