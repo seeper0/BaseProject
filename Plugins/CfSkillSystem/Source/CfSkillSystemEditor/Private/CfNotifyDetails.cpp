@@ -49,7 +49,7 @@ bool FCfNotifyDetails::Tick(float DeltaSeconds)
 {
 	if(World && HitAnimNotifyState)
 	{
-		UCfAnimNotifyState_Hit::DrawHitShape(World, HitAnimNotifyState->GetHitShape());
+		UCfAnimNotifyState_Hit::DrawHitShape(World, HitAnimNotifyState->GetHitShape(), FTransform::Identity);
 	}
 	return true;
 }

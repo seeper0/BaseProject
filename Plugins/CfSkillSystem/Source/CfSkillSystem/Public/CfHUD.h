@@ -28,11 +28,6 @@ public:
 		DrawInfo(Actor->GetWorld(), Actor->GetActorLocation(), Color, Scale, Text);
 	}
 
-#pragma region PlayerInfo
-public:
-	virtual void TogglePlayerInfo();
 private:
 	void DrawPlayerInfo();
-	bool bShowPlayerInfo = false;
-#pragma endregion
 };

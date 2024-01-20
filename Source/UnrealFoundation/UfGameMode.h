@@ -5,15 +5,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "CfHUDWidget.h"
-#include "UnrealFoundationGameMode.generated.h"
+#include "UfGameMode.generated.h"
 
 UCLASS(minimalapi)
-class AUnrealFoundationGameMode : public AGameModeBase
+class AUfGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AUnrealFoundationGameMode();
+	AUfGameMode();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Classes)

@@ -2,6 +2,8 @@
 
 
 #include "CfAnimNotifyState_Hit.h"
+
+#include "CfCheatManager.h"
 #include "CfSkillComponent.h"
 
 FColor UCfAnimNotifyState_Hit::HitColor = FColor(230, 175, 20, 255);
@@ -20,6 +22,11 @@ void UCfAnimNotifyState_Hit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 	if(UCfSkillComponent* Skill = UCfSkillComponent::GetSkillComponent(MeshComp))
 	{
 		Skill->ClearHitActorList();
+
+		if(APlayerController* PC = Skill->GetWorld()->GetFirstPlayerController())
+		{
+			CheatManager = Cast<UCfCheatManager>(PC->CheatManager);
+		}
 	}
 }
 
@@ -29,7 +36,10 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 
 	if(UCfSkillComponent* Skill = UCfSkillComponent::GetSkillComponent(MeshComp))
 	{
-		
+		if(CheatManager && CheatManager->IsShowHitBox())
+		{
+			DrawHitShape(Skill->GetWorld(), HitShape, Skill->GetOwner()->GetTransform());
+		}
 	}
 	//MeshComp->GetWorld()->WorldType : EWorldType::Type::EditorPreview
 }
@@ -45,16 +55,17 @@ void UCfAnimNotifyState_Hit::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 	// 치트매니저도 이쪽으로 와야하는가????
 }
 
-void UCfAnimNotifyState_Hit::DrawHitShape(UWorld* InWorld, const FCfHitShape& InHitShape)
+void UCfAnimNotifyState_Hit::DrawHitShape(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform)
 {
 	if(InWorld == nullptr)
 		return;
 
+	const FTransform Transform = ActorTransform * InHitShape.GetTransform();
 	switch(InHitShape.ShapeType)
 	{
 	case ECfHitShapeType::Box:
-		::DrawDebugPoint(InWorld, InHitShape.Location, 10, HitColor);
-		::DrawDebugBox(InWorld, InHitShape.Location, InHitShape.GetBoxSize(), InHitShape.Rotation.Quaternion(), HitColor);
+		::DrawDebugPoint(InWorld, Transform.GetLocation(), 10, HitColor);
+		::DrawDebugBox(InWorld, Transform.GetLocation(), InHitShape.GetBoxSize(), Transform.Rotator().Quaternion(), HitColor);
 		break;
 	case ECfHitShapeType::Fan:
 		break;

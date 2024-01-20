@@ -7,14 +7,14 @@
 #include "CfUtil.h"
 #include "CfSkillComponent.h"
 #include "CfHUDWidget.h"
-#include "UnrealFoundationCharacter.h"
-#include "UnrealFoundationGameMode.h"
+#include "UfCharacter.h"
+#include "UfGameMode.h"
 
 void AUfHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(AUnrealFoundationGameMode* Mode = Cast<AUnrealFoundationGameMode>(GetWorld()->GetAuthGameMode()))
+	if(AUfGameMode* Mode = Cast<AUfGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		if ( const TObjectPtr< UCfHUDWidget > Widget = CreateWidget< UCfHUDWidget >( GetWorld(), Mode->HudWidgetClass ) )
 		{
@@ -22,9 +22,3 @@ void AUfHUD::BeginPlay()
 		}
 	}
 }
-
-void AUfHUD::DrawHUD()
-{
-	Super::DrawHUD();
-}
-

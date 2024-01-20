@@ -2,6 +2,8 @@
 
 
 #include "CfHUD.h"
+
+#include "CfCheatManager.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
@@ -11,10 +13,16 @@
 void ACfHUD::DrawHUD()
 {
 	Super::DrawHUD();
-
-	if(bShowPlayerInfo)
+	
+	if(APlayerController* PC = GetWorld()->GetFirstPlayerController())
 	{
-		DrawPlayerInfo();
+		if(UCfCheatManager* CM = Cast<UCfCheatManager>(PC->CheatManager))
+		{
+			if(CM->IsShowPlayerInfo())
+			{
+				DrawPlayerInfo();
+			}
+		}
 	}
 }
 
@@ -60,10 +68,6 @@ void ACfHUD::DrawInfo(UWorld* World, const FVector& Location, const FColor Color
 	if (PlayerController == nullptr)
 		return;
 
-	AHUD* Hud = Cast<AHUD>(this);
-	if(Hud == nullptr)
-		return;
-
 	int32 ScreenWidth = 0;
 	int32 ScreenHeight = 0;
 	FVector2D ScreenLocation;
@@ -82,25 +86,16 @@ void ACfHUD::DrawInfo(UWorld* World, const FVector& Location, const FColor Color
 	for(const FString& Msg : StringArray)
 	{
 		float MsgWidth = 0, MsgHeight = 0;
-		Hud->DrawText(Msg, Color, ScreenX, ScreenY, nullptr, Scale);
-		Hud->GetTextSize(Msg, MsgWidth, MsgHeight, nullptr, Scale);
+		DrawText(Msg, Color, ScreenX, ScreenY, nullptr, Scale);
+		GetTextSize(Msg, MsgWidth, MsgHeight, nullptr, Scale);
 
 		BoxWidth = FMath::Max(BoxWidth, MsgWidth);
 		BoxHeight += MsgHeight + 2;
 		ScreenY += MsgHeight + 2;
 	}
 
-	// Hud->DrawText(Text, Color, ScreenX, ScreenY, nullptr, Scale);
-	// //ScreenY += 20;
-
 	const FColor ComplementaryColor = FColor(255 - Color.R, 255 - Color.G, 255 - Color.B, 50);
-	Hud->DrawRect(ComplementaryColor, StartX-5, StartY-5, BoxWidth+10, BoxHeight+10);
-}
-
-#pragma region PlayerInfo
-void ACfHUD::TogglePlayerInfo()
-{
-	bShowPlayerInfo = !bShowPlayerInfo;
+	DrawRect(ComplementaryColor, StartX-5, StartY-5, BoxWidth+10, BoxHeight+10);
 }
 
 void ACfHUD::DrawPlayerInfo()
@@ -116,6 +111,5 @@ void ACfHUD::DrawPlayerInfo()
 		}
 	}
 }
-#pragma endregion
 
 

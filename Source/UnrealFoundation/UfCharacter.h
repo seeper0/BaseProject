@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
-#include "UnrealFoundationCharacter.generated.h"
+#include "UfCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -14,7 +14,7 @@ class UInputAction;
 struct FInputActionValue;
 
 UCLASS(config=Game)
-class AUnrealFoundationCharacter : public ACharacter
+class AUfCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -34,7 +34,7 @@ class AUnrealFoundationCharacter : public ACharacter
 	UInputMappingContext* DefaultMappingContext;
 
 public:
-	AUnrealFoundationCharacter();
+	AUfCharacter();
 	
 
 protected:

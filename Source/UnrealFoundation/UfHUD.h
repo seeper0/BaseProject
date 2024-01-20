@@ -15,5 +15,4 @@ class UNREALFOUNDATION_API AUfHUD : public ACfHUD
 	GENERATED_BODY()
 
 	virtual void BeginPlay() override;
-	virtual void DrawHUD() override;
 };

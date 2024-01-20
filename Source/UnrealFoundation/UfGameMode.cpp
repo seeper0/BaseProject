@@ -1,12 +1,12 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "UnrealFoundationGameMode.h"
+#include "UfGameMode.h"
 #include "UfHUD.h"
 #include "UfPlayerController.h"
-#include "UnrealFoundationCharacter.h"
+#include "UfCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
-AUnrealFoundationGameMode::AUnrealFoundationGameMode()
+AUfGameMode::AUfGameMode()
 {
 	HUDClass = AUfHUD::StaticClass();
 

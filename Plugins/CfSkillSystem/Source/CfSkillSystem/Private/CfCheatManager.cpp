@@ -2,18 +2,13 @@
 
 
 #include "CfCheatManager.h"
-#include "CfHUD.h"
 
 void UCfCheatManager::TogglePlayerInfo()
 {
-	if(GetWorld())
-	{
-		if(APlayerController* PC = GetWorld()->GetFirstPlayerController())
-		{
-			if(ACfHUD* HUD = Cast<ACfHUD>(PC->GetHUD()))
-			{
-				HUD->TogglePlayerInfo();
-			}
-		}
-	}
+	bShowPlayerInfo = !bShowPlayerInfo;
+}
+
+void UCfCheatManager::ToggleHitBox()
+{
+	bShowHitBox = !bShowHitBox;
 }

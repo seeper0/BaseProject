@@ -25,7 +25,7 @@ class CFSKILLSYSTEM_API UCfAnimNotifyState_Hit : public UAnimNotifyState
 public:
 	const FCfHitShape& GetHitShape() const { return HitShape; }
 	
-	static void DrawHitShape(UWorld* InWorld, const FCfHitShape& InHitShape);
+	static void DrawHitShape(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform);
 	static FColor HitColor;
 
 protected:
@@ -36,4 +36,6 @@ protected:
 	FCfHitData HitData;
 
 private:
+	UPROPERTY()
+	class UCfCheatManager* CheatManager;
 };

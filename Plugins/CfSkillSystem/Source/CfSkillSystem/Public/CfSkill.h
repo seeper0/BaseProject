@@ -132,6 +132,7 @@ struct CFSKILLSYSTEM_API FCfHitShape
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ClampMin="1", DisplayName="HalfHeight"))
 	float HalfHeight = 50.f;
 
+	FTransform GetTransform() const { return FTransform(Rotation, Location); }
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(DisplayName="Location"))
 	FVector Location = FVector::ZeroVector;
 

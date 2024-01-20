@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "UnrealFoundationCharacter.h"
+#include "UfCharacter.h"
 
 #include "CfLogger.h"
 #include "Engine/LocalPlayer.h"
@@ -17,7 +17,7 @@
 //////////////////////////////////////////////////////////////////////////
 // AUnrealFoundationCharacter
 
-AUnrealFoundationCharacter::AUnrealFoundationCharacter()
+AUfCharacter::AUfCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -53,10 +53,10 @@ AUnrealFoundationCharacter::AUnrealFoundationCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-	SkillComponent = CreateDefaultSubobject<UCfSkillComponent>(TEXT("SkillComponent"));
+	SkillComponent = CreateDefaultSubobject<UCfSkillComponent>(UCfSkillComponent::ComponentName);
 }
 
-void AUnrealFoundationCharacter::BeginPlay()
+void AUfCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
@@ -74,7 +74,7 @@ void AUnrealFoundationCharacter::BeginPlay()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void AUnrealFoundationCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AUfCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))

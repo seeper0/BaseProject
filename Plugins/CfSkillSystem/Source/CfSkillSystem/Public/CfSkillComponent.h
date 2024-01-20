@@ -22,6 +22,7 @@ class CFSKILLSYSTEM_API UCfSkillComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UCfSkillComponent();
+	inline static FName ComponentName = TEXT("SkillComponent");
 	static UCfSkillComponent* GetSkillComponent(const AActor* Actor);
 	static UCfSkillComponent* GetSkillComponent(const UActorComponent* MeshComp);
 
