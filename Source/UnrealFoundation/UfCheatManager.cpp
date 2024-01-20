@@ -17,17 +17,3 @@ void UUfCheatManager::ChangeSpeed(int32 ChangeType)
 		break;
 	}
 }
-
-void UUfCheatManager::TogglePlayerInfo()
-{
-	if(GetWorld())
-	{
-		if(APlayerController* PC = GetWorld()->GetFirstPlayerController())
-		{
-			if(AUfHUD* HUD = Cast<AUfHUD>(PC->GetHUD()))
-			{
-				HUD->TogglePlayerInfo();
-			}
-		}
-	}
-}

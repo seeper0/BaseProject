@@ -3,27 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
-#include "CfHudDebuggable.generated.h"
-
-// This class does not need to be modified.
-UINTERFACE(MinimalAPI)
-class UCfHudDebuggable : public UInterface
-{
-	GENERATED_BODY()
-};
+#include "GameFramework/HUD.h"
+#include "CfHUD.generated.h"
 
 /**
  * 
  */
-class CFCOMMON_API ICfHudDebuggable
+UCLASS()
+class CFSKILLSYSTEM_API ACfHUD : public AHUD
 {
 	GENERATED_BODY()
-
+public:
+	virtual void DrawHUD() override;
+	
 private:
 	static FString PrintfImpl(const TCHAR* Fmt, ...);
-	
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+	void DrawInfo(UWorld* World, const FVector& Location, const FColor Color, const float Scale, const FString& Text);
+
 public:
 	template <typename FmtType, typename... Types>
 	void DrawActorInfo(const AActor* Actor, const FColor Color, const float Scale, const FmtType& Fmt, Types... Args)
@@ -32,6 +28,11 @@ public:
 		DrawInfo(Actor->GetWorld(), Actor->GetActorLocation(), Color, Scale, Text);
 	}
 
+#pragma region PlayerInfo
+public:
+	virtual void TogglePlayerInfo();
 private:
-	void DrawInfo(UWorld* World, const FVector& Location, const FColor Color, const float Scale, const FString& Text);
+	void DrawPlayerInfo();
+	bool bShowPlayerInfo = false;
+#pragma endregion
 };

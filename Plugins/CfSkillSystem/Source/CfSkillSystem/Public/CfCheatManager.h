@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CfCheatManager.h"
-#include "UfCheatManager.generated.h"
+#include "GameFramework/CheatManager.h"
+#include "CfCheatManager.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALFOUNDATION_API UUfCheatManager : public UCfCheatManager
+class CFSKILLSYSTEM_API UCfCheatManager : public UCheatManager
 {
 	GENERATED_BODY()
 	
 	UFUNCTION(Exec)
-	void ChangeSpeed( int32 ChangeType );
+	void TogglePlayerInfo();
 };

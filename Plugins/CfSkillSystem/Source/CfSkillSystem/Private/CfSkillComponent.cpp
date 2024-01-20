@@ -3,6 +3,7 @@
 
 #include "CfSkillComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Components/ActorComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "CfActionBase.h"
@@ -18,6 +19,24 @@ UCfSkillComponent::UCfSkillComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+}
+
+UCfSkillComponent* UCfSkillComponent::GetSkillComponent(const AActor* Actor)
+{
+	if(Actor)
+	{
+		return Actor->GetComponentByClass<UCfSkillComponent>();
+	}
+	return nullptr;
+}
+
+UCfSkillComponent* UCfSkillComponent::GetSkillComponent(const UActorComponent* Component)
+{
+	if(Component && Component->GetOwner())
+	{
+		return GetSkillComponent(Component->GetOwner());
+	}
+	return nullptr;
 }
 
 // Called when the game starts

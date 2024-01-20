@@ -1,19 +1,30 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfHudDebuggable.h"
-
-#include "CanvasItem.h"
-#include "GameFramework/HUD.h"
+#include "CfHUD.h"
+#include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
+#include "CfUtil.h"
+#include "CfSkillComponent.h"
 
-FString ICfHudDebuggable::PrintfImpl(const TCHAR* Fmt, ...)
+void ACfHUD::DrawHUD()
+{
+	Super::DrawHUD();
+
+	if(bShowPlayerInfo)
+	{
+		DrawPlayerInfo();
+	}
+}
+
+FString ACfHUD::PrintfImpl(const TCHAR* Fmt, ...)
 {
 	constexpr int32 STARTING_BUFFER_SIZE = 512;
-	int32		BufferSize	= STARTING_BUFFER_SIZE;
-	TCHAR	StartingBuffer[STARTING_BUFFER_SIZE];
-	TCHAR*	Buffer		= StartingBuffer;
-	int32		Result		= -1;
+	int32 BufferSize = STARTING_BUFFER_SIZE;
+	TCHAR StartingBuffer[STARTING_BUFFER_SIZE];
+	TCHAR* Buffer = StartingBuffer;
+	int32 Result = -1;
 
 	// First try to print to a stack allocated location 
 	GET_VARARGS_RESULT( Buffer, BufferSize, BufferSize-1, Fmt, Fmt, Result );
@@ -42,9 +53,8 @@ FString ICfHudDebuggable::PrintfImpl(const TCHAR* Fmt, ...)
 	return ResultString;
 }
 
-
-// Add default functionality here for any ICfHudDebuggable functions that are not pure virtual.
-void ICfHudDebuggable::DrawInfo(UWorld* World, const FVector& Location, const FColor Color, const float Scale, const FString& Text)
+void ACfHUD::DrawInfo(UWorld* World, const FVector& Location, const FColor Color, const float Scale,
+	const FString& Text)
 {
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, 0);
 	if (PlayerController == nullptr)
@@ -86,3 +96,26 @@ void ICfHudDebuggable::DrawInfo(UWorld* World, const FVector& Location, const FC
 	const FColor ComplementaryColor = FColor(255 - Color.R, 255 - Color.G, 255 - Color.B, 50);
 	Hud->DrawRect(ComplementaryColor, StartX-5, StartY-5, BoxWidth+10, BoxHeight+10);
 }
+
+#pragma region PlayerInfo
+void ACfHUD::TogglePlayerInfo()
+{
+	bShowPlayerInfo = !bShowPlayerInfo;
+}
+
+void ACfHUD::DrawPlayerInfo()
+{
+	for (TActorIterator<ACharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		if(ACharacter* Char = *ActorItr)
+		{
+			if(const UCfSkillComponent* SkillComponent = UCfSkillComponent::GetSkillComponent(Char))
+			{
+				DrawActorInfo(Char, FColor::Cyan, 1.0f, TEXT("State : %s"),* FCfUtil::GetEnumString(SkillComponent->GetSkillState()));
+			}
+		}
+	}
+}
+#pragma endregion
+
+

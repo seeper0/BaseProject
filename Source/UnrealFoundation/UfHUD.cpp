@@ -26,33 +26,5 @@ void AUfHUD::BeginPlay()
 void AUfHUD::DrawHUD()
 {
 	Super::DrawHUD();
-
-	if(bShowPlayerInfo)
-	{
-		DrawPlayerInfo();
-	}
 }
-
-#pragma region PlayerInfo
-void AUfHUD::TogglePlayerInfo()
-{
-	bShowPlayerInfo = !bShowPlayerInfo;
-}
-
-void AUfHUD::DrawPlayerInfo()
-{
-	for (TActorIterator<AUnrealFoundationCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
-		if(AUnrealFoundationCharacter* Char = *ActorItr)
-		{
-			if(UCfSkillComponent* SkillComponent = Char->GetSkillComponent())
-			{
-				//FString::Printf()
-				DrawActorInfo(Char, FColor::Cyan, 1.0f, TEXT("State : %s"),* FCfUtil::GetEnumString(SkillComponent->GetSkillState()));
-			}
-		}
-	}
-}
-#pragma endregion
-
 

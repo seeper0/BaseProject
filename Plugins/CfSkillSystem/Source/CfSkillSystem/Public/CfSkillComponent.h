@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
-#include "Components/ActorComponent.h"
 #include "CfSkill.h"
 #include "CfSkillComponent.generated.h"
 
@@ -23,14 +22,8 @@ class CFSKILLSYSTEM_API UCfSkillComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UCfSkillComponent();
-	static UCfSkillComponent* GetSkillComponent(USkeletalMeshComponent* MeshComp)
-	{
-		if(MeshComp && MeshComp->GetOwner())
-		{
-			return MeshComp->GetOwner()->GetComponentByClass<UCfSkillComponent>();
-		}
-		return nullptr;
-	}
+	static UCfSkillComponent* GetSkillComponent(const AActor* Actor);
+	static UCfSkillComponent* GetSkillComponent(const UActorComponent* MeshComp);
 
 protected:
 	// Called when the game starts
