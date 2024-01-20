@@ -26,7 +26,7 @@ public:
 	const FCfHitShape& GetHitShape() const { return HitShape; }
 	
 	static void DrawHitShape(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform);
-	static FColor HitColor;
+	inline static FColor HitColor = FColor(230, 175, 20, 255);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

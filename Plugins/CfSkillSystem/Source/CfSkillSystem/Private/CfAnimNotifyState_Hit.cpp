@@ -6,8 +6,6 @@
 #include "CfCheatManager.h"
 #include "CfSkillComponent.h"
 
-FColor UCfAnimNotifyState_Hit::HitColor = FColor(230, 175, 20, 255);
-
 UCfAnimNotifyState_Hit::UCfAnimNotifyState_Hit(const FObjectInitializer& ObjectInitializer)
 {
 #if WITH_EDITORONLY_DATA
