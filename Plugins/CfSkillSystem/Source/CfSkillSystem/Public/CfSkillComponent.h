@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputAction.h"
+#include "EnhancedInputComponent.h"
 #include "CfSkill.h"
 #include "CfSkillComponent.generated.h"
 
@@ -39,7 +39,7 @@ public:
 	ECfSkillState GetSkillState() const { return SkillState; }
 
 private:
-	ECfSkillKey GetSkillSlot(const FInputActionInstance& InputActionInstance) const;
+	ECfSkillKey GetSkillSlot(const struct FInputActionInstance& InputActionInstance) const;
 	/** CurrentAction, SkillState, SkillKey, KeyEvent 조합으로 적절한 스킬을 찾는다. */
 	TArray<FName> FetchSkillsByInput(const ECfSkillKey SkillKey, const ETriggerEvent KeyEvent) const;
 	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;

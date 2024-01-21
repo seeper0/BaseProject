@@ -2,7 +2,7 @@
 
 
 #include "CfSkillComponent.h"
-#include "EnhancedInputComponent.h"
+#include "InputAction.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PawnMovementComponent.h"

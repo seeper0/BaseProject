@@ -5,6 +5,7 @@
 
 #include "CfCheatManager.h"
 #include "CfSkillComponent.h"
+#include "GameFramework/Character.h"
 
 UCfAnimNotifyState_Hit::UCfAnimNotifyState_Hit(const FObjectInitializer& ObjectInitializer)
 {
@@ -36,10 +37,22 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 	{
 		if(CheatManager && CheatManager->IsShowHitBox())
 		{
-			DrawHitShape(Skill->GetWorld(), HitShape, Skill->GetOwner()->GetTransform());
+			FTransform Transform = MeshComp->GetComponentToWorld(); //MeshComp->GetComponentToWorld(); //Skill->GetOwner()->ActorToWorld();// * MeshComp->GetRelativeTransform();
+			FRotator Rotator = Transform.Rotator();
+			Transform.SetRotation(FQuat(FRotator(Rotator.Pitch, Rotator.Yaw + 90, Rotator.Roll)));
+			DrawHitShape(Skill->GetWorld(), HitShape, Transform);
+
+			FVector StartPosition = Transform.GetLocation();
+			Rotator.Yaw += 270;
+			FVector Direction = Transform.GetRotation().GetForwardVector();
+			Direction.Normalize();
+			FVector EndPosition = StartPosition + Direction * 100;
+			
+			::DrawDebugPoint(Skill->GetWorld(), Transform.GetLocation(), 10, FColor::Red);
+			::DrawDebugDirectionalArrow(Skill->GetWorld(), StartPosition, EndPosition, 10, FColor::Cyan);
 		}
 
-		if(IsHitSuccessful(Skill->GetWorld(), HitShape, Skill->GetOwner()->GetTransform()))
+		if(IsHitSuccessful(Skill->GetWorld(), HitShape, MeshComp->GetComponentToWorld()))
 		{
 		}
 	}

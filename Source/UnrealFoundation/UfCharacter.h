@@ -34,7 +34,7 @@ class AUfCharacter : public ACharacter
 	UInputMappingContext* DefaultMappingContext;
 
 public:
-	AUfCharacter();
+	AUfCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
 
 protected:

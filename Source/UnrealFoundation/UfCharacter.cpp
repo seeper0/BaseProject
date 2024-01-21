@@ -13,11 +13,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "CfSkillComponent.h"
+#include "Components/ArrowComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUnrealFoundationCharacter
 
-AUfCharacter::AUfCharacter()
+AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -54,6 +56,15 @@ AUfCharacter::AUfCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 	SkillComponent = CreateDefaultSubobject<UCfSkillComponent>(UCfSkillComponent::ComponentName);
+
+#if WITH_EDITORONLY_DATA
+	if (GetArrowComponent())
+	{
+		GetArrowComponent()->SetHiddenInGame(false);
+		GetArrowComponent()->SetVisibility(true);
+	}
+#endif
+		
 }
 
 void AUfCharacter::BeginPlay()
