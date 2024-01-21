@@ -377,6 +377,7 @@ void UCfSkillComponent::TickInput()
 {
 }
 
+#pragma region HitList
 bool UCfSkillComponent::HasActorInHitList(const ACharacter* InVictim) const
 {
 	return HitActorList.Contains(InVictim);
@@ -391,5 +392,5 @@ void UCfSkillComponent::ClearHitActorList()
 {
 	HitActorList.Empty();
 }
-
+#pragma endregion
 

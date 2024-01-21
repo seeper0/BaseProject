@@ -64,6 +64,7 @@ void FCfSkillSystemEditorModule::OnPreviewSceneCreated(const TSharedRef<IPersona
 
 TSharedRef<IPropertyTypeCustomization> FCfSkillSystemEditorModule::OnAnimNotifyEvent()
 {
+	// TODO : PreviewSceneWorld 가 하나만 있는건 잘못된거다. 
 	TSharedRef< FCfNotifyDetails > NotifyDetails = MakeShareable( new FCfNotifyDetails );
 	TSharedRef< IPropertyTypeCustomization > PropertyTypeCustomization = NotifyDetails;
 	NotifyDetails->SetPreviewWorld(PreviewSceneWorld);

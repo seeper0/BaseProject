@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnhancedInputComponent.h"
 #include "CfSkill.h"
+#include "GameFramework/Character.h"
 #include "CfSkillComponent.generated.h"
 
 
@@ -37,6 +38,8 @@ public:
 	void SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent);
 	void SetSkillState(ECfSkillState InSkillState);
 	ECfSkillState GetSkillState() const { return SkillState; }
+	ACharacter* GetOwnerChar() const { return OwnerChar; }
+	AController* GetController() const { return OwnerChar ? OwnerChar->Controller : nullptr; }
 
 private:
 	ECfSkillKey GetSkillSlot(const struct FInputActionInstance& InputActionInstance) const;
@@ -92,7 +95,7 @@ private:
 	UPROPERTY()
 	FName ReservedRowName;
 
-#pragma region
+#pragma region HitList
 public:
 	bool HasActorInHitList(const ACharacter* InVictim) const;
 	void PushHitActorList(ACharacter* InVictim);

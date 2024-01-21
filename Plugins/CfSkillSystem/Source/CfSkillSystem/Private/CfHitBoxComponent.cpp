@@ -2,7 +2,6 @@
 
 
 #include "CfHitBoxComponent.h"
-
 #include "CfCheatManager.h"
 
 UCfHitBoxComponent::UCfHitBoxComponent()
@@ -13,7 +12,8 @@ UCfHitBoxComponent::UCfHitBoxComponent()
 void UCfHitBoxComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// TODO : Pawn 으로 Overlap 되는 Preset 만드는것 추천한다.
 	SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 
 	if(APlayerController* PC = GetWorld()->GetFirstPlayerController())

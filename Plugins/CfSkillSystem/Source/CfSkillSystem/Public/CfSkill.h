@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
+#include "Engine/DamageEvents.h"
 #include "CfSkill.generated.h"
 
 UENUM(BlueprintType)
@@ -78,10 +78,22 @@ struct CFSKILLSYSTEM_API FCfHitData
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float DamageMultiplier = 1.0f;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ECfHitType HitType = ECfHitType::None;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ECfHitDirection HitDirection = ECfHitDirection::None;
+};
+
+USTRUCT(BlueprintType)
+struct CFSKILLSYSTEM_API FCfDamageEvent : public FDamageEvent
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FCfHitData HitData;
 };
 
 UENUM(BlueprintType)

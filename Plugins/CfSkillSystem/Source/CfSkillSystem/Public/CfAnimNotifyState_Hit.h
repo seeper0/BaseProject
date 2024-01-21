@@ -23,12 +23,12 @@ class CFSKILLSYSTEM_API UCfAnimNotifyState_Hit : public UAnimNotifyState
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, const FAnimNotifyEventReference& EventReference) override;
 
+	TArray<ACharacter*> GetHitSuccessful(const FCfHitShape& InHitShape, const FTransform& ActorTransform) const;
 public:
+	inline static FColor HitColor = FColor(230, 175, 20, 255);
 	const FCfHitShape& GetHitShape() const { return HitShape; }
 	
 	static void DrawHitShape(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform);
-	inline static FColor HitColor = FColor(230, 175, 20, 255);
-	static bool IsHitSuccessful(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -40,4 +40,6 @@ protected:
 private:
 	UPROPERTY()
 	class UCfCheatManager* CheatManager;
+	UPROPERTY()
+	UCfSkillComponent* Skill;
 };

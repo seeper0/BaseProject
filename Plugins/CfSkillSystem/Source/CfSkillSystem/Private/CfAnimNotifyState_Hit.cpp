@@ -17,8 +17,9 @@ UCfAnimNotifyState_Hit::UCfAnimNotifyState_Hit(const FObjectInitializer& ObjectI
 void UCfAnimNotifyState_Hit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-	
-	if(UCfSkillComponent* Skill = UCfSkillComponent::GetSkillComponent(MeshComp))
+
+	Skill = UCfSkillComponent::GetSkillComponent(MeshComp);
+	if(Skill)
 	{
 		Skill->ClearHitActorList();
 
@@ -33,10 +34,11 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
-	if(UCfSkillComponent* Skill = UCfSkillComponent::GetSkillComponent(MeshComp))
+	if(Skill)
 	{
 		if(CheatManager && CheatManager->IsShowHitBox())
 		{
+			// TODO : 아직 계산이 잘못되었다. 
 			FTransform Transform = MeshComp->GetComponentToWorld(); //MeshComp->GetComponentToWorld(); //Skill->GetOwner()->ActorToWorld();// * MeshComp->GetRelativeTransform();
 			FRotator Rotator = Transform.Rotator();
 			Transform.SetRotation(FQuat(FRotator(Rotator.Pitch, Rotator.Yaw + 90, Rotator.Roll)));
@@ -47,13 +49,26 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 			FVector Direction = Transform.GetRotation().GetForwardVector();
 			Direction.Normalize();
 			FVector EndPosition = StartPosition + Direction * 100;
-			
+
 			::DrawDebugPoint(Skill->GetWorld(), Transform.GetLocation(), 10, FColor::Red);
 			::DrawDebugDirectionalArrow(Skill->GetWorld(), StartPosition, EndPosition, 10, FColor::Cyan);
 		}
 
-		if(IsHitSuccessful(Skill->GetWorld(), HitShape, MeshComp->GetComponentToWorld()))
+		constexpr float BaseDamage = 10.0f;
+		const float Damage = BaseDamage * HitData.DamageMultiplier;
+		AController* EventInstigator = Skill->GetController();
+		ACharacter* DamageCauser = Skill->GetOwnerChar();
+		FCfDamageEvent DamageEvent;
+		DamageEvent.HitData = HitData;
+
+		// TODO : Take 에서 Damage 애니메이션, Knockback, Down, Airborne 등을 구현해야한다.
+		TArray<ACharacter*> List = GetHitSuccessful(HitShape, MeshComp->GetComponentToWorld());
+		for(ACharacter* Char : List)
 		{
+			if(Char->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
+			{
+				Char->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+			}
 		}
 	}
 	//MeshComp->GetWorld()->WorldType : EWorldType::Type::EditorPreview
@@ -63,7 +78,7 @@ void UCfAnimNotifyState_Hit::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if(UCfSkillComponent* Skill = UCfSkillComponent::GetSkillComponent(MeshComp))
+	if(Skill)
 	{
 	}
 	// 치트 매니저 체크해서 충돌 표시가 true라면 DrawHitShape 호출
@@ -91,15 +106,24 @@ void UCfAnimNotifyState_Hit::DrawHitShape(UWorld* InWorld, const FCfHitShape& In
 	}
 }
 
-bool UCfAnimNotifyState_Hit::IsHitSuccessful(UWorld* InWorld, const FCfHitShape& InHitShape, const FTransform& ActorTransform)
+TArray<ACharacter*> UCfAnimNotifyState_Hit::GetHitSuccessful(const FCfHitShape& InHitShape, const FTransform& ActorTransform) const
 {
-	if(InWorld == nullptr)
-		return false;
-	
+	TArray<ACharacter*> List;
+	if(Skill == nullptr)
+		return List;
+
+	FCollisionObjectQueryParams ObjectParams;
+	ObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	TArray<FOverlapResult> Overlaps;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(Skill->GetOwner());
+	bool bOverlap = false;
+
 	const FTransform Transform = ActorTransform * InHitShape.GetTransform();
 	switch(InHitShape.ShapeType)
 	{
 	case ECfHitShapeType::Box:
+		bOverlap = Skill->GetWorld()->OverlapMultiByObjectType(Overlaps, Transform.GetLocation(), Transform.GetRotation(), ObjectParams, FCollisionShape::MakeBox(InHitShape.GetBoxSize()), CollisionParams);
 		break;
 	case ECfHitShapeType::Fan:
 		break;
@@ -109,5 +133,23 @@ bool UCfAnimNotifyState_Hit::IsHitSuccessful(UWorld* InWorld, const FCfHitShape&
 		break;
 	}
 
-	return false;
+	if(bOverlap)
+	{
+		for(const FOverlapResult& Overlap : Overlaps)
+		{
+			if(Overlap.GetComponent())
+			{
+				if(ACharacter* Char = Cast<ACharacter>(Overlap.GetComponent()->GetOwner()))
+				{
+					if(!Skill->HasActorInHitList(Char))
+					{
+						Skill->PushHitActorList(Char);
+						List.AddUnique(Char);
+					}
+				}
+			}
+		}
+	}
+
+	return List;
 }
