@@ -104,7 +104,7 @@ void ACfHUD::DrawPlayerInfo()
 	{
 		if(ACharacter* Char = *ActorItr)
 		{
-			if(const UCfActionComponent* SkillComponent = UCfActionComponent::GetSkillComponent(Char))
+			if(const UCfActionComponent* SkillComponent = UCfActionComponent::GetActionComponent(Char))
 			{
 				DrawActorInfo(Char, FColor::Cyan, 1.0f, TEXT("State : %s"),* FCfUtil::GetEnumString(SkillComponent->GetSkillState()));
 			}

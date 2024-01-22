@@ -4,19 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "EnhancedInputComponent.h"
-#include "CfActionComponent.h"
-#include "CfPlayerActionComponent.generated.h"
+#include "CfSkill.h"
+#include "CfSkillInputComponent.generated.h"
 
-/**
- * 
- */
-UCLASS()
-class CFSKILLSYSTEM_API UCfPlayerActionComponent : public UCfActionComponent
+
+UCLASS( ClassGroup=(CombatFoundation), meta=(BlueprintSpawnableComponent) )
+class CFSKILLSYSTEM_API UCfSkillInputComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	void SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent);
+	inline static FName ComponentName = TEXT("SkillInputComponent");
+	void SetupComponent(class UCfActionComponent* InActionComponent, UEnhancedInputComponent* EnhancedInputComponent);
 
 private:
 	ECfSkillKey GetSkillSlot(const struct FInputActionInstance& InputActionInstance) const;
@@ -31,11 +30,13 @@ private:
 	void OnHold(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 
-public:
 	/** Slot Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TMap<ECfSkillKey, const UInputAction*> SkillSlotMapping;
+	TMap<ECfSkillKey, const UInputAction*> InputSlotMapping;
 
 	UPROPERTY()
-	TMap<const UInputAction*, ECfSkillKey> SkillSlotCache;
+	TMap<const UInputAction*, ECfSkillKey> InputSlotCache;
+
+	UPROPERTY()
+	class UCfActionComponent* ActionComponent;
 };

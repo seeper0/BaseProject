@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnhancedInputComponent.h"
 #include "CfSkill.h"
 #include "GameFramework/Character.h"
 #include "CfActionComponent.generated.h"
@@ -23,8 +24,8 @@ public:
 	// Sets default values for this component's properties
 	UCfActionComponent();
 	inline static FName ComponentName = TEXT("SkillComponent");
-	static UCfActionComponent* GetSkillComponent(const AActor* Actor);
-	static UCfActionComponent* GetSkillComponent(const UActorComponent* MeshComp);
+	static UCfActionComponent* GetActionComponent(const AActor* Actor);
+	static UCfActionComponent* GetActionComponent(const UActorComponent* MeshComp);
 
 protected:
 	// Called when the game starts
@@ -38,13 +39,15 @@ public:
 	ECfSkillState GetSkillState() const { return SkillState; }
 	ACharacter* GetOwnerChar() const { return OwnerChar; }
 	AController* GetController() const { return OwnerChar ? OwnerChar->Controller : nullptr; }
+	const UDataTable* GetSkillTable() const { return SkillTable; }
+	class UCfActionBase* GetCurrentAction() const { return CurrentAction; }
 
-protected:
 	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
+	void InputSkill(const FCfSkillData* InSkillData);
 
+private:
 	bool CanCancelSkill(const FCfSkillData* InSkillData) const;
 	bool CanPlaySkill(const FCfSkillData* InSkillData) const;
-	void InputSkill(const FCfSkillData* InSkillData);
 	void PlaySkill(const FCfSkillData* InSkillData);
 	void PlayAction(UAnimMontage* InMontage, const FCfSkillData* InSkillData);
 	void TickAction();
@@ -60,6 +63,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UDataTable* SkillTable = nullptr;
 
+	UPROPERTY()
+	TMap<const UInputAction*, ECfSkillKey> SkillSlotCache;
+	
 	UPROPERTY()
 	ECfSkillState SkillState = ECfSkillState::None;
 

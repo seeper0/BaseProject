@@ -2,6 +2,7 @@
 
 
 #include "CfActionComponent.h"
+#include "InputAction.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -20,7 +21,7 @@ UCfActionComponent::UCfActionComponent()
 	// ...
 }
 
-UCfActionComponent* UCfActionComponent::GetSkillComponent(const AActor* Actor)
+UCfActionComponent* UCfActionComponent::GetActionComponent(const AActor* Actor)
 {
 	if(Actor)
 	{
@@ -29,11 +30,11 @@ UCfActionComponent* UCfActionComponent::GetSkillComponent(const AActor* Actor)
 	return nullptr;
 }
 
-UCfActionComponent* UCfActionComponent::GetSkillComponent(const UActorComponent* Component)
+UCfActionComponent* UCfActionComponent::GetActionComponent(const UActorComponent* Component)
 {
 	if(Component && Component->GetOwner())
 	{
-		return GetSkillComponent(Component->GetOwner());
+		return GetActionComponent(Component->GetOwner());
 	}
 	return nullptr;
 }

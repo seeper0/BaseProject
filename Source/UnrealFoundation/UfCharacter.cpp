@@ -11,7 +11,8 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "CfPlayerActionComponent.h"
+#include "CfActionComponent.h"
+#include "CfSkillInputComponent.h"
 #include "Components/ArrowComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,7 +55,8 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-	SkillComponent = CreateDefaultSubobject<UCfPlayerActionComponent>(UCfPlayerActionComponent::ComponentName);
+	ActionComponent = CreateDefaultSubobject<UCfActionComponent>(UCfActionComponent::ComponentName);
+	SkillInputComponent = CreateDefaultSubobject<UCfSkillInputComponent>(UCfSkillInputComponent::ComponentName);
 
 #if WITH_EDITORONLY_DATA
 	if (GetArrowComponent())
@@ -63,7 +65,7 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 		GetArrowComponent()->SetVisibility(true);
 	}
 #endif
-		
+
 }
 
 void AUfCharacter::BeginPlay()
@@ -90,7 +92,7 @@ void AUfCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		// Skill
-		SkillComponent->SetupPlayerInputComponent(EnhancedInputComponent);
+		SkillInputComponent->SetupComponent(ActionComponent, EnhancedInputComponent);
 	}
 	else
 	{

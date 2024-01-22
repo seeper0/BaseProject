@@ -10,7 +10,7 @@ AUfMonster::AUfMonster()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SkillComponent = CreateDefaultSubobject<UCfActionComponent>(UCfActionComponent::ComponentName);
+	ActionComponent = CreateDefaultSubobject<UCfActionComponent>(UCfActionComponent::ComponentName);
 }
 
 // Called when the game starts or when spawned

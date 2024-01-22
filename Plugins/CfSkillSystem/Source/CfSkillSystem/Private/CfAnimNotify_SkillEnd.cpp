@@ -17,7 +17,7 @@ void UCfAnimNotify_SkillEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if(UCfActionComponent* Skill = UCfActionComponent::GetSkillComponent(MeshComp))
+	if(UCfActionComponent* Skill = UCfActionComponent::GetActionComponent(MeshComp))
 	{
 		Skill->SetSkillState(ECfSkillState::End);
 	}

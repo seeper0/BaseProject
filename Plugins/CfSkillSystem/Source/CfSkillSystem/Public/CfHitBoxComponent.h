@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS(ClassGroup = (Cf), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (CombatFoundation), meta = (BlueprintSpawnableComponent))
 class CFSKILLSYSTEM_API UCfHitBoxComponent : public UBoxComponent
 {
 	GENERATED_BODY()

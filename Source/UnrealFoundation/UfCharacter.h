@@ -23,11 +23,14 @@ class AUfCharacter : public ACharacter
 	USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SkillSystem, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCfPlayerActionComponent* SkillComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SkillSystem, meta = (AllowPrivateAccess = "true"))
+	class UCfActionComponent* ActionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SkillSystem, meta = (AllowPrivateAccess = "true"))
+	class UCfSkillInputComponent* SkillInputComponent;
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -50,6 +53,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	/** Returns SkillComponent subobject **/
-	FORCEINLINE class UCfPlayerActionComponent* GetSkillComponent() const { return SkillComponent; }
+	FORCEINLINE class UCfActionComponent* GetActionComponent() const { return ActionComponent; }
 };
 

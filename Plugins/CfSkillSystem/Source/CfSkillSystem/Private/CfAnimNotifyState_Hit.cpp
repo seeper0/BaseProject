@@ -18,7 +18,7 @@ void UCfAnimNotifyState_Hit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	Skill = UCfActionComponent::GetSkillComponent(MeshComp);
+	Skill = UCfActionComponent::GetActionComponent(MeshComp);
 	if(Skill)
 	{
 		Skill->ClearHitActorList();
