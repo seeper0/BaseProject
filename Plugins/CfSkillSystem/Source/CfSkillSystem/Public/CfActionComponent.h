@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnhancedInputComponent.h"
 #include "CfSkill.h"
 #include "GameFramework/Character.h"
 #include "CfActionComponent.generated.h"
@@ -35,25 +34,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent);
 	void SetSkillState(ECfSkillState InSkillState);
 	ECfSkillState GetSkillState() const { return SkillState; }
 	ACharacter* GetOwnerChar() const { return OwnerChar; }
 	AController* GetController() const { return OwnerChar ? OwnerChar->Controller : nullptr; }
 
-private:
-	ECfSkillKey GetSkillSlot(const struct FInputActionInstance& InputActionInstance) const;
-	/** CurrentAction, SkillState, SkillKey, KeyEvent 조합으로 적절한 스킬을 찾는다. */
-	TArray<FName> FetchSkillsByInput(const ECfSkillKey SkillKey, const ETriggerEvent KeyEvent) const;
+protected:
 	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
-
-	/** Called for movement input */
-	void Move(const FInputActionValue& InputActionValue);
-	/** Called for looking input */
-	void Look(const FInputActionValue& InputActionValue);
-	void OnPress(const FInputActionInstance& InputActionInstance);
-	void OnHold(const FInputActionInstance& InputActionInstance);
-	void OnRelease(const FInputActionInstance& InputActionInstance);
 
 	bool CanCancelSkill(const FCfSkillData* InSkillData) const;
 	bool CanPlaySkill(const FCfSkillData* InSkillData) const;
@@ -73,13 +60,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UDataTable* SkillTable = nullptr;
 
-	/** Slot Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TMap<ECfSkillKey, const UInputAction*> SkillSlotMapping;
-
-	UPROPERTY()
-	TMap<const UInputAction*, ECfSkillKey> SkillSlotCache;
-	
 	UPROPERTY()
 	ECfSkillState SkillState = ECfSkillState::None;
 

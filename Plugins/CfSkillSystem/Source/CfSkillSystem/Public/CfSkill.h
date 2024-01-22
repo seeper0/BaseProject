@@ -91,6 +91,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ECfHitDirection HitDirection = ECfHitDirection::None;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float HitBackDistance = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float HitReactionTime = 0.0f;
 };
 
 USTRUCT(BlueprintType)
