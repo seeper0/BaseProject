@@ -4,11 +4,11 @@
 #include "CfActionBase.h"
 #include "GameFramework/Character.h"
 #include "CfLogger.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 #include "CfSkillData.h"
 #include "CfActionJump.h"
 
-UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfSkillComponent* InComponent, const FCfSkillData* InSkillData)
+UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillData)
 {
 	UCfActionSkill* ActionSkill = nullptr;
 	switch (InSkillData->InputKey)
@@ -28,7 +28,7 @@ UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfSkillComponent* I
 	return ActionSkill;
 }
 
-void UCfActionBase::InitAction(ACharacter* InOwner, UCfSkillComponent* InComponent, UAnimMontage* InMontage)
+void UCfActionBase::InitAction(ACharacter* InOwner, UCfActionComponent* InComponent, UAnimMontage* InMontage)
 {
 	Owner = InOwner;
 	Component = InComponent;

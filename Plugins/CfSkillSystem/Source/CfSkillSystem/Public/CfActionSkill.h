@@ -14,7 +14,7 @@ class CFSKILLSYSTEM_API UCfActionSkill : public UCfActionBase
 {
 	GENERATED_BODY()
 public:
-	void InitSkill(ACharacter* InOwner, class UCfSkillComponent* InComponent, const struct FCfSkillData* InSkillTable);
+	void InitSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillTable);
 	const struct FCfSkillData* GetSkillTable() const { return SkillTable; }
 	
 	virtual FName GetActionName() const override;

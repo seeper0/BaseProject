@@ -59,7 +59,7 @@ UENUM(BlueprintType)
 enum class ECfHitType : uint8
 {
 	None,
-	Knockback,
+	KnockBack,
 	Down,
 	Airborne,
 };
@@ -79,7 +79,13 @@ struct CFSKILLSYSTEM_API FCfHitData
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float DamageMultiplier = 1.0f;
-	
+};
+
+UCLASS(BlueprintType, Abstract)
+class CFSKILLSYSTEM_API UCfDamageType : public UDamageType
+{
+	GENERATED_BODY()
+public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ECfHitType HitType = ECfHitType::None;
 

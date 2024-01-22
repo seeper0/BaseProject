@@ -5,7 +5,7 @@
 #include "EngineUtils.h"
 #include "Blueprint/UserWidget.h"
 #include "CfUtil.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 #include "CfHUDWidget.h"
 #include "UfCharacter.h"
 #include "UfGameMode.h"

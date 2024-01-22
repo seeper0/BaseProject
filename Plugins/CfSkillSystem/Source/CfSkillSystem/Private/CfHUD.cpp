@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "CfUtil.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 
 void ACfHUD::DrawHUD()
 {
@@ -104,7 +104,7 @@ void ACfHUD::DrawPlayerInfo()
 	{
 		if(ACharacter* Char = *ActorItr)
 		{
-			if(const UCfSkillComponent* SkillComponent = UCfSkillComponent::GetSkillComponent(Char))
+			if(const UCfActionComponent* SkillComponent = UCfActionComponent::GetSkillComponent(Char))
 			{
 				DrawActorInfo(Char, FColor::Cyan, 1.0f, TEXT("State : %s"),* FCfUtil::GetEnumString(SkillComponent->GetSkillState()));
 			}

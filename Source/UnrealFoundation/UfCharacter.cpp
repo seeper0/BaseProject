@@ -12,7 +12,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 #include "Components/ArrowComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-	SkillComponent = CreateDefaultSubobject<UCfSkillComponent>(UCfSkillComponent::ComponentName);
+	SkillComponent = CreateDefaultSubobject<UCfActionComponent>(UCfActionComponent::ComponentName);
 
 #if WITH_EDITORONLY_DATA
 	if (GetArrowComponent())

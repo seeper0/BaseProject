@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 #include "InputAction.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Character.h"
@@ -12,7 +12,7 @@
 #include "CfUtil.h"
 
 // Sets default values for this component's properties
-UCfSkillComponent::UCfSkillComponent()
+UCfActionComponent::UCfActionComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -21,16 +21,16 @@ UCfSkillComponent::UCfSkillComponent()
 	// ...
 }
 
-UCfSkillComponent* UCfSkillComponent::GetSkillComponent(const AActor* Actor)
+UCfActionComponent* UCfActionComponent::GetSkillComponent(const AActor* Actor)
 {
 	if(Actor)
 	{
-		return Actor->GetComponentByClass<UCfSkillComponent>();
+		return Actor->GetComponentByClass<UCfActionComponent>();
 	}
 	return nullptr;
 }
 
-UCfSkillComponent* UCfSkillComponent::GetSkillComponent(const UActorComponent* Component)
+UCfActionComponent* UCfActionComponent::GetSkillComponent(const UActorComponent* Component)
 {
 	if(Component && Component->GetOwner())
 	{
@@ -40,7 +40,7 @@ UCfSkillComponent* UCfSkillComponent::GetSkillComponent(const UActorComponent* C
 }
 
 // Called when the game starts
-void UCfSkillComponent::BeginPlay()
+void UCfActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -51,14 +51,14 @@ void UCfSkillComponent::BeginPlay()
 	// 	AnimInstance = OwnerChar->GetMesh()->GetAnimInstance();
 	// 	if(AnimInstance)
 	// 	{
-	// 		AnimInstance->OnMontageEnded.AddDynamic(this, &UCfSkillComponent::OnMontageEnd);
+	// 		AnimInstance->OnMontageEnded.AddDynamic(this, &UCfActionComponent::OnMontageEnd);
 	// 	}
 	// }
 }
 
 
 // Called every frame
-void UCfSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UCfActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -69,7 +69,7 @@ void UCfSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	TickAction();
 }
 
-void UCfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent)
+void UCfActionComponent::SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInputComponent)
 {
 	SkillSlotCache.Empty();
 	for (const auto& SkillSlot : SkillSlotMapping)
@@ -77,22 +77,22 @@ void UCfSkillComponent::SetupPlayerInputComponent(UEnhancedInputComponent* Enhan
 		switch (SkillSlot.Key)
 		{
 		case ECfSkillKey::Move: // Moving
-			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UCfSkillComponent::Move);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UCfActionComponent::Move);
 			break;
 		case ECfSkillKey::Look: // Looking
-			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UCfSkillComponent::Look);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UCfActionComponent::Look);
 			break;
 		default:
-			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UCfSkillComponent::OnPress);
-			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Ongoing, this, &UCfSkillComponent::OnHold);
-			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Completed, this, &UCfSkillComponent::OnRelease);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UCfActionComponent::OnPress);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Ongoing, this, &UCfActionComponent::OnHold);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Completed, this, &UCfActionComponent::OnRelease);
 			SkillSlotCache.Add(SkillSlot.Value, SkillSlot.Key);
 			break;
 		}
 	}
 }
 
-void UCfSkillComponent::SetSkillState(ECfSkillState InSkillState)
+void UCfActionComponent::SetSkillState(ECfSkillState InSkillState)
 {
 	SkillState = InSkillState;
 	// if(Action)
@@ -113,7 +113,7 @@ void UCfSkillComponent::SetSkillState(ECfSkillState InSkillState)
 	}
 }
 
-ECfSkillKey UCfSkillComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
+ECfSkillKey UCfActionComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
 {
 	const ECfSkillKey* SkillKey = SkillSlotCache.Find(InputActionInstance.GetSourceAction());
 	if(SkillKey == nullptr)
@@ -122,7 +122,7 @@ ECfSkillKey UCfSkillComponent::GetSkillSlot(const FInputActionInstance& InputAct
 	return *SkillKey;
 }
 
-TArray<FName> UCfSkillComponent::FetchSkillsByInput(const ECfSkillKey SkillKey, const ETriggerEvent KeyEvent) const
+TArray<FName> UCfActionComponent::FetchSkillsByInput(const ECfSkillKey SkillKey, const ETriggerEvent KeyEvent) const
 {
 	TArray<FName> FetchedSkills;
 	if(SkillTable == nullptr)
@@ -161,7 +161,7 @@ TArray<FName> UCfSkillComponent::FetchSkillsByInput(const ECfSkillKey SkillKey, 
 	return FetchedSkills;
 }
 
-const FCfSkillData* UCfSkillComponent::GetDesiredSkill(const TArray<FName>& RowNames) const
+const FCfSkillData* UCfActionComponent::GetDesiredSkill(const TArray<FName>& RowNames) const
 {
 	// 체인 조건이 있다면 먼저 찾는다. (일단 현재 실행되는 스킬이 있어야함)
 	if(CurrentAction)
@@ -191,7 +191,7 @@ const FCfSkillData* UCfSkillComponent::GetDesiredSkill(const TArray<FName>& RowN
 	return nullptr;
 }
 
-void UCfSkillComponent::Move(const FInputActionValue& Value)
+void UCfActionComponent::Move(const FInputActionValue& Value)
 {
 	if(CurrentAction && !CurrentAction->CanMoveDuring())
 		return;
@@ -217,7 +217,7 @@ void UCfSkillComponent::Move(const FInputActionValue& Value)
 	}
 }
 
-void UCfSkillComponent::Look(const FInputActionValue& Value)
+void UCfActionComponent::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -230,7 +230,7 @@ void UCfSkillComponent::Look(const FInputActionValue& Value)
 	}
 }
 
-void UCfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
+void UCfActionComponent::OnPress(const FInputActionInstance& InputActionInstance)
 {
 	const ECfSkillKey SkillKey = GetSkillSlot(InputActionInstance);
 	if(SkillKey == ECfSkillKey::None)
@@ -242,7 +242,7 @@ void UCfSkillComponent::OnPress(const FInputActionInstance& InputActionInstance)
 	InputSkill(SkillData);
 }
 
-void UCfSkillComponent::OnHold(const FInputActionInstance& InputActionInstance)
+void UCfActionComponent::OnHold(const FInputActionInstance& InputActionInstance)
 {
 	const ECfSkillKey SkillKey = GetSkillSlot(InputActionInstance);
 	if(SkillKey == ECfSkillKey::None)
@@ -257,7 +257,7 @@ void UCfSkillComponent::OnHold(const FInputActionInstance& InputActionInstance)
 	}
 }
 
-void UCfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstance)
+void UCfActionComponent::OnRelease(const FInputActionInstance& InputActionInstance)
 {
 	const ECfSkillKey SkillKey = GetSkillSlot(InputActionInstance);
 	if(SkillKey == ECfSkillKey::None)
@@ -269,13 +269,13 @@ void UCfSkillComponent::OnRelease(const FInputActionInstance& InputActionInstanc
 	}
 }
 
-bool UCfSkillComponent::CanCancelSkill(const FCfSkillData* InSkillData) const
+bool UCfActionComponent::CanCancelSkill(const FCfSkillData* InSkillData) const
 {
 	// 특정 조건일때만 Cancel 되어야한다.
 	return true;
 }
 
-bool UCfSkillComponent::CanPlaySkill(const FCfSkillData* InSkillData) const
+bool UCfActionComponent::CanPlaySkill(const FCfSkillData* InSkillData) const
 {
 	if(InSkillData == nullptr)
 		return false;
@@ -291,7 +291,7 @@ bool UCfSkillComponent::CanPlaySkill(const FCfSkillData* InSkillData) const
 	return true;
 }
 
-void UCfSkillComponent::InputSkill(const FCfSkillData* InSkillData)
+void UCfActionComponent::InputSkill(const FCfSkillData* InSkillData)
 {
 	switch (SkillState)
 	{
@@ -312,7 +312,7 @@ void UCfSkillComponent::InputSkill(const FCfSkillData* InSkillData)
 	}
 }
 
-void UCfSkillComponent::PlaySkill(const FCfSkillData* InSkillData)
+void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData)
 {
 	if(InSkillData == nullptr)
 		return;
@@ -323,7 +323,7 @@ void UCfSkillComponent::PlaySkill(const FCfSkillData* InSkillData)
 	}
 }
 
-void UCfSkillComponent::PlayAction(UAnimMontage* InMontage, const FCfSkillData* InSkillData)
+void UCfActionComponent::PlayAction(UAnimMontage* InMontage, const FCfSkillData* InSkillData)
 {
 	// 평타, 스킬, 점프, 맞기등 몽타주 관련된건 여기서 해야한다.
 	ClearAction();
@@ -333,7 +333,7 @@ void UCfSkillComponent::PlayAction(UAnimMontage* InMontage, const FCfSkillData* 
 	CurrentAction->OnBegin();
 }
 
-void UCfSkillComponent::TickAction()
+void UCfActionComponent::TickAction()
 {
 	if(CurrentAction)
 	{
@@ -346,7 +346,7 @@ void UCfSkillComponent::TickAction()
 	}
 }
 
-void UCfSkillComponent::ClearAction()
+void UCfActionComponent::ClearAction()
 {
 	if(CurrentAction)
 	{
@@ -356,7 +356,7 @@ void UCfSkillComponent::ClearAction()
 	}
 }
 
-void UCfSkillComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
+void UCfActionComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
 {
 	// CF_LOG(TEXT("OnMontageEnd1"));
 	// if(CurrentAction)
@@ -367,28 +367,28 @@ void UCfSkillComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
 	// }
 }
 
-void UCfSkillComponent::ReserveSkill(const FCfSkillData* InSkillData)
+void UCfActionComponent::ReserveSkill(const FCfSkillData* InSkillData)
 {
 	if(ReservedRowName == NAME_None && InSkillData)
 		ReservedRowName = InSkillData->RowName;
 }
 
-void UCfSkillComponent::TickInput()
+void UCfActionComponent::TickInput()
 {
 }
 
 #pragma region HitList
-bool UCfSkillComponent::HasActorInHitList(const ACharacter* InVictim) const
+bool UCfActionComponent::HasActorInHitList(const ACharacter* InVictim) const
 {
 	return HitActorList.Contains(InVictim);
 }
 
-void UCfSkillComponent::PushHitActorList(ACharacter* InVictim)
+void UCfActionComponent::PushHitActorList(ACharacter* InVictim)
 {
 	HitActorList.Add(InVictim);
 }
 
-void UCfSkillComponent::ClearHitActorList()
+void UCfActionComponent::ClearHitActorList()
 {
 	HitActorList.Empty();
 }

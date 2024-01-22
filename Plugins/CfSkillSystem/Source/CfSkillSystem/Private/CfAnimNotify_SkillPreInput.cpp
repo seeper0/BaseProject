@@ -2,7 +2,7 @@
 
 
 #include "CfAnimNotify_SkillPreInput.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 
 UCfAnimNotify_SkillPreInput::UCfAnimNotify_SkillPreInput(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -16,7 +16,7 @@ void UCfAnimNotify_SkillPreInput::Notify(USkeletalMeshComponent* MeshComp, UAnim
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if(UCfSkillComponent* Skill = UCfSkillComponent::GetSkillComponent(MeshComp))
+	if(UCfActionComponent* Skill = UCfActionComponent::GetSkillComponent(MeshComp))
 	{
 		Skill->SetSkillState(ECfSkillState::PreInput);
 	}

@@ -2,7 +2,7 @@
 
 
 #include "CfAnimNotify_SkillCanCancel.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 
 UCfAnimNotify_SkillCanCancel::UCfAnimNotify_SkillCanCancel(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -17,7 +17,7 @@ void UCfAnimNotify_SkillCanCancel::Notify(USkeletalMeshComponent* MeshComp, UAni
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if(UCfSkillComponent* Skill = UCfSkillComponent::GetSkillComponent(MeshComp))
+	if(UCfActionComponent* Skill = UCfActionComponent::GetSkillComponent(MeshComp))
 	{
 		Skill->SetSkillState(ECfSkillState::CanCancel);
 	}

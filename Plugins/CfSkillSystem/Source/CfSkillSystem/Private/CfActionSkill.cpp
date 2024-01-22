@@ -2,10 +2,9 @@
 
 
 #include "CfActionSkill.h"
-
 #include "CfSkillData.h"
 
-void UCfActionSkill::InitSkill(ACharacter* InOwner, UCfSkillComponent* InComponent, const FCfSkillData* InSkillTable)
+void UCfActionSkill::InitSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillTable)
 {
 	Super::InitAction(InOwner, InComponent, InSkillTable->Montage);
 	SkillTable = InSkillTable;

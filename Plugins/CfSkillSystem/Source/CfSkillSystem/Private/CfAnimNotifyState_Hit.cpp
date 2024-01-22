@@ -4,7 +4,7 @@
 #include "CfAnimNotifyState_Hit.h"
 
 #include "CfCheatManager.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 #include "GameFramework/Character.h"
 
 UCfAnimNotifyState_Hit::UCfAnimNotifyState_Hit(const FObjectInitializer& ObjectInitializer)
@@ -18,7 +18,7 @@ void UCfAnimNotifyState_Hit::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	Skill = UCfSkillComponent::GetSkillComponent(MeshComp);
+	Skill = UCfActionComponent::GetSkillComponent(MeshComp);
 	if(Skill)
 	{
 		Skill->ClearHitActorList();
@@ -60,15 +60,14 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 		ACharacter* DamageCauser = Skill->GetOwnerChar();
 		FCfDamageEvent DamageEvent;
 		DamageEvent.HitData = HitData;
+		DamageEvent.DamageTypeClass = DamageTypeClass;
 
-		// TODO : Take 에서 Damage 애니메이션, Knockback, Down, Airborne 등을 구현해야한다.
+		// TODO : Take 에서 Damage 애니메이션, KnockBack, Down, Airborne 등을 구현해야한다.
 		TArray<ACharacter*> List = GetHitSuccessful(HitShape, MeshComp->GetComponentToWorld());
 		for(ACharacter* Char : List)
 		{
-			if(Char->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
-			{
-				Char->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-			}
+			//if(Char->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
+			Char->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 		}
 	}
 	//MeshComp->GetWorld()->WorldType : EWorldType::Type::EditorPreview

@@ -6,11 +6,11 @@
 #include "EnhancedInputComponent.h"
 #include "CfSkill.h"
 #include "GameFramework/Character.h"
-#include "CfSkillComponent.generated.h"
+#include "CfActionComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Cf), meta=(BlueprintSpawnableComponent) )
-class CFSKILLSYSTEM_API UCfSkillComponent : public UActorComponent
+class CFSKILLSYSTEM_API UCfActionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -22,10 +22,10 @@ class CFSKILLSYSTEM_API UCfSkillComponent : public UActorComponent
 
 public:	
 	// Sets default values for this component's properties
-	UCfSkillComponent();
+	UCfActionComponent();
 	inline static FName ComponentName = TEXT("SkillComponent");
-	static UCfSkillComponent* GetSkillComponent(const AActor* Actor);
-	static UCfSkillComponent* GetSkillComponent(const UActorComponent* MeshComp);
+	static UCfActionComponent* GetSkillComponent(const AActor* Actor);
+	static UCfActionComponent* GetSkillComponent(const UActorComponent* MeshComp);
 
 protected:
 	// Called when the game starts

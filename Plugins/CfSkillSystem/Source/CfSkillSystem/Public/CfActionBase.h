@@ -14,9 +14,9 @@ class CFSKILLSYSTEM_API UCfActionBase : public UObject
 {
 	GENERATED_BODY()
 public:
-	static UCfActionBase* NewSkill(ACharacter* InOwner, class UCfSkillComponent* InComponent, const struct FCfSkillData* InSkillData);
+	static UCfActionBase* NewSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillData);
 protected:
-	void InitAction(ACharacter* InOwner, class UCfSkillComponent* InComponent, UAnimMontage* InMontage);
+	void InitAction(ACharacter* InOwner, class UCfActionComponent* InComponent, UAnimMontage* InMontage);
 public:
 	virtual FName GetActionName() const;
 	virtual FString ToString() const;
@@ -36,7 +36,7 @@ protected:
 	ACharacter* Owner = nullptr;
 
 	UPROPERTY();
-	UCfSkillComponent* Component = nullptr;
+	UCfActionComponent* Component = nullptr;
 
 	UPROPERTY();
 	UAnimMontage* Montage = nullptr;

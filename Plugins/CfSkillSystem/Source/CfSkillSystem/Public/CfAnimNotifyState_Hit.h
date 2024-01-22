@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "CfSkill.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 #include "CfAnimNotifyState_Hit.generated.h"
 
 /**
@@ -37,9 +37,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FCfHitData HitData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UCfDamageType> DamageTypeClass;
+
 private:
 	UPROPERTY()
 	class UCfCheatManager* CheatManager;
 	UPROPERTY()
-	UCfSkillComponent* Skill;
+	UCfActionComponent* Skill;
 };

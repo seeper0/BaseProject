@@ -12,7 +12,7 @@ class UNREALFOUNDATION_API AUfMonster : public ACharacter
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCfSkillComponent* SkillComponent;
+	class UCfActionComponent* SkillComponent;
 
 public:
 	// Sets default values for this character's properties
@@ -29,5 +29,5 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	FORCEINLINE class UCfSkillComponent* GetSkillComponent() const { return SkillComponent; }
+	FORCEINLINE class UCfActionComponent* GetSkillComponent() const { return SkillComponent; }
 };

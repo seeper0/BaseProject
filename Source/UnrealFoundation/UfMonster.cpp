@@ -2,7 +2,7 @@
 
 
 #include "UfMonster.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 
 // Sets default values
 AUfMonster::AUfMonster()
@@ -10,7 +10,7 @@ AUfMonster::AUfMonster()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SkillComponent = CreateDefaultSubobject<UCfSkillComponent>(UCfSkillComponent::ComponentName);
+	SkillComponent = CreateDefaultSubobject<UCfActionComponent>(UCfActionComponent::ComponentName);
 }
 
 // Called when the game starts or when spawned

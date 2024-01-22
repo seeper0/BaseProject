@@ -2,7 +2,7 @@
 
 
 #include "CfAnimNotify_SkillEnd.h"
-#include "CfSkillComponent.h"
+#include "CfActionComponent.h"
 
 UCfAnimNotify_SkillEnd::UCfAnimNotify_SkillEnd(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -17,7 +17,7 @@ void UCfAnimNotify_SkillEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if(UCfSkillComponent* Skill = UCfSkillComponent::GetSkillComponent(MeshComp))
+	if(UCfActionComponent* Skill = UCfActionComponent::GetSkillComponent(MeshComp))
 	{
 		Skill->SetSkillState(ECfSkillState::End);
 	}
