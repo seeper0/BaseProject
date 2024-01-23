@@ -12,7 +12,7 @@ void UCfStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TargetInfo = CreateWidget<UCfTargetInfoWidget>( GetWorld()->GetGameInstance(), TargetInfoWidgetClass, NAME_None );
+	//TargetInfo = CreateWidget<UCfTargetInfoWidget>( GetWorld()->GetGameInstance(), TargetInfoWidgetClass, NAME_None );
 	if(TargetInfo)
 	{
 		//TargetInfo->AddToViewport(static_cast<int32>(ECfZOrder::TargetInfo));

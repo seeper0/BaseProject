@@ -3,6 +3,7 @@
 
 #include "UfMonster.h"
 #include "CfActionComponent.h"
+#include "CfStatComponent.h"
 
 // Sets default values
 AUfMonster::AUfMonster()
@@ -11,6 +12,7 @@ AUfMonster::AUfMonster()
 	PrimaryActorTick.bCanEverTick = true;
 
 	ActionComponent = CreateDefaultSubobject<UCfActionComponent>(UCfActionComponent::ComponentName);
+	StatComponent = CreateDefaultSubobject<UCfStatComponent>(UCfStatComponent::ComponentName);
 }
 
 // Called when the game starts or when spawned

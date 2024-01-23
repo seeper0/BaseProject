@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class CFSKILLSYSTEM_API UCfHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
