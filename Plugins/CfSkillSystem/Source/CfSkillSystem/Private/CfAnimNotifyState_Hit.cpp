@@ -39,20 +39,8 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 	{
 		if(CheatManager && CheatManager->IsShowHitBox())
 		{
-			CF_TODO("아직 계산이 잘못되었다.");
-			FTransform Transform = MeshComp->GetComponentToWorld(); //MeshComp->GetComponentToWorld(); //Skill->GetOwner()->ActorToWorld();// * MeshComp->GetRelativeTransform();
-			FRotator Rotator = Transform.Rotator();
-			Transform.SetRotation(FQuat(FRotator(Rotator.Pitch, Rotator.Yaw + 90, Rotator.Roll)));
+			const FTransform Transform = MeshComp->GetComponentToWorld(); //MeshComp->GetComponentToWorld(); //Skill->GetOwner()->ActorToWorld();// * MeshComp->GetRelativeTransform();
 			DrawHitShape(Skill->GetWorld(), HitShape, Transform);
-
-			FVector StartPosition = Transform.GetLocation();
-			Rotator.Yaw += 270;
-			FVector Direction = Transform.GetRotation().GetForwardVector();
-			Direction.Normalize();
-			FVector EndPosition = StartPosition + Direction * 100;
-
-			::DrawDebugPoint(Skill->GetWorld(), Transform.GetLocation(), 10, FColor::Red);
-			::DrawDebugDirectionalArrow(Skill->GetWorld(), StartPosition, EndPosition, 10, FColor::Cyan);
 		}
 
 		constexpr float BaseDamage = 10.0f;
@@ -63,12 +51,19 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 		DamageEvent.HitData = HitData;
 		DamageEvent.DamageTypeClass = DamageTypeClass;
 
+		CF_TODO("Damage를 계산한다. 크리티컬인지도 알아야한다. 컴퍼넌트에 떠넘긴다.");
 		CF_TODO("Take 에서 Damage 애니메이션, KnockBack, Down, Airborne 등을 구현해야한다.");
 		TArray<ACharacter*> List = GetHitSuccessful(HitShape, MeshComp->GetComponentToWorld());
-		for(ACharacter* Char : List)
+		for(ACharacter* Victim : List)
 		{
-			//if(Char->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
-			Char->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+			CF_TODO("Victim의 방어력과 공격력 등을 어쩌구 저쩌구한 최종 공격력을 알아야한다. 컴퍼넌트에 떠넘긴다.");
+			
+			//CF_TODO("ShouldTakeDamage는 ACharacter에서 virtual로 구현한다.");
+			if(Victim->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
+			{
+				CF_TODO("히트처리는 여기서 한다. 컴퍼넌트에 떠넘긴다.");
+			}
+			Victim->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 		}
 	}
 	//MeshComp->GetWorld()->WorldType : EWorldType::Type::EditorPreview
@@ -90,7 +85,7 @@ void UCfAnimNotifyState_Hit::DrawHitShape(UWorld* InWorld, const FCfHitShape& In
 	if(InWorld == nullptr)
 		return;
 
-	const FTransform Transform = ActorTransform * InHitShape.GetTransform();
+	const FTransform Transform = InHitShape.GetTransform() * ActorTransform;
 	switch(InHitShape.ShapeType)
 	{
 	case ECfHitShapeType::Box:
