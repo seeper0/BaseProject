@@ -38,9 +38,7 @@ void UCfStatComponent::OnTakeDamage(AActor* DamagedActor, float Damage, const UD
 
 	if(TargetInfo)
 	{
-		FVector TargetInfoLocation = GetOwner()->GetActorLocation();
-		TargetInfoLocation += FVector(0, TargetInfoHeight, 0);
-		TargetInfo->Update(TargetInfoLocation, HP, MaxHP);
+		TargetInfo->Update(DamagedActor, TargetInfoHeight, HP, MaxHP);
 	}
 }
 

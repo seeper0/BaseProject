@@ -14,7 +14,7 @@ class CFSKILLSYSTEM_API UCfStatComponent : public UActorComponent
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this component's properties
+	inline static FName ComponentName = TEXT("StatComponent");
 	UCfStatComponent();
 
 	float GetBaseDamage() const { return Attack; }
@@ -35,7 +35,7 @@ private:
 	float TargetInfoHeight = 80;
 	
 	UPROPERTY()
-	UCfTargetInfoWidget* TargetInfo; 
+	UCfTargetInfoWidget* TargetInfo = nullptr;
 	
 	int32 HP = 100;
 	int32 MaxHP = 100;

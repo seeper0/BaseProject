@@ -6,8 +6,14 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
 
-void UCfTargetInfoWidget::Update(const FVector& Location, int32 HP, int32 INT32)
+void UCfTargetInfoWidget::Update(AActor* DamagedActor, float TargetInfoHeight, int32 HP, int32 MaxHP)
 {
+	if(DamagedActor == nullptr)
+		return;
+	
+	FVector Location = DamagedActor->GetActorLocation();
+	Location += FVector(0, TargetInfoHeight, 0);
+
 	const TObjectPtr< APlayerController > Pc = UGameplayStatics::GetPlayerController( GetWorld(), 0 );
 	if (Pc)
 	{

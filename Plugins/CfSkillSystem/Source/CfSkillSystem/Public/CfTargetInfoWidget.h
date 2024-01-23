@@ -19,5 +19,5 @@ private:
 	class UProgressBar* HpBar;
 
 public:
-	void Update(const FVector& Location, int32 HP, int32 INT32);
+	void Update(AActor* DamagedActor, float TargetInfoHeight, int32 HP, int32 MaxHP);
 };

@@ -13,6 +13,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "CfActionComponent.h"
 #include "CfSkillInputComponent.h"
+#include "CfStatComponent.h"
 #include "Components/ArrowComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,6 +58,7 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 	ActionComponent = CreateDefaultSubobject<UCfActionComponent>(UCfActionComponent::ComponentName);
 	SkillInputComponent = CreateDefaultSubobject<UCfSkillInputComponent>(UCfSkillInputComponent::ComponentName);
+	StatComponent = CreateDefaultSubobject<UCfStatComponent>(UCfStatComponent::ComponentName);
 
 #if WITH_EDITORONLY_DATA
 	if (GetArrowComponent())
