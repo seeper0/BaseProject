@@ -15,12 +15,11 @@ public:
 	virtual void CustomizeChildren( TSharedRef<IPropertyHandle> PropertyHandle, IDetailChildrenBuilder& ChildBuilder, IPropertyTypeCustomizationUtils& CustomizationUtils ) override;
 
 	bool Tick(float DeltaSeconds);
-	void SetPreviewWorld(UWorld* InWorld);
 
 private:
 	FTSTicker::FDelegateHandle TickHandle;
 	UPROPERTY()
-	UWorld* World = nullptr;
+	UWorld* PreviewWorld = nullptr;
 	UPROPERTY()
 	class UCfAnimNotifyState_Hit* HitAnimNotifyState = nullptr;
 };

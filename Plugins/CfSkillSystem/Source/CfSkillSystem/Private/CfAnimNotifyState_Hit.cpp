@@ -5,6 +5,7 @@
 
 #include "CfCheatManager.h"
 #include "CfActionComponent.h"
+#include "CfLogger.h"
 #include "GameFramework/Character.h"
 
 UCfAnimNotifyState_Hit::UCfAnimNotifyState_Hit(const FObjectInitializer& ObjectInitializer)
@@ -38,7 +39,7 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 	{
 		if(CheatManager && CheatManager->IsShowHitBox())
 		{
-			// TODO : 아직 계산이 잘못되었다. 
+			CF_TODO("아직 계산이 잘못되었다.");
 			FTransform Transform = MeshComp->GetComponentToWorld(); //MeshComp->GetComponentToWorld(); //Skill->GetOwner()->ActorToWorld();// * MeshComp->GetRelativeTransform();
 			FRotator Rotator = Transform.Rotator();
 			Transform.SetRotation(FQuat(FRotator(Rotator.Pitch, Rotator.Yaw + 90, Rotator.Roll)));
@@ -62,7 +63,7 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 		DamageEvent.HitData = HitData;
 		DamageEvent.DamageTypeClass = DamageTypeClass;
 
-		// TODO : Take 에서 Damage 애니메이션, KnockBack, Down, Airborne 등을 구현해야한다.
+		CF_TODO("Take 에서 Damage 애니메이션, KnockBack, Down, Airborne 등을 구현해야한다.");
 		TArray<ACharacter*> List = GetHitSuccessful(HitShape, MeshComp->GetComponentToWorld());
 		for(ACharacter* Char : List)
 		{
