@@ -11,8 +11,11 @@ class UNREALFOUNDATION_API AUfMonster : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SkillSystem, meta = (AllowPrivateAccess = "true"))
 	class UCfActionComponent* ActionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SkillSystem, meta = (AllowPrivateAccess = "true"))
+	class UCfStatComponent* StatComponent;
 
 public:
 	// Sets default values for this character's properties

@@ -146,7 +146,7 @@ void UCfSkillInputComponent::OnHold(const FInputActionInstance& InputActionInsta
 		return;
 
 	const UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
-	if(CurrentAction->CanInputDuring()) // 차지 스킬일때는 딱히 아무것도 안해도 됨
+	if(CurrentAction && CurrentAction->CanInputDuring()) // 차지 스킬일때는 딱히 아무것도 안해도 됨
 	{
 		// 키를 눌렀을때 다음에 뭐쓸지 여기서 결정하자. 결정을 바꾸면 로직이 복잡해진다.
 		const TArray<FName> FetchedSkills = FetchSkillsByInput(SkillKey, ETriggerEvent::Ongoing);
