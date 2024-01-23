@@ -12,6 +12,12 @@ void UCfStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	TargetInfo = CreateWidget<UCfTargetInfoWidget>( GetWorld()->GetGameInstance(), TargetInfoWidgetClass, NAME_None );
+	if(TargetInfo)
+	{
+		//TargetInfo->AddToViewport(static_cast<int32>(ECfZOrder::TargetInfo));
+	}
+
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UCfStatComponent::OnTakeDamage);
 }
 
@@ -28,5 +34,13 @@ float UCfStatComponent::GetDamage(float DamageMultiplier, bool bIsCritical) cons
 
 void UCfStatComponent::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* InDamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
+	HP = FMath::Clamp(HP - Damage, 0.0f, MaxHP);
+
+	if(TargetInfo)
+	{
+		FVector TargetInfoLocation = GetOwner()->GetActorLocation();
+		TargetInfoLocation += FVector(0, TargetInfoHeight, 0);
+		TargetInfo->Update(TargetInfoLocation, HP, MaxHP);
+	}
 }
 

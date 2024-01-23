@@ -128,6 +128,12 @@ enum class ECfHitFlowType : uint8
 	// InwardToOutward,
 };
 
+UENUM(BlueprintType)
+enum class ECfZOrder : uint8
+{
+	HUD,
+	TargetInfo
+};
 
 USTRUCT(BlueprintType)
 struct CFSKILLSYSTEM_API FCfHitShape

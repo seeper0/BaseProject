@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CfAnimNotifyState_Hit.h"
 #include "Components/ActorComponent.h"
+#include "CfTargetInfoWidget.h"
 #include "CfStatComponent.generated.h"
 
 
@@ -28,6 +28,15 @@ protected:
 	void OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* InDamageType, AController* InstigatedBy, AActor* DamageCauser);
 	
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCfTargetInfoWidget> TargetInfoWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float TargetInfoHeight = 80;
+	
+	UPROPERTY()
+	UCfTargetInfoWidget* TargetInfo; 
+	
 	int32 HP = 100;
 	int32 MaxHP = 100;
 	int32 Attack = 10;

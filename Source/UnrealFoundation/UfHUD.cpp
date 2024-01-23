@@ -18,7 +18,7 @@ void AUfHUD::BeginPlay()
 	{
 		if ( const TObjectPtr< UCfHUDWidget > Widget = CreateWidget< UCfHUDWidget >( GetWorld(), Mode->HudWidgetClass ) )
 		{
-			Widget->AddToViewport();
+			Widget->AddToViewport(static_cast<int32>(ECfZOrder::HUD));
 		}
 	}
 }
