@@ -163,6 +163,15 @@ void UCfActionComponent::InputSkill(const FCfSkillData* InSkillData)
 	}
 }
 
+void UCfActionComponent::HitReaction(const FCfDamageEvent& DamageEvent)
+{
+	const UCfDamageType* DamageTypeCDO = Cast<UCfDamageType>(DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>());
+	//DamageTypeCDO->HitType
+	//DamageTypeCDO->HitDirection
+	//DamageTypeCDO->HitBackDistance
+	//DamageTypeCDO->HitReactionTime
+}
+
 void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData)
 {
 	if(InSkillData == nullptr)

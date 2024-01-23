@@ -3,29 +3,36 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CfAnimNotifyState_Hit.h"
 #include "Components/ActorComponent.h"
-#include "CfHitReactionComponent.generated.h"
+#include "CfStatComponent.generated.h"
 
 
 UCLASS( ClassGroup=(CombatFoundation), meta=(BlueprintSpawnableComponent) )
-class CFSKILLSYSTEM_API UCfHitReactionComponent : public UActorComponent
+class CFSKILLSYSTEM_API UCfStatComponent : public UActorComponent
 {
 	GENERATED_BODY()
-
+	
 public:	
 	// Sets default values for this component's properties
-	UCfHitReactionComponent();
+	UCfStatComponent();
+
+	float GetBaseDamage() const { return Attack; }
+	bool IsCritical() const;
+	float GetDamage(float DamageMultiplier, bool bIsCritical) const;
 
 protected:
 	UFUNCTION()
-	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-
-private:
+	UFUNCTION()
 	void OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* InDamageType, AController* InstigatedBy, AActor* DamageCauser);
+	
+private:
+	int32 HP = 100;
+	int32 MaxHP = 100;
+	int32 Attack = 10;
+	int32 Defense = 0;
+	float MovementSpeed = 0;
+	float CriticalRatio = 0.1f;
+	float CriticalDamageMultiplier = 2.5f;
 };

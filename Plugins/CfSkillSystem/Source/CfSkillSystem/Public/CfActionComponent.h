@@ -44,6 +44,7 @@ public:
 
 	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
 	void InputSkill(const FCfSkillData* InSkillData);
+	void HitReaction(const FCfDamageEvent& DamageEvent);
 
 private:
 	bool CanCancelSkill(const FCfSkillData* InSkillData) const;

@@ -6,6 +6,7 @@
 #include "CfCheatManager.h"
 #include "CfActionComponent.h"
 #include "CfLogger.h"
+#include "CfStatComponent.h"
 #include "GameFramework/Character.h"
 
 UCfAnimNotifyState_Hit::UCfAnimNotifyState_Hit(const FObjectInitializer& ObjectInitializer)
@@ -43,25 +44,26 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 			DrawHitShape(Skill->GetWorld(), HitShape, Transform);
 		}
 
-		constexpr float BaseDamage = 10.0f;
-		const float Damage = BaseDamage * HitData.DamageMultiplier;
+		const UCfStatComponent* InstigatorStat = Skill->GetOwnerChar()->GetComponentByClass<UCfStatComponent>();
+		const bool IsCritical = InstigatorStat->IsCritical();
+		const float Damage = InstigatorStat->GetDamage(HitData.DamageMultiplier, IsCritical);
+
 		AController* EventInstigator = Skill->GetController();
 		ACharacter* DamageCauser = Skill->GetOwnerChar();
 		FCfDamageEvent DamageEvent;
 		DamageEvent.HitData = HitData;
 		DamageEvent.DamageTypeClass = DamageTypeClass;
 
-		CF_TODO("Damage를 계산한다. 크리티컬인지도 알아야한다. 컴퍼넌트에 떠넘긴다.");
 		CF_TODO("Take 에서 Damage 애니메이션, KnockBack, Down, Airborne 등을 구현해야한다.");
 		TArray<ACharacter*> List = GetHitSuccessful(HitShape, MeshComp->GetComponentToWorld());
 		for(ACharacter* Victim : List)
 		{
-			CF_TODO("Victim의 방어력과 공격력 등을 어쩌구 저쩌구한 최종 공격력을 알아야한다. 컴퍼넌트에 떠넘긴다.");
+			UCfActionComponent* VictimActionComponent = Victim->GetComponentByClass<UCfActionComponent>();
 			
-			//CF_TODO("ShouldTakeDamage는 ACharacter에서 virtual로 구현한다.");
+			//CF_TODO("ShouldTakeDamage는 ACharacter에서 virtual로 구현한다. 팀 구분 등...");
 			if(Victim->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
 			{
-				CF_TODO("히트처리는 여기서 한다. 컴퍼넌트에 떠넘긴다.");
+				VictimActionComponent->HitReaction(DamageEvent);
 			}
 			Victim->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 		}
@@ -114,7 +116,7 @@ TArray<ACharacter*> UCfAnimNotifyState_Hit::GetHitSuccessful(const FCfHitShape& 
 	CollisionParams.AddIgnoredActor(Skill->GetOwner());
 	bool bOverlap = false;
 
-	const FTransform Transform = ActorTransform * InHitShape.GetTransform();
+	const FTransform Transform = InHitShape.GetTransform() * ActorTransform;
 	switch(InHitShape.ShapeType)
 	{
 	case ECfHitShapeType::Box:
