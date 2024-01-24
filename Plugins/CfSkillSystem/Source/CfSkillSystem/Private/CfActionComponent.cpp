@@ -170,12 +170,18 @@ void UCfActionComponent::PlayAction(const FActionInfo& ActionInfo)
 		CurrentAction = UCfActionBase::NewRecover(OwnerChar, this);
 	}
 
-	CurrentAction->OnBegin();
+	CurrentAction->Begin();
 }
 
 void UCfActionComponent::ReserveAction(const FActionInfo& ActionInfo)
 {
 	ReverseActionInfo = FActionInfo(ActionInfo);
+}
+
+void UCfActionComponent::SetStun(const float InRecoveryTime, const float InStunPlayRate)
+{
+	if(CurrentAction)
+		CurrentAction->SetStun(InRecoveryTime, InStunPlayRate);
 }
 
 bool UCfActionComponent::IsSuperArmorActive() const
@@ -200,7 +206,7 @@ void UCfActionComponent::TickAction(float DeltaTime)
 {
 	if(CurrentAction)
 	{
-		CurrentAction->OnTick(DeltaTime);
+		CurrentAction->Tick(DeltaTime);
 		if(CurrentAction->IsEnd())
 		{
 			//CF_LOG(TEXT("IsEnd"));
@@ -220,7 +226,7 @@ void UCfActionComponent::ClearAction()
 	if(CurrentAction)
 	{
 		SetSkillState(ECfSkillState::None);
-		CurrentAction->OnEnd();
+		CurrentAction->End();
 		CurrentAction = nullptr;
 	}
 }

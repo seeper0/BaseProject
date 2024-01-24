@@ -8,7 +8,7 @@
 #include "CfActionSkill.h"
 #include "CfActionJump.h"
 #include "CfActionHit.h"
-#include "CfActionRecover.h"
+#include "CfActionRecovery.h"
 #include "CfSkillData.h"
 
 UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillData)
@@ -44,8 +44,8 @@ UCfActionBase* UCfActionBase::NewHitReaction(ACharacter* InOwner, UCfActionCompo
 
 UCfActionBase* UCfActionBase::NewRecover(ACharacter* InOwner, UCfActionComponent* InComponent)
 {
-	UCfActionRecover* ActionRecover = nullptr;
-	ActionRecover = NewObject<UCfActionRecover>();
+	UCfActionRecovery* ActionRecover = nullptr;
+	ActionRecover = NewObject<UCfActionRecovery>();
 	if(ActionRecover)
 	{
 		ActionRecover->InitRecover(InOwner, InComponent);
@@ -58,6 +58,7 @@ void UCfActionBase::InitAction(ACharacter* InOwner, UCfActionComponent* InCompon
 	Owner = InOwner;
 	Component = InComponent;
 	Montage = InMontage;
+	ElapsedRecoveryTime = 0.0f;
 }
 
 FName UCfActionBase::GetActionName() const
@@ -68,6 +69,26 @@ FName UCfActionBase::GetActionName() const
 FString UCfActionBase::ToString() const
 {
 	return TEXT("Not Skill");
+}
+
+void UCfActionBase::Begin()
+{
+	OnBegin();
+}
+
+void UCfActionBase::Tick(float DeltaTime)
+{
+	OnTick(DeltaTime);
+}
+
+void UCfActionBase::End()
+{
+	OnEnd();
+}
+
+void UCfActionBase::ReleaseButton(const ECfSkillKey InSkillKey)
+{
+	OnButtonReleased(InSkillKey);
 }
 
 void UCfActionBase::OnBegin()
@@ -81,6 +102,7 @@ void UCfActionBase::OnBegin()
 
 void UCfActionBase::OnTick(float DeltaTime)
 {
+	TickAnimStun(DeltaTime);
 }
 
 void UCfActionBase::OnEnd()
@@ -116,4 +138,46 @@ bool UCfActionBase::CanInputDuring() const
 bool UCfActionBase::IsSuperArmorActive() const
 {
 	return false;
+}
+
+void UCfActionBase::SetStun(const float InRecoveryTime, const float InStunPlayRate)
+{
+	RecoveryTime = FMath::Max(InRecoveryTime, 0.0f);
+	StunPlayRate = FMath::Max(InStunPlayRate, KINDA_SMALL_NUMBER);
+	IsStunned = RecoveryTime > 0.0f;
+
+	if(IsStunned)
+	{
+		if(const UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance())
+		{
+			if (FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(Montage))
+			{
+				MontageInstance->SetPlayRate(StunPlayRate);
+			}
+		}
+	}
+	else
+	{
+		StunPlayRate = 1.0f;
+	}
+}
+
+void UCfActionBase::TickAnimStun(float DeltaTime)
+{
+	if(!IsStunned)
+		return;
+	 
+	ElapsedRecoveryTime += DeltaTime;
+	if(ElapsedRecoveryTime > RecoveryTime)
+	{
+		IsStunned = false;
+		StunPlayRate = 1.0f;
+		if(const UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance())
+		{
+			if (FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(Montage))
+			{
+				MontageInstance->SetPlayRate(StunPlayRate);
+			}
+		}
+	}
 }

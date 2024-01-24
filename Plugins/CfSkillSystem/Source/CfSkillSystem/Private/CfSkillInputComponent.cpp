@@ -164,6 +164,6 @@ void UCfSkillInputComponent::OnRelease(const FInputActionInstance& InputActionIn
 	UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
 	if(CurrentAction)
 	{
-		CurrentAction->OnButtonReleased(SkillKey);
+		CurrentAction->ReleaseButton(SkillKey);
 	}
 }

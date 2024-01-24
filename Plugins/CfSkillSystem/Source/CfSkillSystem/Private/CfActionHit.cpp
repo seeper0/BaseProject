@@ -51,16 +51,22 @@ FString UCfActionHit::ToString() const
 
 void UCfActionHit::OnBegin()
 {
-	Super::OnBegin();
-
+	//Super::OnBegin();
 	// 모든 히트 모션은 마지막 프레임으로 유지한다.
 	if(Owner && Montage && Component)
 	{
-		if(const UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance())
+		if(UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance())
 		{
+			AnimInstance->Montage_PlayWithBlendIn(Montage, FAlphaBlendArgs(0.1f * DamageEvent.SkillData->HitStunPlayRate));
 			if (FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(Montage))
 			{
 				MontageInstance->bEnableAutoBlendOut = false;
+				SetStun(DamageEvent.SkillData->HitStunDuration, DamageEvent.SkillData->HitStunPlayRate);
+
+				if(UCfActionComponent* CauserComponent = DamageEvent.DamageCauser->GetComponentByClass<UCfActionComponent>())
+				{
+					CauserComponent->SetStun(DamageEvent.SkillData->HitStopDuration, DamageEvent.SkillData->HitStopPlayRate);
+				}
 			}
 		}
 	}
@@ -74,7 +80,7 @@ void UCfActionHit::OnTick(float DeltaTime)
 		return;
 
 	ElapsedTime += DeltaTime;
-	UpdateKnockBack(DeltaTime);
+	TickKnockBack(GetStunPlayRate() * DeltaTime);
 }
 
 void UCfActionHit::OnEnd()
@@ -128,6 +134,7 @@ bool UCfActionHit::IsSuperArmorActive() const
 
 void UCfActionHit::InitKnockBack(const FCfDamageEvent& InDamageEvent)
 {
+	ElapsedKnockBackTime = 0.0f;
 	StartLocation = Owner->GetActorLocation();
 	FVector CauserLocation = InDamageEvent.DamageCauser->GetActorLocation();
 	StartLocation.Z = 0;
@@ -152,9 +159,10 @@ void UCfActionHit::InitKnockBack(const FCfDamageEvent& InDamageEvent)
 	Owner->SetActorRotation(Direction.Rotation() + FRotator(0, 180, 0));
 }
 
-void UCfActionHit::UpdateKnockBack(float DeltaTime)
+void UCfActionHit::TickKnockBack(float DeltaTime)
 {
-	float DistProgress = ElapsedTime / DamageEvent.SkillData->KnockBackDistanceTime;
+	ElapsedKnockBackTime += DeltaTime;
+	float DistProgress = ElapsedKnockBackTime / DamageEvent.SkillData->KnockBackDistanceTime;
 	
 	if(DamageEvent.SkillData->KnockBackCurve)
 	{

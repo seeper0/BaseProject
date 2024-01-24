@@ -23,11 +23,18 @@ public:
 	virtual FName GetActionName() const;
 	virtual FString ToString() const;
 
+	void Begin();
+	void Tick(float DeltaTime);
+	void End();
+	void ReleaseButton(const ECfSkillKey InSkillKey);
+	
+protected:
 	virtual void OnBegin();
 	virtual void OnTick(float DeltaTime);
 	virtual void OnEnd();
 	virtual void OnButtonReleased(const ECfSkillKey InSkillKey);
 
+public:
 	virtual bool IsEnd() const;
 	virtual bool CanMoveDuring() const;
 	virtual bool CanInputDuring() const;
@@ -42,4 +49,18 @@ protected:
 
 	UPROPERTY();
 	UAnimMontage* Montage = nullptr;
+
+#pragma region Stun
+public:
+	void SetStun(const float InRecoveryTime, const float InStunPlayRate);
+protected:
+	float GetStunPlayRate() const { return StunPlayRate; }
+private:
+	void TickAnimStun(float DeltaTime);
+
+	float ElapsedRecoveryTime = 0.0f;
+	float RecoveryTime = 0.0f;
+	float StunPlayRate = 1.0f;
+	bool IsStunned = false; 
+#pragma endregion
 };

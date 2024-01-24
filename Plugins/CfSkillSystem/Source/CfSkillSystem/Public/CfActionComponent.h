@@ -69,6 +69,7 @@ public:
 	void InputSkill(const FCfSkillData* InSkillData);
 	void PlayAction(const FActionInfo& ActionInfo);
 	void ReserveAction(const FActionInfo& ActionInfo);
+	void SetStun(const float InRecoveryTime, const float InStunPlayRate);
 	bool IsSuperArmorActive() const;
 
 private:

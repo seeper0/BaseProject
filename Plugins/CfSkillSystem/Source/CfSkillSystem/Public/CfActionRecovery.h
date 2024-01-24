@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "CfActionBase.h"
-#include "CfActionRecover.generated.h"
+#include "CfActionRecovery.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CFSKILLSYSTEM_API UCfActionRecover : public UCfActionBase
+class CFSKILLSYSTEM_API UCfActionRecovery : public UCfActionBase
 {
 	GENERATED_BODY()
 

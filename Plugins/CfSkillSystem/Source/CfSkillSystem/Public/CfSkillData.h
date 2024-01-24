@@ -73,19 +73,19 @@ public:
 
 	// 경직시간
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float StiffTime = 0.0f;
+	float HitStunDuration = 0.0f;
 
 	// 경직시간 동안 AnimPlay 속도
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float StiffPlayRate = 1.0f;
+	float HitStunPlayRate = 1.0f;
 
 	// 역경직시간
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="R)StiffTime"))
-	float ReverseStiffTime = 0.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float HitStopDuration = 0.0f;
 
 	// 역경직시간 동안 AnimPlay 속도
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="R)StiffPlayRate"))
-	float ReverseStiffPlayRate = 1.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float HitStopPlayRate = 1.0f;
 #pragma endregion
 	
 #pragma region GetMaxRequireSkill

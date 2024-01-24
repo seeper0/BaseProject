@@ -28,15 +28,22 @@ public:
 private:
 	UPROPERTY()
 	class UCharacterMovementComponent* MovementComponent;
+
+	UPROPERTY()
 	FCfDamageEvent DamageEvent;
+
+	UPROPERTY()
 	float ElapsedTime = 0.0f;
+	
+	UPROPERTY()
+	float ElapsedKnockBackTime = 0.0f;
 
 #pragma region Knockback
 	void InitKnockBack(const FCfDamageEvent& InDamageEvent);
-	void UpdateKnockBack(float DeltaTime);
+	void TickKnockBack(float DeltaTime);
 
 	FVector StartLocation;
 	FVector EndLocation;
 	FVector PrevLocation;
-#pragma endregion
+#pragma endregion	
 };
