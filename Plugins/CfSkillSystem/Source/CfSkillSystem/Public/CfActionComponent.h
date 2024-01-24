@@ -18,10 +18,24 @@ public:
 	// uniform initialization 전용 임시 struct, PlayAction argument로 사용된다.
 	struct FActionInfo
 	{
-		FActionInfo(const FCfSkillData* InSkillData) : SkillData(InSkillData) {}
-		FActionInfo(const FCfDamageEvent& InDamageEvent) : SkillData(nullptr), DamageEvent(InDamageEvent) {}
+		FActionInfo() : SkillData(nullptr) , IsValid(false) {}
+		FActionInfo(bool InIsValid) : SkillData(nullptr), IsValid(InIsValid) {}
+		FActionInfo(const FCfSkillData* InSkillData) : SkillData(InSkillData), IsValid(true) {}
+		FActionInfo(const FCfDamageEvent& InDamageEvent) : SkillData(nullptr), DamageEvent(InDamageEvent), IsValid(true) {}
+
+		FActionInfo(const FActionInfo& Info) { operator=(Info); }
+		const FActionInfo& operator=(const FActionInfo& Info)
+		{
+			SkillData = Info.SkillData;
+			FCfDamageEvent* Event = const_cast<FCfDamageEvent*>(&DamageEvent);
+			*Event = Info.DamageEvent;
+			IsValid = Info.IsValid;
+			return *this;
+		}
+
 		const FCfSkillData* SkillData;
 		const FCfDamageEvent DamageEvent;
+		bool IsValid = false;
 	};
 
 public:
@@ -54,6 +68,8 @@ public:
 	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
 	void InputSkill(const FCfSkillData* InSkillData);
 	void PlayAction(const FActionInfo& ActionInfo);
+	void ReserveAction(const FActionInfo& ActionInfo);
+	bool IsSuperArmorActive() const;
 
 private:
 	bool CanCancelSkill(const FCfSkillData* InSkillData) const;
@@ -96,6 +112,7 @@ private:
 
 	UPROPERTY()
 	FName ReservedRowName;
+	FActionInfo ReverseActionInfo;
 
 #pragma region HitList
 public:

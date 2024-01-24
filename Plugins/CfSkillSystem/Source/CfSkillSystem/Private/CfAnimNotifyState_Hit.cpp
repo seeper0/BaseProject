@@ -70,11 +70,14 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 	for(ACharacter* Victim : List)
 	{
 		UCfActionComponent* VictimActionComponent = Victim->GetComponentByClass<UCfActionComponent>();
-		
+
 		//CF_TODO("ShouldTakeDamage는 ACharacter에서 virtual로 구현한다. 팀 구분 등...");
 		if(Victim->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
 		{
-			VictimActionComponent->PlayAction({DamageEvent});
+			if(!VictimActionComponent->IsSuperArmorActive())
+			{
+				VictimActionComponent->PlayAction({DamageEvent});
+			}
 		}
 		Victim->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	}

@@ -8,6 +8,7 @@
 #include "CfActionSkill.h"
 #include "CfActionJump.h"
 #include "CfActionHit.h"
+#include "CfActionRecover.h"
 #include "CfSkillData.h"
 
 UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillData)
@@ -32,7 +33,6 @@ UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* 
 
 UCfActionBase* UCfActionBase::NewHitReaction(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfDamageEvent& DamageEvent)
 {
-	CF_TODO("여기서 KnockBack, Down, Airborne 등으로 나뉜다.");
 	UCfActionHit* ActionHit = nullptr;
 	ActionHit = NewObject<UCfActionHit>();
 	if(ActionHit)
@@ -40,6 +40,17 @@ UCfActionBase* UCfActionBase::NewHitReaction(ACharacter* InOwner, UCfActionCompo
 		ActionHit->InitHit(InOwner, InComponent, DamageEvent);
 	}
 	return ActionHit;
+}
+
+UCfActionBase* UCfActionBase::NewRecover(ACharacter* InOwner, UCfActionComponent* InComponent)
+{
+	UCfActionRecover* ActionRecover = nullptr;
+	ActionRecover = NewObject<UCfActionRecover>();
+	if(ActionRecover)
+	{
+		ActionRecover->InitRecover(InOwner, InComponent);
+	}
+	return ActionRecover;
 }
 
 void UCfActionBase::InitAction(ACharacter* InOwner, UCfActionComponent* InComponent, UAnimMontage* InMontage)
@@ -98,6 +109,11 @@ bool UCfActionBase::CanMoveDuring() const
 }
 
 bool UCfActionBase::CanInputDuring() const
+{
+	return false;
+}
+
+bool UCfActionBase::IsSuperArmorActive() const
 {
 	return false;
 }

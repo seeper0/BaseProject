@@ -21,4 +21,5 @@ public:
 	virtual bool IsEnd() const override;
 	virtual bool CanMoveDuring() const override;
 	virtual bool CanInputDuring() const override;
+	virtual bool IsSuperArmorActive() const override;
 };

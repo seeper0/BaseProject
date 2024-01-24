@@ -2,10 +2,11 @@
 
 
 #include "CfActionHit.h"
-#include "CfLogger.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "CfActionComponent.h"
 #include "CfSkillData.h"
 #include "CfUtil.h"
+#include "CfLogger.h"
 
 void UCfActionHit::InitHit(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfDamageEvent& InDamageEvent)
 {
@@ -27,8 +28,11 @@ void UCfActionHit::InitHit(ACharacter* InOwner, UCfActionComponent* InComponent,
 
 	Super::InitAction(InOwner, InComponent, InMontage);
 
+	MovementComponent = Owner->GetCharacterMovement();
 	DamageEvent = InDamageEvent;
-	RemainingTime = DamageEvent.SkillData->HitReactionTime;
+	ElapsedTime = 0.0f;
+
+	InitKnockBack(InDamageEvent);
 }
 
 FName UCfActionHit::GetActionName() const
@@ -66,7 +70,11 @@ void UCfActionHit::OnTick(float DeltaTime)
 {
 	Super::OnTick(DeltaTime);
 
-	RemainingTime -= DeltaTime;
+	if(DamageEvent.SkillData == nullptr)
+		return;
+
+	ElapsedTime += DeltaTime;
+	UpdateKnockBack(DeltaTime);
 }
 
 void UCfActionHit::OnEnd()
@@ -74,6 +82,19 @@ void UCfActionHit::OnEnd()
 	if(Owner && Montage && Component)
 	{
 		Owner->StopAnimMontage(Montage);
+
+		if(DamageEvent.SkillData)
+		{
+			switch(DamageEvent.SkillData->HitType)
+			{
+			case ECfHitType::Down:
+			case ECfHitType::Airborne:
+				Component->ReserveAction({true});
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	Super::OnEnd();
@@ -81,8 +102,68 @@ void UCfActionHit::OnEnd()
 
 bool UCfActionHit::IsEnd() const
 {
-	if(RemainingTime <= 0.0f)
+	if(Owner == nullptr || MovementComponent == nullptr)
+		return true;
+
+	if(DamageEvent.SkillData == nullptr)
+		return true;
+
+	if(ElapsedTime >= DamageEvent.SkillData->HitReactionTime)
 		return true;
 
 	return false;
+}
+
+bool UCfActionHit::IsSuperArmorActive() const
+{
+	switch (DamageEvent.SkillData->HitType )
+	{
+	case ECfHitType::Down:
+	case ECfHitType::Airborne:
+		return true;
+	default:
+		return Super::IsSuperArmorActive();
+	}
+}
+
+void UCfActionHit::InitKnockBack(const FCfDamageEvent& InDamageEvent)
+{
+	StartLocation = Owner->GetActorLocation();
+	FVector CauserLocation = InDamageEvent.DamageCauser->GetActorLocation();
+	StartLocation.Z = 0;
+	CauserLocation.Z = 0;
+	PrevLocation = StartLocation;
+
+	FVector Direction;
+	switch (DamageEvent.SkillData->HitDirection)
+	{
+	case ECfHitDirection::Backward:
+		Direction = InDamageEvent.DamageCauser->GetActorForwardVector();
+		break;
+	case ECfHitDirection::Radial:
+	default:
+		Direction = (StartLocation - CauserLocation).GetSafeNormal();
+		break;
+	}
+
+	EndLocation = StartLocation + Direction * DamageEvent.SkillData->KnockBackDistance;
+	EndLocation.Z = 0;
+
+	Owner->SetActorRotation(Direction.Rotation() + FRotator(0, 180, 0));
+}
+
+void UCfActionHit::UpdateKnockBack(float DeltaTime)
+{
+	float DistProgress = ElapsedTime / DamageEvent.SkillData->KnockBackDistanceTime;
+	
+	if(DamageEvent.SkillData->KnockBackCurve)
+	{
+		DistProgress = DamageEvent.SkillData->KnockBackCurve->GetFloatValue(DistProgress);
+	}
+
+	const FVector CurrentLocation = FMath::Lerp(StartLocation, EndLocation, DistProgress);
+	const FVector LocationDelta = CurrentLocation - PrevLocation;
+	const FVector InstantVelocity = DeltaTime <= 0.f ? FVector::ZeroVector : FVector(LocationDelta) / DeltaTime;
+	MovementComponent->MoveSmooth(InstantVelocity, DeltaTime);
+	PrevLocation = CurrentLocation;
 }

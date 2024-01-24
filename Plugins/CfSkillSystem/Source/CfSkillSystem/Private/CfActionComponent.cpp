@@ -13,6 +13,7 @@
 
 // Sets default values for this component's properties
 UCfActionComponent::UCfActionComponent()
+	: ReverseActionInfo(false)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -166,10 +167,22 @@ void UCfActionComponent::PlayAction(const FActionInfo& ActionInfo)
 	}
 	else
 	{
-		return;
+		CurrentAction = UCfActionBase::NewRecover(OwnerChar, this);
 	}
 
 	CurrentAction->OnBegin();
+}
+
+void UCfActionComponent::ReserveAction(const FActionInfo& ActionInfo)
+{
+	ReverseActionInfo = FActionInfo(ActionInfo);
+}
+
+bool UCfActionComponent::IsSuperArmorActive() const
+{
+	if(CurrentAction)
+		return CurrentAction->IsSuperArmorActive();
+	return false;
 }
 
 void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData)
@@ -192,6 +205,12 @@ void UCfActionComponent::TickAction(float DeltaTime)
 		{
 			//CF_LOG(TEXT("IsEnd"));
 			ClearAction();
+
+			if(ReverseActionInfo.IsValid)
+			{
+				PlayAction(ReverseActionInfo);
+				ReverseActionInfo = FActionInfo();
+			}
 		}
 	}
 }

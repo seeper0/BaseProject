@@ -23,8 +23,20 @@ public:
 	virtual void OnTick(float DeltaTime) override;
 	virtual void OnEnd() override;
 	virtual bool IsEnd() const override;
+	virtual bool IsSuperArmorActive() const override;
 
 private:
+	UPROPERTY()
+	class UCharacterMovementComponent* MovementComponent;
 	FCfDamageEvent DamageEvent;
-	float RemainingTime = 0.0f;
+	float ElapsedTime = 0.0f;
+
+#pragma region Knockback
+	void InitKnockBack(const FCfDamageEvent& InDamageEvent);
+	void UpdateKnockBack(float DeltaTime);
+
+	FVector StartLocation;
+	FVector EndLocation;
+	FVector PrevLocation;
+#pragma endregion
 };

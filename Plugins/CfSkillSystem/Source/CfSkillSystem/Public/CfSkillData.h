@@ -63,6 +63,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="KB)DistTime"))
 	float KnockBackDistanceTime = 0.0f;
 
+	// 넉백커브
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="KB)Curve"))
+	UCurveFloat* KnockBackCurve;
+
 	// 히트리액션 시간 (애니메이션보다 우선된다. 애니메이션을 자르던 마지막 프레임을 길게 늘리던 이 시간을 맞춘다.)
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Reactime"))
 	float HitReactionTime = 0.0f;

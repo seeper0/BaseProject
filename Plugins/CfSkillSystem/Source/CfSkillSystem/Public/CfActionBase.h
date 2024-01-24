@@ -16,6 +16,7 @@ class CFSKILLSYSTEM_API UCfActionBase : public UObject
 public:
 	static UCfActionBase* NewSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillData);
 	static UCfActionBase* NewHitReaction(ACharacter* InOwner, class UCfActionComponent* InComponent, const FCfDamageEvent& DamageEvent);
+	static UCfActionBase* NewRecover(ACharacter* InOwner, class UCfActionComponent* InComponent);
 protected:
 	void InitAction(ACharacter* InOwner, class UCfActionComponent* InComponent, UAnimMontage* InMontage);
 public:
@@ -30,6 +31,7 @@ public:
 	virtual bool IsEnd() const;
 	virtual bool CanMoveDuring() const;
 	virtual bool CanInputDuring() const;
+	virtual bool IsSuperArmorActive() const;
 
 protected:
 	UPROPERTY()
