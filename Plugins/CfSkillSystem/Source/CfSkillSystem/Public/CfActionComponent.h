@@ -14,13 +14,17 @@ class CFSKILLSYSTEM_API UCfActionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	struct FSkillInfo
+public:
+	// uniform initialization 전용 임시 struct, PlayAction argument로 사용된다.
+	struct FActionInfo
 	{
-		bool PreInput = false;
-		const struct FCfSkillData* SkillData = nullptr;
+		FActionInfo(const FCfSkillData* InSkillData) : SkillData(InSkillData) {}
+		FActionInfo(const FCfDamageEvent& InDamageEvent) : SkillData(nullptr), DamageEvent(InDamageEvent) {}
+		const FCfSkillData* SkillData;
+		const FCfDamageEvent DamageEvent;
 	};
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UCfActionComponent();
 	inline static FName ComponentName = TEXT("SkillComponent");
@@ -42,27 +46,38 @@ public:
 	const UDataTable* GetSkillTable() const { return SkillTable; }
 	class UCfActionBase* GetCurrentAction() const { return CurrentAction; }
 
+	UAnimMontage* GetKnockBackMontage() const { return KnockBackMontage; }
+	UAnimMontage* GetDownMontage() const { return DownMontage; }
+	UAnimMontage* GetAirborneMontage() const { return AirborneMontage; }	
+	UAnimMontage* GetWakeupMontage() const { return WakeupMontage; }	
+
 	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
 	void InputSkill(const FCfSkillData* InSkillData);
-	void HitReaction(const FCfDamageEvent& DamageEvent);
+	void PlayAction(const FActionInfo& ActionInfo);
 
 private:
 	bool CanCancelSkill(const FCfSkillData* InSkillData) const;
 	bool CanPlaySkill(const FCfSkillData* InSkillData) const;
 	void PlaySkill(const FCfSkillData* InSkillData);
-	void PlayAction(UAnimMontage* InMontage, const FCfSkillData* InSkillData);
-	void TickAction();
+	void TickAction(float DeltaTime);
 	void ClearAction();
-
-	UFUNCTION()
-	void OnMontageEnd(UAnimMontage* Montage, bool bInterrupted);
-
 	void ReserveSkill(const FCfSkillData* InSkillData);
-	void TickInput();
-	
+
 	/** Skill Table */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Data", meta = (AllowPrivateAccess = "true"))
 	UDataTable* SkillTable = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="KnockBack"))
+	UAnimMontage* KnockBackMontage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="Down"))
+	UAnimMontage* DownMontage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="Airborne"))
+	UAnimMontage* AirborneMontage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="Getup"))
+	UAnimMontage* WakeupMontage = nullptr;
 
 	UPROPERTY()
 	TMap<const UInputAction*, ECfSkillKey> SkillSlotCache;

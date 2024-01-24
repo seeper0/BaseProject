@@ -63,8 +63,8 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 #if WITH_EDITORONLY_DATA
 	if (GetArrowComponent())
 	{
-		GetArrowComponent()->SetHiddenInGame(false);
-		GetArrowComponent()->SetVisibility(true);
+		// GetArrowComponent()->SetHiddenInGame(false);
+		// GetArrowComponent()->SetVisibility(true);
 	}
 #endif
 

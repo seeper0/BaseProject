@@ -41,7 +41,8 @@ private:
 	int32 MaxHP = 100;
 	int32 Attack = 10;
 	int32 Defense = 0;
-	float MovementSpeed = 0;
+	float WalkSpeed = 0;
+	float SprintSpeed = 0;
 	float CriticalRatio = 0.1f;
 	float CriticalDamageMultiplier = 2.5f;
 };

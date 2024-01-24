@@ -37,9 +37,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FCfHitData HitData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UCfDamageType> DamageTypeClass;
-
 private:
 	UPROPERTY()
 	class UCfCheatManager* CheatManager;

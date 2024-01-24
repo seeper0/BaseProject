@@ -5,8 +5,10 @@
 #include "GameFramework/Character.h"
 #include "CfLogger.h"
 #include "CfActionComponent.h"
-#include "CfSkillData.h"
+#include "CfActionSkill.h"
 #include "CfActionJump.h"
+#include "CfActionHit.h"
+#include "CfSkillData.h"
 
 UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillData)
 {
@@ -26,6 +28,18 @@ UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* 
 		ActionSkill->InitSkill(InOwner, InComponent, InSkillData);
 	}
 	return ActionSkill;
+}
+
+UCfActionBase* UCfActionBase::NewHitReaction(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfDamageEvent& DamageEvent)
+{
+	CF_TODO("여기서 KnockBack, Down, Airborne 등으로 나뉜다.");
+	UCfActionHit* ActionHit = nullptr;
+	ActionHit = NewObject<UCfActionHit>();
+	if(ActionHit)
+	{
+		ActionHit->InitHit(InOwner, InComponent, DamageEvent);
+	}
+	return ActionHit;
 }
 
 void UCfActionBase::InitAction(ACharacter* InOwner, UCfActionComponent* InComponent, UAnimMontage* InMontage)
@@ -54,35 +68,12 @@ void UCfActionBase::OnBegin()
 	}
 }
 
-void UCfActionBase::OnTick()
+void UCfActionBase::OnTick(float DeltaTime)
 {
-}
-
-void UCfActionBase::OnMontageEnd()
-{
-	//Montage = nullptr;
 }
 
 void UCfActionBase::OnEnd()
 {
-	// 액션이 종료되는 세가지 조건
-	// 1. 몽타주 종료 : OnMontageEnd
-	// 2. Tick 종료 : OnEnd
-	// 3. 새로운 스킬 시작시 삭제 :
-	// 모두 OnEnd를 마지막으로 호출되게 수정해야한다.
-	// OnMontageEnd 가 호출되어도 잔여타임이 있다면 OnEnd가 호출되지 않는다.
-	// 스킬이 강제 중단된다면 OnEnd가 호출되고 OnMontageEnd가 호출될 수 있다.
-	// 1. 다른거 시작되기 직전
-	// 2. 자동으로 끝날때
-	
-	//CF_LOG(TEXT("END"));
-	// if(Owner && Montage)
-	// {
-	// 	if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
-	// 	{
-	// 		Owner->GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, Montage); // 강제로 멈추고 다른 몽타주 실행하면 튈 수 있다.
-	// 	}
-	// }
 }
 
 void UCfActionBase::OnButtonReleased(const ECfSkillKey InSkillKey)

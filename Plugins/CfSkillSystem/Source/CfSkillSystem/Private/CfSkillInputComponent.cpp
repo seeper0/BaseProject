@@ -51,7 +51,7 @@ TArray<FName> UCfSkillInputComponent::FetchSkillsByInput(const ECfSkillKey Skill
 	const TArray<FName> RowNames = SkillTable->GetRowNames();
 	switch (SkillState)
 	{
-	case ECfSkillState::PreDelay:
+	case ECfSkillState::NoInput:
 		break;
 	case ECfSkillState::None:
 	case ECfSkillState::PreInput:

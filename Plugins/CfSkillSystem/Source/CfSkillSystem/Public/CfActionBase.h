@@ -9,12 +9,13 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class CFSKILLSYSTEM_API UCfActionBase : public UObject
 {
 	GENERATED_BODY()
 public:
 	static UCfActionBase* NewSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillData);
+	static UCfActionBase* NewHitReaction(ACharacter* InOwner, class UCfActionComponent* InComponent, const FCfDamageEvent& DamageEvent);
 protected:
 	void InitAction(ACharacter* InOwner, class UCfActionComponent* InComponent, UAnimMontage* InMontage);
 public:
@@ -22,8 +23,7 @@ public:
 	virtual FString ToString() const;
 
 	virtual void OnBegin();
-	virtual void OnTick();
-	virtual void OnMontageEnd();
+	virtual void OnTick(float DeltaTime);
 	virtual void OnEnd();
 	virtual void OnButtonReleased(const ECfSkillKey InSkillKey);
 

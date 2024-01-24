@@ -33,6 +33,7 @@ public:
 		RowName = InRowName;
 	}
 
+	UPROPERTY(Transient)
 	FName RowName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -47,17 +48,53 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ECfSkillOrientation Orientation;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* Montage = nullptr;
+#pragma region Hit
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Type"))
+	ECfHitType HitType = ECfHitType::None;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Dir"))
+	ECfHitDirection HitDirection = ECfHitDirection::None;
+
+	// 넉백거리
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="KB)Dist"))
+	float KnockBackDistance = 0.0f;
+
+	// 넉백시간
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="KB)DistTime"))
+	float KnockBackDistanceTime = 0.0f;
+
+	// 히트리액션 시간 (애니메이션보다 우선된다. 애니메이션을 자르던 마지막 프레임을 길게 늘리던 이 시간을 맞춘다.)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Reactime"))
+	float HitReactionTime = 0.0f;
+
+	// 경직시간
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float StiffTime = 0.0f;
+
+	// 경직시간 동안 AnimPlay 속도
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float StiffPlayRate = 1.0f;
+
+	// 역경직시간
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="R)StiffTime"))
+	float ReverseStiffTime = 0.0f;
+
+	// 역경직시간 동안 AnimPlay 속도
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="R)StiffPlayRate"))
+	float ReverseStiffPlayRate = 1.0f;
+#pragma endregion
+	
 #pragma region GetMaxRequireSkill
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(DisplayName="Req1"))
 	FName RequireSkill1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(DisplayName="Req2"))
 	FName RequireSkill2;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(DisplayName="Req3"))
 	FName RequireSkill3;
 #pragma endregion // GetMaxRequireSkill
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* Montage = nullptr;
 };

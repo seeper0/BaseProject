@@ -2,10 +2,11 @@
 
 
 #include "CfAnimNotifyState_Hit.h"
-
 #include "CfCheatManager.h"
-#include "CfActionComponent.h"
 #include "CfLogger.h"
+#include "CfActionComponent.h"
+#include "CfActionSkill.h"
+#include "CfSkillData.h"
 #include "CfStatComponent.h"
 #include "GameFramework/Character.h"
 
@@ -36,37 +37,46 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
-	if(Skill)
+	if(Skill == nullptr)
+		return;
+
+	UCfActionSkill* CurrentSkill = Cast<UCfActionSkill>(Skill->GetCurrentAction());
+	if(CurrentSkill == nullptr)
+		return;
+
+	const FCfSkillData* SkillData =CurrentSkill->GetSkillTable();
+	if(SkillData == nullptr)
+		return;
+
+	if(CheatManager && CheatManager->IsShowHitBox())
 	{
-		if(CheatManager && CheatManager->IsShowHitBox())
+		const FTransform Transform = MeshComp->GetComponentToWorld(); //MeshComp->GetComponentToWorld(); //Skill->GetOwner()->ActorToWorld();// * MeshComp->GetRelativeTransform();
+		DrawHitShape(Skill->GetWorld(), HitShape, Transform);
+	}
+
+	const UCfStatComponent* InstigatorStat = Skill->GetOwnerChar()->GetComponentByClass<UCfStatComponent>();
+	const bool IsCritical = InstigatorStat->IsCritical();
+	const float Damage = InstigatorStat->GetDamage(HitData.DamageMultiplier, IsCritical);
+
+	AController* EventInstigator = Skill->GetController();
+	ACharacter* DamageCauser = Skill->GetOwnerChar();
+	FCfDamageEvent DamageEvent;
+	DamageEvent.HitData = HitData;
+	DamageEvent.SkillData = SkillData;
+	DamageEvent.EventInstigator = EventInstigator;
+	DamageEvent.DamageCauser = DamageCauser;
+
+	TArray<ACharacter*> List = GetHitSuccessful(HitShape, MeshComp->GetComponentToWorld());
+	for(ACharacter* Victim : List)
+	{
+		UCfActionComponent* VictimActionComponent = Victim->GetComponentByClass<UCfActionComponent>();
+		
+		//CF_TODO("ShouldTakeDamage는 ACharacter에서 virtual로 구현한다. 팀 구분 등...");
+		if(Victim->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
 		{
-			const FTransform Transform = MeshComp->GetComponentToWorld(); //MeshComp->GetComponentToWorld(); //Skill->GetOwner()->ActorToWorld();// * MeshComp->GetRelativeTransform();
-			DrawHitShape(Skill->GetWorld(), HitShape, Transform);
+			VictimActionComponent->PlayAction({DamageEvent});
 		}
-
-		const UCfStatComponent* InstigatorStat = Skill->GetOwnerChar()->GetComponentByClass<UCfStatComponent>();
-		const bool IsCritical = InstigatorStat->IsCritical();
-		const float Damage = InstigatorStat->GetDamage(HitData.DamageMultiplier, IsCritical);
-
-		AController* EventInstigator = Skill->GetController();
-		ACharacter* DamageCauser = Skill->GetOwnerChar();
-		FCfDamageEvent DamageEvent;
-		DamageEvent.HitData = HitData;
-		DamageEvent.DamageTypeClass = DamageTypeClass;
-
-		CF_TODO("Take 에서 Damage 애니메이션, KnockBack, Down, Airborne 등을 구현해야한다.");
-		TArray<ACharacter*> List = GetHitSuccessful(HitShape, MeshComp->GetComponentToWorld());
-		for(ACharacter* Victim : List)
-		{
-			UCfActionComponent* VictimActionComponent = Victim->GetComponentByClass<UCfActionComponent>();
-			
-			//CF_TODO("ShouldTakeDamage는 ACharacter에서 virtual로 구현한다. 팀 구분 등...");
-			if(Victim->ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))
-			{
-				VictimActionComponent->HitReaction(DamageEvent);
-			}
-			Victim->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-		}
+		Victim->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	}
 	//MeshComp->GetWorld()->WorldType : EWorldType::Type::EditorPreview
 }

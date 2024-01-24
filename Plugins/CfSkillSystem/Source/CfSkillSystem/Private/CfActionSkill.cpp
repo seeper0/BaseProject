@@ -14,7 +14,7 @@ FName UCfActionSkill::GetActionName() const
 {
 	if(GetSkillTable())
 	{
-		return GetSkillTable()->RowName;	
+		return GetSkillTable()->RowName;
 	}
 	return Super::GetActionName();
 }

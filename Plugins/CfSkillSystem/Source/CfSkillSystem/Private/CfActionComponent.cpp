@@ -44,16 +44,7 @@ void UCfActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
 	OwnerChar = Cast<ACharacter>(GetOwner());
-	// if(OwnerChar && OwnerChar->GetMesh())
-	// {
-	// 	AnimInstance = OwnerChar->GetMesh()->GetAnimInstance();
-	// 	if(AnimInstance)
-	// 	{
-	// 		AnimInstance->OnMontageEnded.AddDynamic(this, &UCfActionComponent::OnMontageEnd);
-	// 	}
-	// }
 }
 
 
@@ -62,11 +53,7 @@ void UCfActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
-	//InputQueue.Empty();
-
-	TickInput();
-	TickAction();
+	TickAction(DeltaTime);
 }
 
 void UCfActionComponent::SetSkillState(ECfSkillState InSkillState)
@@ -163,13 +150,26 @@ void UCfActionComponent::InputSkill(const FCfSkillData* InSkillData)
 	}
 }
 
-void UCfActionComponent::HitReaction(const FCfDamageEvent& DamageEvent)
+void UCfActionComponent::PlayAction(const FActionInfo& ActionInfo)
 {
-	const UCfDamageType* DamageTypeCDO = Cast<UCfDamageType>(DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>());
-	//DamageTypeCDO->HitType
-	//DamageTypeCDO->HitDirection
-	//DamageTypeCDO->HitBackDistance
-	//DamageTypeCDO->HitReactionTime
+	// 평타, 스킬, 점프, 맞기등 몽타주 관련된건 여기서 해야한다.
+	ClearAction();
+
+	SetSkillState(ECfSkillState::NoInput);
+	if(ActionInfo.SkillData)
+	{
+		CurrentAction = UCfActionBase::NewSkill(OwnerChar, this, ActionInfo.SkillData);
+	}
+	else if(ActionInfo.DamageEvent.SkillData)
+	{
+		CurrentAction = UCfActionBase::NewHitReaction(OwnerChar, this, ActionInfo.DamageEvent);
+	}
+	else
+	{
+		return;
+	}
+
+	CurrentAction->OnBegin();
 }
 
 void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData)
@@ -179,25 +179,15 @@ void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData)
 
 	if(CanPlaySkill(InSkillData))
 	{
-		PlayAction(InSkillData->Montage, InSkillData);
+		PlayAction({InSkillData});
 	}
 }
 
-void UCfActionComponent::PlayAction(UAnimMontage* InMontage, const FCfSkillData* InSkillData)
-{
-	// 평타, 스킬, 점프, 맞기등 몽타주 관련된건 여기서 해야한다.
-	ClearAction();
-
-	SetSkillState(ECfSkillState::PreDelay);
-	CurrentAction = UCfActionBase::NewSkill(OwnerChar, this, InSkillData);
-	CurrentAction->OnBegin();
-}
-
-void UCfActionComponent::TickAction()
+void UCfActionComponent::TickAction(float DeltaTime)
 {
 	if(CurrentAction)
 	{
-		CurrentAction->OnTick();
+		CurrentAction->OnTick(DeltaTime);
 		if(CurrentAction->IsEnd())
 		{
 			//CF_LOG(TEXT("IsEnd"));
@@ -216,25 +206,10 @@ void UCfActionComponent::ClearAction()
 	}
 }
 
-void UCfActionComponent::OnMontageEnd(UAnimMontage* Montage, bool bInterrupted)
-{
-	// CF_LOG(TEXT("OnMontageEnd1"));
-	// if(CurrentAction)
-	// {
-	// 	// 여기서 CurrentAction 을 지우면 CurrentAction 이 사라지게 된다. 체인인지 아닌지 알수 없게 된다. 
-	// 	CurrentAction->OnMontageEnd();
-	// 	CF_LOG(TEXT("OnMontageEnd"));
-	// }
-}
-
 void UCfActionComponent::ReserveSkill(const FCfSkillData* InSkillData)
 {
 	if(ReservedRowName == NAME_None && InSkillData)
 		ReservedRowName = InSkillData->RowName;
-}
-
-void UCfActionComponent::TickInput()
-{
 }
 
 #pragma region HitList

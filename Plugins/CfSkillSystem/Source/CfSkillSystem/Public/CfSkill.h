@@ -8,11 +8,11 @@ UENUM(BlueprintType)
 enum class ECfSkillState : uint8
 {
 	None,		/// 스킬을 실행하지 않은 상태
-	PreDelay,	/// 스킬이 시작된 상태
+	NoInput,	/// 선딜이거나 히트리액션이라 아무것도 입력할수 없는 상태
 	PreInput,	/// 선입력을 받을 수 있는 상태
 	CanCancel,	/// 스킬을 캔슬 할 수 있는 상태
-	End,
-	Over
+	End,		/// 스킬이 종료된 상태. 이동 키로도 캔슬 가능하다.
+	Over,		/// 스킬이 완전 종료돠어도 이전 스킬과 연계하기 위해서 있는 스테이트
 };
 
 UENUM(BlueprintType)
@@ -106,6 +106,14 @@ struct CFSKILLSYSTEM_API FCfDamageEvent : public FDamageEvent
 
 	UPROPERTY()
 	FCfHitData HitData;
+
+	const struct FCfSkillData* SkillData = nullptr; 
+
+	UPROPERTY()
+	AController* EventInstigator = nullptr;
+	
+	UPROPERTY()
+	ACharacter* DamageCauser = nullptr;
 };
 
 UENUM(BlueprintType)
