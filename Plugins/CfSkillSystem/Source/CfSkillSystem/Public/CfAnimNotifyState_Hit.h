@@ -9,7 +9,7 @@
 #include "CfAnimNotifyState_Hit.generated.h"
 
 /**
- * 
+ * 이 노티는 히트를 실행한다. 히트 박스를 생성한다. 지금은 Box 형태만 지원한다.
  */
 UCLASS()
 class CFSKILLSYSTEM_API UCfAnimNotifyState_Hit : public UAnimNotifyState

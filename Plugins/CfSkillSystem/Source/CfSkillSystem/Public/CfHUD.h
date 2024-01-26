@@ -7,7 +7,7 @@
 #include "CfHUD.generated.h"
 
 /**
- * 
+ * HUD, 각종 디버그 렌더링
  */
 UCLASS()
 class CFSKILLSYSTEM_API ACfHUD : public AHUD

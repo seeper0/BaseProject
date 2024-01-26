@@ -7,7 +7,7 @@
 #include "CfActionBase.generated.h"
 
 /**
- * 
+ * 모든 Montage는 Action을 기반으로 움직인다. Skill 이나 HitReaction을 의미한다.
  */
 UCLASS(Abstract)
 class CFSKILLSYSTEM_API UCfActionBase : public UObject

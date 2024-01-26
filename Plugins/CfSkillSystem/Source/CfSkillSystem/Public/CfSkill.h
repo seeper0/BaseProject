@@ -120,7 +120,7 @@ UENUM(BlueprintType)
 enum class ECfHitShapeType : uint8
 {
 	None,
-	Box,
+	Box, // 지금은 Box만 지원
 	Fan,
 	Donut,
 };

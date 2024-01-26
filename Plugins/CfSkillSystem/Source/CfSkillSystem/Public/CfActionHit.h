@@ -7,7 +7,7 @@
 #include "CfActionHit.generated.h"
 
 /**
- * 
+ * 히트리액션
  */
 UCLASS()
 class CFSKILLSYSTEM_API UCfActionHit : public UCfActionBase

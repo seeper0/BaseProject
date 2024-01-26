@@ -7,7 +7,7 @@
 #include "CfMaterialComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(CombatFoundation), meta=(BlueprintSpawnableComponent) )
 class CFCOMMON_API UCfMaterialComponent : public UActorComponent
 {
 	GENERATED_BODY()

@@ -9,7 +9,10 @@
 #include "CfActionComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Cf), meta=(BlueprintSpawnableComponent) )
+/**
+ * 액션을 실행하는 컴퍼넌트, 스킬이나 히트리액션을 관리한다.
+ */
+UCLASS( ClassGroup=(CombatFoundation), meta=(BlueprintSpawnableComponent) )
 class CFSKILLSYSTEM_API UCfActionComponent : public UActorComponent
 {
 	GENERATED_BODY()

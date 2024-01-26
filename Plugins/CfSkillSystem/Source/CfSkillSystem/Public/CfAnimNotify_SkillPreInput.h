@@ -7,7 +7,7 @@
 #include "CfAnimNotify_SkillPreInput.generated.h"
 
 /**
- * 
+ * 이 노티부터는 선입력을 받을수 있다.
  */
 UCLASS()
 class CFSKILLSYSTEM_API UCfAnimNotify_SkillPreInput : public UAnimNotify

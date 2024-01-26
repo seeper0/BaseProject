@@ -7,7 +7,7 @@
 #include "CfAnimNotify_SkillEnd.generated.h"
 
 /**
- * 
+ * 이 노티후는 스킬이 종료되었다고 판단한다. 이동으로도 캔슬 가능하다.
  */
 UCLASS()
 class CFSKILLSYSTEM_API UCfAnimNotify_SkillEnd : public UAnimNotify

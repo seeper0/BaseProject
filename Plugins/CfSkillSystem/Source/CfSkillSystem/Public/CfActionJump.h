@@ -7,7 +7,7 @@
 #include "CfActionJump.generated.h"
 
 /**
- * 
+ * 점프, 몽타주는 없으나 동시 실행이 안되기 때문에 분리함
  */
 UCLASS()
 class CFSKILLSYSTEM_API UCfActionJump : public UCfActionSkill

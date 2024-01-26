@@ -8,6 +8,9 @@
 #include "CfStatComponent.generated.h"
 
 
+/**
+ * Stat을 관리함
+ */
 UCLASS( ClassGroup=(CombatFoundation), meta=(BlueprintSpawnableComponent) )
 class CFSKILLSYSTEM_API UCfStatComponent : public UActorComponent
 {

@@ -7,7 +7,7 @@
 #include "CfTargetInfoWidget.generated.h"
 
 /**
- * 
+ * 유닛 머리에 붙이는 HP Bar
  */
 UCLASS(Abstract)
 class CFSKILLSYSTEM_API UCfTargetInfoWidget : public UUserWidget

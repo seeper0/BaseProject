@@ -8,7 +8,7 @@
 #include "CfHitBoxComponent.generated.h"
 
 /**
- * 
+ * 히트박스, 여러개 사용해서 관절에 붙일수 있게 개발
  */
 UCLASS(ClassGroup = (CombatFoundation), meta = (BlueprintSpawnableComponent))
 class CFSKILLSYSTEM_API UCfHitBoxComponent : public UBoxComponent

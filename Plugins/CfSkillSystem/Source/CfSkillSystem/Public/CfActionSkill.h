@@ -7,7 +7,7 @@
 #include "CfActionSkill.generated.h"
 
 /**
- * 
+ * 스킬
  */
 UCLASS()
 class CFSKILLSYSTEM_API UCfActionSkill : public UCfActionBase
