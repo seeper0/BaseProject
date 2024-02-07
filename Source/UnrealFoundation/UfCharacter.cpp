@@ -27,12 +27,13 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 		
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = false; // 그냥 폰을 돌린다. (루트모션보다 우선순위가 높다.)
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->bUseControllerDesiredRotation = false; // 원하는 방향으로 RotationRate 로 돌린다. (단, 루트모션보다 우선순위가 낮다.) 
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
@@ -40,8 +41,17 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	GetCharacterMovement()->GravityScale = 1.0f;
+	GetCharacterMovement()->MaxAcceleration = 2400.0f;
+	GetCharacterMovement()->BrakingFrictionFactor = 1.0f;
+	GetCharacterMovement()->BrakingFriction = 6.0f;
+	GetCharacterMovement()->GroundFriction = 8.0f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 1400.0f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+	GetCharacterMovement()->bAllowPhysicsRotationDuringAnimRootMotion = false;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));

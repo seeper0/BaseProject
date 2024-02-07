@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "CfSkill.h"
 #include "CfActionBase.generated.h"
 
@@ -41,13 +42,16 @@ public:
 	virtual bool IsSuperArmorActive() const;
 
 protected:
-	UPROPERTY()
+	UPROPERTY(Transient)
 	ACharacter* Owner = nullptr;
 
-	UPROPERTY();
+	UPROPERTY(Transient)
+	UCharacterMovementComponent* Movement = nullptr;
+	
+	UPROPERTY(Transient);
 	UCfActionComponent* Component = nullptr;
 
-	UPROPERTY();
+	UPROPERTY(Transient);
 	UAnimMontage* Montage = nullptr;
 
 #pragma region Stun

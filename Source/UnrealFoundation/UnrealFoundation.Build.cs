@@ -17,6 +17,7 @@ public class UnrealFoundation : ModuleRules
 			"UMG",
 			"CfCommon",
 			"CfSkillSystem",
+			"CfAnimationSystem",
 		});
 	}
 }

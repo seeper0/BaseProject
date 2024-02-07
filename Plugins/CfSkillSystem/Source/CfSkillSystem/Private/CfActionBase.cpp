@@ -56,6 +56,7 @@ UCfActionBase* UCfActionBase::NewRecover(ACharacter* InOwner, UCfActionComponent
 void UCfActionBase::InitAction(ACharacter* InOwner, UCfActionComponent* InComponent, UAnimMontage* InMontage)
 {
 	Owner = InOwner;
+	Movement = Owner ? Owner->GetCharacterMovement() : nullptr;
 	Component = InComponent;
 	Montage = InMontage;
 	ElapsedRecoveryTime = 0.0f;

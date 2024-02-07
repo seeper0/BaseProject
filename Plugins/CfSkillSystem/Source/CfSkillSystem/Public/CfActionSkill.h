@@ -16,7 +16,7 @@ class CFSKILLSYSTEM_API UCfActionSkill : public UCfActionBase
 public:
 	void InitSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillTable);
 	const struct FCfSkillData* GetSkillTable() const { return SkillTable; }
-	
+
 	virtual FName GetActionName() const override;
 	virtual FString ToString() const override;
 	virtual bool CanMoveDuring() const override;

@@ -2,10 +2,16 @@
 
 
 #include "CfSkillInputComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "CfLogger.h"
 #include "CfActionBase.h"
 #include "CfActionComponent.h"
 #include "CfSkillData.h"
+
+UCfSkillInputComponent::UCfSkillInputComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+}
 
 void UCfSkillInputComponent::SetupComponent(class UCfActionComponent* InActionComponent, UEnhancedInputComponent* EnhancedInputComponent)
 {
@@ -16,7 +22,9 @@ void UCfSkillInputComponent::SetupComponent(class UCfActionComponent* InActionCo
 		switch (SkillSlot.Key)
 		{
 		case ECfSkillKey::Move: // Moving
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UCfSkillInputComponent::BeginMove);
 			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UCfSkillInputComponent::Move);
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Completed, this, &UCfSkillInputComponent::EndMove);
 			break;
 		case ECfSkillKey::Look: // Looking
 			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UCfSkillInputComponent::Look);
@@ -30,6 +38,24 @@ void UCfSkillInputComponent::SetupComponent(class UCfActionComponent* InActionCo
 		}
 	}
 }
+
+void UCfSkillInputComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	ACharacter* OwnerChar = ActionComponent->GetOwnerChar();
+	const UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
+
+	if(UCharacterMovementComponent* MovementComponent = OwnerChar ? OwnerChar->GetCharacterMovement() : nullptr)
+	{
+		MovementComponent->bUseControllerDesiredRotation = bUseControllerDesiredRotation;
+		// if(CurrentAction)
+		// 	MovementComponent->bUseControllerDesiredRotation = true;
+		// else
+		// 	MovementComponent->bUseControllerDesiredRotation = bUseControllerDesiredRotation;
+	}
+}
+
 
 ECfSkillKey UCfSkillInputComponent::GetSkillSlot(const FInputActionInstance& InputActionInstance) const
 {
@@ -81,6 +107,11 @@ TArray<FName> UCfSkillInputComponent::FetchSkillsByInput(const ECfSkillKey Skill
 	return FetchedSkills;
 }
 
+void UCfSkillInputComponent::BeginMove()
+{
+	bUseControllerDesiredRotation = true;
+}
+
 void UCfSkillInputComponent::Move(const FInputActionValue& Value)
 {
 	ACharacter* OwnerChar = ActionComponent->GetOwnerChar();
@@ -109,6 +140,11 @@ void UCfSkillInputComponent::Move(const FInputActionValue& Value)
 		OwnerChar->AddMovementInput(ForwardDirection, MovementVector.Y);
 		OwnerChar->AddMovementInput(RightDirection, MovementVector.X);
 	}
+}
+
+void UCfSkillInputComponent::EndMove()
+{
+	bUseControllerDesiredRotation = false;
 }
 
 void UCfSkillInputComponent::Look(const FInputActionValue& Value)

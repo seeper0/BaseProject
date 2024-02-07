@@ -99,22 +99,22 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="Getup"))
 	UAnimMontage* WakeupMontage = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TMap<const UInputAction*, ECfSkillKey> SkillSlotCache;
 	
-	UPROPERTY()
+	UPROPERTY(Transient)
 	ECfSkillState SkillState = ECfSkillState::None;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	ACharacter* OwnerChar = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	UAnimInstance* AnimInstance = nullptr; 
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	class UCfActionBase* CurrentAction = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	FName ReservedRowName;
 	FActionInfo ReverseActionInfo;
 

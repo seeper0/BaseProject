@@ -18,7 +18,7 @@
 		{
 			"Name": "CfCommon",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PreDefault"
 		}
 	]
 }

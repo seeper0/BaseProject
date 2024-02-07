@@ -15,7 +15,9 @@ class CFSKILLSYSTEM_API UCfSkillInputComponent : public UActorComponent
 
 public:
 	inline static FName ComponentName = TEXT("SkillInputComponent");
+	UCfSkillInputComponent();
 	void SetupComponent(class UCfActionComponent* InActionComponent, UEnhancedInputComponent* EnhancedInputComponent);
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	ECfSkillKey GetSkillSlot(const struct FInputActionInstance& InputActionInstance) const;
@@ -23,7 +25,9 @@ private:
 	TArray<FName> FetchSkillsByInput(const ECfSkillKey SkillKey, const ETriggerEvent KeyEvent) const;
 
 	/** Called for movement input */
+	void BeginMove();
 	void Move(const FInputActionValue& InputActionValue);
+	void EndMove();
 	/** Called for looking input */
 	void Look(const FInputActionValue& InputActionValue);
 	void OnPress(const FInputActionInstance& InputActionInstance);
@@ -39,4 +43,7 @@ private:
 
 	UPROPERTY()
 	class UCfActionComponent* ActionComponent;
+
+	bool bUseControllerDesiredRotation = false;
 };
+
