@@ -109,7 +109,7 @@ void UCfAnimInstance::UpdateDebugArrow(float DeltaSeconds, ACharacter* InOwner)
 
 	if(InputArrow)
 	{
-		VelocityArrow->SetWorldRotation(WorldVelocity.IsZero() ? InOwner->GetActorRotation() : WorldVelocity.Rotation());
-		VelocityArrow->SetArrowLength(WorldVelocity.Length() * 50.0f / 375.0f);
+		VelocityArrow->SetWorldRotation(WorldVelocity2D.IsZero() ? InOwner->GetActorRotation() : WorldVelocity2D.Rotation());
+		VelocityArrow->SetArrowLength(WorldVelocity2D.Length() * 50.0f / 375.0f);
 	}
 }
