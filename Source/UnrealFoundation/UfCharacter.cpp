@@ -12,7 +12,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "CfLogger.h"
 #include "CfActionComponent.h"
-#include "CfAnimInstance.h"
+#include "Anims/CfAnimInstance.h"
 #include "CfSkillInputComponent.h"
 #include "CfStatComponent.h"
 #include "CfCameraBoomComponent.h"

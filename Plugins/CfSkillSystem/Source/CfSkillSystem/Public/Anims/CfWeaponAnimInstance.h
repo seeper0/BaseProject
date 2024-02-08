@@ -10,7 +10,7 @@
  * 
  */
 UCLASS(Blueprintable, hideCategories=AnimInstance, BlueprintType, Within=SkeletalMeshComponent)
-class CFANIMATIONSYSTEM_API UCfWeaponAnimInstance : public UAnimInstance
+class CFSKILLSYSTEM_API UCfWeaponAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 

@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfWeaponAnimInstance.h"
-#include "CfAnimInstance.h"
+#include "Anims/CfWeaponAnimInstance.h"
+#include "Anims/CfAnimInstance.h"
 
 UCfAnimInstance* UCfWeaponAnimInstance::GetMainAnimInstance()
 {

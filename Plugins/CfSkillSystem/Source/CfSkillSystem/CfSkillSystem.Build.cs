@@ -41,6 +41,7 @@ public class CfSkillSystem : ModuleRules
 				"UMG",
 				"Json",
 				"JsonUtilities",
+				"AnimGraphRuntime",
 				"CfCommon",
 			}
 			);

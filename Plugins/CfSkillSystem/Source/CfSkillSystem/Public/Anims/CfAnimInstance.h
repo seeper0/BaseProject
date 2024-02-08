@@ -20,7 +20,7 @@ enum class ECfCardinalDirection : uint8
  * 
  */
 UCLASS(Blueprintable, hideCategories=AnimInstance, BlueprintType, Within=SkeletalMeshComponent)
-class CFANIMATIONSYSTEM_API UCfAnimInstance : public UAnimInstance
+class CFSKILLSYSTEM_API UCfAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
