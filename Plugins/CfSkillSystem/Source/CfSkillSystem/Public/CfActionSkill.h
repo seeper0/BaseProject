@@ -23,5 +23,11 @@ public:
 	virtual bool CanInputDuring() const override;
 
 protected:
+	virtual void OnBegin() override;
+	virtual void OnTick(float DeltaTime) override;
+
 	const struct FCfSkillData* SkillTable = nullptr;
+
+private:
+	bool bReachedDesiredRotation = true;
 };

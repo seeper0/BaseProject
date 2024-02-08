@@ -3,6 +3,7 @@
 
 #include "CfActionSkill.h"
 #include "CfSkillData.h"
+#include "GameFramework/Character.h"
 
 void UCfActionSkill::InitSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillTable)
 {
@@ -46,4 +47,32 @@ bool UCfActionSkill::CanInputDuring() const
 		}
 	}
 	return false;
+}
+
+void UCfActionSkill::OnBegin()
+{
+	Super::OnBegin();
+
+	if(SkillTable && Owner &&
+		SkillTable->Orientation == ECfSkillOrientation::AimOriented)
+	{
+		bReachedDesiredRotation = false;
+	}
+}
+
+void UCfActionSkill::OnTick(float DeltaTime)
+{
+	Super::OnTick(DeltaTime);
+
+	if(!bReachedDesiredRotation)
+	{
+		const float CurrentYaw = Owner->GetActorRotation().Yaw;
+		const float TargetYaw = Owner->GetBaseAimRotation().Yaw;
+		const float NewYaw = FMath::FInterpTo(CurrentYaw, TargetYaw, DeltaTime, 15.0f);
+		Owner->SetActorRotation(FRotator(0, NewYaw, 0));
+		if(FMath::IsNearlyEqual(TargetYaw, NewYaw, 0.1f))
+		{
+			bReachedDesiredRotation = true;
+		}
+	}
 }
