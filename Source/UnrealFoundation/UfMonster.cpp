@@ -2,7 +2,7 @@
 
 
 #include "UfMonster.h"
-#include "CfActionComponent.h"
+#include "Actions/CfActionComponent.h"
 #include "CfStatComponent.h"
 
 // Sets default values

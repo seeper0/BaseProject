@@ -11,7 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "CfLogger.h"
-#include "CfActionComponent.h"
+#include "Actions/CfActionComponent.h"
 #include "Anims/CfAnimInstance.h"
 #include "CfSkillInputComponent.h"
 #include "CfStatComponent.h"

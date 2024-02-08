@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "CfTargetInfoWidget.h"
+#include "HUD/CfTargetInfoWidget.h"
 #include "CfStatComponent.generated.h"
 
 

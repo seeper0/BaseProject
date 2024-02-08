@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfActionRecovery.h"
-#include "CfActionComponent.h"
+#include "Actions/CfActionRecovery.h"
+#include "Actions/CfActionComponent.h"
 
 void UCfActionRecovery::InitRecover(ACharacter* InOwner, UCfActionComponent* InComponent)
 {

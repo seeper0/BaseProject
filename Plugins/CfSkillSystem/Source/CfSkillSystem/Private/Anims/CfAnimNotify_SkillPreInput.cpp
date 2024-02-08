@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfAnimNotify_SkillPreInput.h"
-#include "CfActionComponent.h"
+#include "Anims/CfAnimNotify_SkillPreInput.h"
+#include "Actions/CfActionComponent.h"
 
 UCfAnimNotify_SkillPreInput::UCfAnimNotify_SkillPreInput(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

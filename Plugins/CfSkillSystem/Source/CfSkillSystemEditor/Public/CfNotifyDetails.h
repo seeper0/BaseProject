@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CfAnimNotifyState_Hit.h"
+#include "Anims/CfAnimNotifyState_Hit.h"
 #include "CfSkillSystemEditor.h"
 #include "UObject/Interface.h"
 

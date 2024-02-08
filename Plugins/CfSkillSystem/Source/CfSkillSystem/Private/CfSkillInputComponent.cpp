@@ -4,8 +4,8 @@
 #include "CfSkillInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CfLogger.h"
-#include "CfActionBase.h"
-#include "CfActionComponent.h"
+#include "Actions/CfActionBase.h"
+#include "Actions/CfActionComponent.h"
 #include "CfSkillData.h"
 
 UCfSkillInputComponent::UCfSkillInputComponent()

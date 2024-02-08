@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CfHUD.h"
+#include "HUD/CfHUD.h"
 #include "UfHUD.generated.h"
 
 /**

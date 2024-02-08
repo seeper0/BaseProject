@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfActionComponent.h"
+#include "Actions/CfActionComponent.h"
 #include "InputAction.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PawnMovementComponent.h"
-#include "CfActionBase.h"
+#include "Actions/CfActionBase.h"
 #include "CfLogger.h"
 #include "CfSkillData.h"
 #include "CfUtil.h"

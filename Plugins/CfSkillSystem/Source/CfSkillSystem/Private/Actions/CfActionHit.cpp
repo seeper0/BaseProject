@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfActionHit.h"
+#include "Actions/CfActionHit.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "CfActionComponent.h"
+#include "Actions/CfActionComponent.h"
 #include "CfSkillData.h"
 #include "CfUtil.h"
 #include "CfLogger.h"

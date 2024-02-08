@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "CfHUDWidget.h"
+#include "HUD/CfHUDWidget.h"
 #include "UfGameMode.generated.h"
 
 UCLASS(minimalapi)

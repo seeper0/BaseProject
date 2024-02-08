@@ -5,8 +5,8 @@
 #include "EngineUtils.h"
 #include "Blueprint/UserWidget.h"
 #include "CfUtil.h"
-#include "CfActionComponent.h"
-#include "CfHUDWidget.h"
+#include "Actions/CfActionComponent.h"
+#include "HUD/CfHUDWidget.h"
 #include "UfCharacter.h"
 #include "UfGameMode.h"
 

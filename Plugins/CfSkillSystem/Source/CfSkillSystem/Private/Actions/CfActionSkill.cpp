@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfActionSkill.h"
+#include "Actions/CfActionSkill.h"
 #include "CfSkillData.h"
 #include "GameFramework/Character.h"
 

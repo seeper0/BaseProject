@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfAnimNotify_SkillEnd.h"
-#include "CfActionComponent.h"
+#include "Anims/CfAnimNotify_SkillEnd.h"
+#include "Actions/CfActionComponent.h"
 
 UCfAnimNotify_SkillEnd::UCfAnimNotify_SkillEnd(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

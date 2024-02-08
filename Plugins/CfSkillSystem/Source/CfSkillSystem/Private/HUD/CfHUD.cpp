@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfHUD.h"
+#include "HUD/CfHUD.h"
 
 #include "CfCheatManager.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "CfUtil.h"
-#include "CfActionComponent.h"
+#include "Actions/CfActionComponent.h"
 
 void ACfHUD::DrawHUD()
 {

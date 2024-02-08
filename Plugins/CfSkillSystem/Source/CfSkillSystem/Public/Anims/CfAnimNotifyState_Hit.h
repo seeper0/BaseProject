@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "CfSkill.h"
-#include "CfActionComponent.h"
+#include "Actions/CfActionComponent.h"
 #include "CfAnimNotifyState_Hit.generated.h"
 
 /**

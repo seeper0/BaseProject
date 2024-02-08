@@ -6,8 +6,8 @@
 #include "IAnimationEditor.h"
 #include "IPersonaPreviewScene.h"
 #include "IPersonaToolkit.h"
+#include "Anims/CfAnimNotifyState_Hit.h"
 #include "CfLogger.h"
-#include "CfAnimNotifyState_Hit.h"
 
 FCfNotifyDetails::~FCfNotifyDetails()
 {

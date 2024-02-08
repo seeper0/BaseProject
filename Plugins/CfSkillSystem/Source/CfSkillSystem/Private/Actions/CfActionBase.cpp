@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfActionBase.h"
+#include "Actions/CfActionBase.h"
 #include "GameFramework/Character.h"
 #include "CfLogger.h"
-#include "CfActionComponent.h"
-#include "CfActionSkill.h"
-#include "CfActionJump.h"
-#include "CfActionHit.h"
-#include "CfActionRecovery.h"
+#include "Actions/CfActionComponent.h"
+#include "Actions/CfActionSkill.h"
+#include "Actions/CfActionJump.h"
+#include "Actions/CfActionHit.h"
+#include "Actions/CfActionRecovery.h"
 #include "CfSkillData.h"
 
 UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillData)

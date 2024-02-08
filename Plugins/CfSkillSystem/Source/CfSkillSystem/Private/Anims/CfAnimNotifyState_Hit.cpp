@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CfAnimNotifyState_Hit.h"
+#include "Anims/CfAnimNotifyState_Hit.h"
+#include "GameFramework/Character.h"
 #include "CfCheatManager.h"
+#include "Actions/CfActionComponent.h"
+#include "Actions/CfActionSkill.h"
 #include "CfLogger.h"
-#include "CfActionComponent.h"
-#include "CfActionSkill.h"
 #include "CfSkillData.h"
 #include "CfStatComponent.h"
-#include "GameFramework/Character.h"
 
 UCfAnimNotifyState_Hit::UCfAnimNotifyState_Hit(const FObjectInitializer& ObjectInitializer)
 {
