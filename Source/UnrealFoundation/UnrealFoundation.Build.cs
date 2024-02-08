@@ -18,6 +18,7 @@ public class UnrealFoundation : ModuleRules
 			"CfCommon",
 			"CfSkillSystem",
 			"CfAnimationSystem",
+			"CfCameraSystem",
 		});
 	}
 }

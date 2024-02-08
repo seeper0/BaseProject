@@ -19,7 +19,7 @@ AUfGameMode::AUfGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<UCfHUDWidget> HudWidgetBPClass(TEXT("/Game/ThirdPerson/Blueprints/WBP_HUD"));
+	static ConstructorHelpers::FClassFinder<UCfHUDWidget> HudWidgetBPClass(TEXT("/Game/UI/HUD/WBP_HUD"));
 	if (HudWidgetBPClass.Class != nullptr)
 	{
 		HudWidgetClass = HudWidgetBPClass.Class;
