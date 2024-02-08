@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class CFCAMERASYSTEM_API UCfCameraBoomComponent : public USpringArmComponent
+class CFSKILLSYSTEM_API UCfCameraBoomComponent : public USpringArmComponent
 {
 	GENERATED_BODY()
 	

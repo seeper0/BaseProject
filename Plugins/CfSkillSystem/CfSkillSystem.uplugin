@@ -34,10 +34,6 @@
 		{
 			"Name": "CfCommon",
 			"Enabled": true
-		},
-		{
-			"Name": "CfCameraSystem",
-			"Enabled": true
 		}
 	]
 }
