@@ -32,4 +32,12 @@ private:
 	bool bShowHitBox = false;
 #pragma endregion
 
+#pragma region LocomotionInfo
+public:
+	UFUNCTION(Exec)
+	void ToggleLocomotionInfo() { bShowLocomotionInfo = !bShowLocomotionInfo; }
+	bool IsShowLocomotionInfo() const { return bShowLocomotionInfo; }
+private:
+	bool bShowLocomotionInfo = false;
+#pragma endregion
 };

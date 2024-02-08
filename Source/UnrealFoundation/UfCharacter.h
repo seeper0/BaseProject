@@ -39,6 +39,14 @@ class AUfCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
+#if WITH_EDITORONLY_DATA
+	UPROPERTY()
+	UArrowComponent* InputArrow;
+
+	UPROPERTY()
+	UArrowComponent* VelocityArrow;
+#endif	
+	
 public:
 	AUfCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CfCheatManager.h"
 #include "Animation/AnimInstance.h"
 #include "CfAnimInstance.generated.h"
 
@@ -24,7 +25,25 @@ class CFANIMATIONSYSTEM_API UCfAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 	
 public:
+	inline static FName InputArrowName = TEXT("InputArrow");
+	inline static FName VelocityArrowName = TEXT("VelocityArrow");
+	
+	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+private:
+	void UpdateCharacterMomentum(float DeltaSeconds, ACharacter* InOwner);
+	void UpdateCardinalDirection(float DeltaSeconds);
+	void UpdateDebugArrow(float DeltaSeconds, ACharacter* InOwner);
+
+	UPROPERTY()
+	UCfCheatManager* CheatManager;
+
+	UPROPERTY()
+	class UArrowComponent* InputArrow;
+
+	UPROPERTY()
+	UArrowComponent* VelocityArrow;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient)

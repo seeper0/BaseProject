@@ -1,20 +1,20 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "UfCharacter.h"
-
-#include "CfLogger.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "CfLogger.h"
 #include "CfActionComponent.h"
+#include "CfAnimInstance.h"
 #include "CfSkillInputComponent.h"
 #include "CfStatComponent.h"
-#include "Components/ArrowComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUnrealFoundationCharacter
@@ -71,6 +71,23 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 	StatComponent = CreateDefaultSubobject<UCfStatComponent>(UCfStatComponent::ComponentName);
 
 #if WITH_EDITORONLY_DATA
+	const float HalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	InputArrow = CreateDefaultSubobject<UArrowComponent>(UCfAnimInstance::InputArrowName);
+	InputArrow->SetupAttachment(RootComponent);
+	InputArrow->SetHiddenInGame(false);
+	InputArrow->SetVisibility(false);
+	InputArrow->SetRelativeLocation(FVector(0, 0, -HalfHeight * 0.5f));
+	InputArrow->SetArrowFColor(FColor::Yellow);
+	InputArrow->SetArrowLength(0.0f);
+
+	VelocityArrow = CreateDefaultSubobject<UArrowComponent>(UCfAnimInstance::VelocityArrowName);
+	VelocityArrow->SetupAttachment(RootComponent);
+	VelocityArrow->SetHiddenInGame(false);
+	VelocityArrow->SetVisibility(false);
+	VelocityArrow->SetRelativeLocation(FVector(0, 0, -HalfHeight * 0.5f));
+	VelocityArrow->SetArrowFColor(FColor::Orange);
+	VelocityArrow->SetArrowLength(0.0f);
+
 	if (GetArrowComponent())
 	{
 		// GetArrowComponent()->SetHiddenInGame(false);
