@@ -33,6 +33,8 @@ private:
 	void OnPress(const FInputActionInstance& InputActionInstance);
 	void OnHold(const FInputActionInstance& InputActionInstance);
 	void OnRelease(const FInputActionInstance& InputActionInstance);
+	// 기능
+	void ToggleLockOn();
 
 	/** Slot Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))

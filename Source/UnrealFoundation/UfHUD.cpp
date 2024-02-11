@@ -16,9 +16,10 @@ void AUfHUD::BeginPlay()
 
 	if(AUfGameMode* Mode = Cast<AUfGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		if ( const TObjectPtr< UCfHUDWidget > Widget = CreateWidget< UCfHUDWidget >( GetWorld(), Mode->HudWidgetClass ) )
+		HUDWidget = CreateWidget< UCfHUDWidget >( GetWorld(), Mode->HudWidgetClass );
+		if ( HUDWidget )
 		{
-			Widget->AddToViewport(static_cast<int32>(ECfZOrder::HUD));
+			HUDWidget->AddToViewport(static_cast<int32>(ECfZOrder::HUD));
 		}
 	}
 }

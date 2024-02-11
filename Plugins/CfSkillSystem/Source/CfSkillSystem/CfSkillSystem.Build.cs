@@ -28,6 +28,7 @@ public class CfSkillSystem : ModuleRules
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
 				"EnhancedInput",
+				"GameplayTags",
 			}
 			);
 			

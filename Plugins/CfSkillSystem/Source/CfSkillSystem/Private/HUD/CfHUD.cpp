@@ -7,8 +7,74 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
-#include "CfUtil.h"
 #include "Actions/CfActionComponent.h"
+#include "HUD/CfHUDWidget.h"
+#include "CfUtil.h"
+
+ACfHUD* ACfHUD::GetInstance(UWorld* World)
+{
+	if(World)
+	{
+		for (TActorIterator<ACfHUD> It(World); It; ++It)
+		{
+			return *It;
+		}
+	}
+	return nullptr;
+}
+
+UCfHUDWidget* ACfHUD::GetHUDWidget(UWorld* World)
+{
+	if(ACfHUD* HUD = GetInstance(World))
+	{
+		return HUD->HUDWidget;
+	}
+	return nullptr;
+}
+
+bool ACfHUD::GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVector& WorldAimDirection)
+{
+	if(const UCfHUDWidget* HUDWidget = GetHUDWidget(World))
+	{
+		const FVector2D Screen = HUDWidget->GetCrossHairScreenLocation();
+		return World->GetFirstPlayerController()->DeprojectScreenPositionToWorld(Screen.X, Screen.Y, WorldAimLocation, WorldAimDirection);
+	}
+
+	return false;
+}
+
+void ACfHUD::RegisterTargetWidget(UWorld* World, UCfMarkingComponent* InTarget)
+{
+	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
+	{
+		HUDWidget->RegisterTargetWidget(InTarget);
+	}
+}
+
+void ACfHUD::UnregisterTargetWidget(UWorld* World)
+{
+	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
+	{
+		HUDWidget->UnregisterTargetWidget();
+	}
+}
+
+void ACfHUD::ToggleTargetWidget(UWorld* World, UCfMarkingComponent* InTarget)
+{
+	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
+	{
+		HUDWidget->ToggleTargetWidget(InTarget);
+	}
+}
+
+UCfMarkingComponent* ACfHUD::GetLockingTarget(UWorld* World)
+{
+	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
+	{
+		return HUDWidget->GetLockingTarget();
+	}
+	return nullptr;
+}
 
 void ACfHUD::DrawHUD()
 {

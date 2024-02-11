@@ -13,9 +13,30 @@ UCLASS()
 class CFSKILLSYSTEM_API ACfHUD : public AHUD
 {
 	GENERATED_BODY()
+
+#pragma region Instance
+	static ACfHUD* GetInstance(UWorld* World);
+#pragma endregion
+
+
+#pragma region HUDWidget & etc
+public:
+	static class UCfHUDWidget* GetHUDWidget(UWorld* World);
+	static bool GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVector& WorldAimDirection);
+	static void RegisterTargetWidget(UWorld* World, class UCfMarkingComponent* InTarget);
+	static void UnregisterTargetWidget(UWorld* World);
+	static void ToggleTargetWidget(UWorld* World, UCfMarkingComponent* InTarget);
+	static UCfMarkingComponent* GetLockingTarget(UWorld* World);
+protected:
+	UPROPERTY()
+	class UCfHUDWidget* HUDWidget;
+#pragma endregion
+
+
+#pragma region Draw Debug Info
 public:
 	virtual void DrawHUD() override;
-	
+
 private:
 	static FString PrintfImpl(const TCHAR* Fmt, ...);
 	void DrawInfo(UWorld* World, const FVector& Location, const FColor Color, const float Scale, const FString& Text);
@@ -30,4 +51,5 @@ public:
 
 private:
 	void DrawPlayerInfo();
+#pragma endregion
 };

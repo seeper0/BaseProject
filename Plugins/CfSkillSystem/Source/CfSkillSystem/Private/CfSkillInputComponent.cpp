@@ -6,6 +6,7 @@
 #include "CfLogger.h"
 #include "Actions/CfActionBase.h"
 #include "Actions/CfActionComponent.h"
+#include "CfCameraBoomComponent.h"
 #include "CfSkillData.h"
 
 UCfSkillInputComponent::UCfSkillInputComponent()
@@ -28,6 +29,9 @@ void UCfSkillInputComponent::SetupComponent(class UCfActionComponent* InActionCo
 			break;
 		case ECfSkillKey::Look: // Looking
 			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Triggered, this, &UCfSkillInputComponent::Look);
+			break;
+		case ECfSkillKey::LockOn:
+			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UCfSkillInputComponent::ToggleLockOn);
 			break;
 		default:
 			EnhancedInputComponent->BindAction(SkillSlot.Value, ETriggerEvent::Started, this, &UCfSkillInputComponent::OnPress);
@@ -203,3 +207,12 @@ void UCfSkillInputComponent::OnRelease(const FInputActionInstance& InputActionIn
 		CurrentAction->ReleaseButton(SkillKey);
 	}
 }
+
+void UCfSkillInputComponent::ToggleLockOn()
+{
+	if(UCfCameraBoomComponent* Camera = GetOwner()->GetComponentByClass<UCfCameraBoomComponent>())
+	{
+		Camera->ToggleLockOn();
+	}
+}
+

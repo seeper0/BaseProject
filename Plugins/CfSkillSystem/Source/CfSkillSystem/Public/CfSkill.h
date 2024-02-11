@@ -36,6 +36,7 @@ enum class ECfSkillKey : uint8
 	Slot2,
 	Slot3,
 	Slot4,
+	LockOn,
 };
 
 UENUM(BlueprintType)
@@ -140,7 +141,7 @@ UENUM(BlueprintType)
 enum class ECfZOrder : uint8
 {
 	HUD,
-	TargetInfo
+	Marker
 };
 
 USTRUCT(BlueprintType)
