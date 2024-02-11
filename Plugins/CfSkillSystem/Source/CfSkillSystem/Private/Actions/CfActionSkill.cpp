@@ -2,8 +2,9 @@
 
 
 #include "Actions/CfActionSkill.h"
-#include "CfSkillData.h"
 #include "GameFramework/Character.h"
+#include "CfCameraBoomComponent.h"
+#include "CfSkillData.h"
 
 void UCfActionSkill::InitSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillTable)
 {
@@ -58,13 +59,16 @@ void UCfActionSkill::OnBegin()
 	{
 		bReachedDesiredRotation = false;
 	}
+	CameraBoomComponent = Owner->GetComponentByClass<UCfCameraBoomComponent>();
 }
 
 void UCfActionSkill::OnTick(float DeltaTime)
 {
 	Super::OnTick(DeltaTime);
 
-	if(!bReachedDesiredRotation)
+	const UCfMarkingComponent* Target = CameraBoomComponent ? CameraBoomComponent->GetLockingComponent() : nullptr;
+
+	if(!bReachedDesiredRotation && Target == nullptr)
 	{
 		const float CurrentYaw = Owner->GetActorRotation().Yaw;
 		const float TargetYaw = Owner->GetBaseAimRotation().Yaw;

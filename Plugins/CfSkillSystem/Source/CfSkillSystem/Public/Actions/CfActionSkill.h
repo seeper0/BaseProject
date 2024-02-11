@@ -30,4 +30,6 @@ protected:
 
 private:
 	bool bReachedDesiredRotation = true;
+	UPROPERTY()
+	class UCfCameraBoomComponent* CameraBoomComponent;
 };

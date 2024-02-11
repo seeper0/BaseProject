@@ -5,10 +5,22 @@
 #include "HUD/CfHUD.h"
 #include "CfMarkingComponent.h"
 
-void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
+void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if(const UCfMarkingComponent* Target = GetLockingComponent())
+	{
+		if(APlayerController* PC = GetWorld()->GetFirstPlayerController())
+		{
+			FRotator Rotation = PC->GetDesiredRotation();
+			const float CurrentYaw = Rotation.Yaw;
+			const float TargetYaw = (Target->GetComponentLocation() - GetOwner()->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
+			const float NewYaw = FMath::FInterpTo(CurrentYaw, TargetYaw, DeltaTime, 15.0f);
+			Rotation.Yaw = NewYaw;
+			PC->SetControlRotation(Rotation);
+		}
+	}
 }
 
 void UCfCameraBoomComponent::ToggleLockOn()
