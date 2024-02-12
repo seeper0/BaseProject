@@ -162,8 +162,11 @@ void UCfSkillInputComponent::Look(const FInputActionValue& Value)
 	if (OwnerChar && Controller)
 	{
 		// add yaw and pitch input to controller
-		OwnerChar->AddControllerYawInput(LookAxisVector.X);
-		OwnerChar->AddControllerPitchInput(LookAxisVector.Y);
+		if(HasLockingComponent() == false)
+		{
+			OwnerChar->AddControllerYawInput(LookAxisVector.X);
+			OwnerChar->AddControllerPitchInput(LookAxisVector.Y);
+		}
 	}
 }
 
@@ -210,9 +213,25 @@ void UCfSkillInputComponent::OnRelease(const FInputActionInstance& InputActionIn
 
 void UCfSkillInputComponent::ToggleLockOn()
 {
-	if(UCfCameraBoomComponent* Camera = GetOwner()->GetComponentByClass<UCfCameraBoomComponent>())
+	if(const ACharacter* OwnerChar = ActionComponent->GetOwnerChar())
 	{
-		Camera->ToggleLockOn();
+		if(UCfCameraBoomComponent* Camera = OwnerChar->GetComponentByClass<UCfCameraBoomComponent>())
+		{
+			Camera->ToggleLockOn();
+		}
 	}
+}
+
+bool UCfSkillInputComponent::HasLockingComponent() const
+{
+	if(const ACharacter* OwnerChar = ActionComponent->GetOwnerChar())
+	{
+		if(UCfCameraBoomComponent* Camera = OwnerChar->GetComponentByClass<UCfCameraBoomComponent>())
+		{
+			if(Camera->GetLockingComponent())
+				return true;
+		}
+	}
+	return false;
 }
 

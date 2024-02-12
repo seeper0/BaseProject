@@ -4,6 +4,7 @@
 #include "CfCameraBoomComponent.h"
 #include "HUD/CfHUD.h"
 #include "CfMarkingComponent.h"
+#include "CfLogger.h"
 
 void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -13,12 +14,28 @@ void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		if(APlayerController* PC = GetWorld()->GetFirstPlayerController())
 		{
-			FRotator Rotation = PC->GetDesiredRotation();
-			const float CurrentYaw = Rotation.Yaw;
-			const float TargetYaw = (Target->GetComponentLocation() - GetOwner()->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
-			const float NewYaw = FMath::FInterpTo(CurrentYaw, TargetYaw, DeltaTime, 15.0f);
-			Rotation.Yaw = NewYaw;
-			PC->SetControlRotation(Rotation);
+			FVector WorldAimLocation;
+			FVector WorldAimDirection;
+			if(ACfHUD::GetAimWorldTransform(GetWorld(), WorldAimLocation, WorldAimDirection))
+			{
+				CF_TODO("스크린좌표부터 각도까지 정확하지 않다. 대충 코딩했으니 하나씩 맞춰봐야함")
+				//::DrawDebugDirectionalArrow(GetWorld(), WorldAimLocation, WorldAimLocation+WorldAimLocation * 10, 1, FColor::Red, false, 10.0f);
+				//::DrawDebugSphere(GetWorld(), WorldAimLocation, 10, 12, FColor::Red, false, 10.0f);
+				//::DrawDebugSphere(GetWorld(), Target->GetComponentLocation(), 10, 12, FColor::Blue, false, 10.0f);
+				FRotator CurrentRot = PC->GetDesiredRotation();
+				const FRotator AimRot = (Target->GetComponentLocation() - WorldAimLocation).Rotation();
+				FRotator CamRot = (Target->GetComponentLocation() - GetUnfixedCameraPosition()).Rotation();
+				// float NewPitch = AimRot.Pitch - CamRot.Pitch;
+				// CamRot.Pitch = CamRot.Pitch + NewPitch;
+
+				//CF_LOG(TEXT("%f / %f"), AimRot.Pitch, TargetRot.Pitch);
+				//TargetRot.Pitch = AimRot.Pitch;
+				//TargetRot.Pitch -= 10;
+				//::DrawDebugLine(GetWorld(), WorldAimLocation, Target->GetComponentLocation(), FColor::Red);
+				//::DrawDebugLine(GetWorld(), GetUnfixedCameraPosition(), Target->GetComponentLocation(), FColor::Blue);
+				CurrentRot = FMath::RInterpTo(CurrentRot, CamRot, DeltaTime, 7.5f);
+				PC->SetControlRotation(CurrentRot);
+			}
 		}
 	}
 }

@@ -35,6 +35,7 @@ private:
 	void OnRelease(const FInputActionInstance& InputActionInstance);
 	// 기능
 	void ToggleLockOn();
+	bool HasLockingComponent() const;
 
 	/** Slot Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
