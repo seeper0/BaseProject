@@ -37,16 +37,16 @@ public:
 	FName RowName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECfSkillKey InputKey;
+	ECfSkillKey InputKey = ECfSkillKey::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECfInputType InputType;
+	ECfInputType InputType = ECfInputType::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECfMobileType MobileType;
+	ECfMobileType MobileType = ECfMobileType::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECfSkillOrientation Orientation;
+	ECfSkillOrientation Orientation = ECfSkillOrientation::None;
 	
 #pragma region Hit
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Type"))
