@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UNREALFOUNDATION_API AUfPlayerController : public APlayerController
+class AUfPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	

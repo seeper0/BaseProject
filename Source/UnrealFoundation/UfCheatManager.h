@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UNREALFOUNDATION_API UUfCheatManager : public UCfCheatManager
+class UUfCheatManager : public UCfCheatManager
 {
 	GENERATED_BODY()
 	

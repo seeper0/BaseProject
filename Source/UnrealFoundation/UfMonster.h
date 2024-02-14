@@ -7,7 +7,7 @@
 #include "UfMonster.generated.h"
 
 UCLASS()
-class UNREALFOUNDATION_API AUfMonster : public ACharacter
+class AUfMonster : public ACharacter
 {
 	GENERATED_BODY()
 

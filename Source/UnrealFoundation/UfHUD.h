@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UNREALFOUNDATION_API AUfHUD : public ACfHUD
+class AUfHUD : public ACfHUD
 {
 	GENERATED_BODY()
 
