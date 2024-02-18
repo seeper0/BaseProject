@@ -18,6 +18,15 @@ class CFSKILLSYSTEM_API UCfHUDWidget : public UUserWidget
 protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
+#pragma region COMMON
+public:
+	float GetDPIScale() const { return DPIScale; }
+	FVector2D GetStartPoint() const { return HUDStartPoint; }
+protected:
+	float DPIScale = 1.0f;
+	FVector2D HUDStartPoint;
+#pragma endregion
+	
 #pragma region CROSSHAIR
 public:
 	FVector2D GetCrossHairScreenLocation() const;

@@ -4,6 +4,8 @@
 #include "HUD/CfTargetInfoWidget.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Components/PanelWidget.h"
+#include "HUD/CfHUDWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCfTargetInfoWidget::Update(AActor* DamagedActor, float TargetInfoHeight, int32 HP, int32 MaxHP)
@@ -20,13 +22,14 @@ void UCfTargetInfoWidget::Update(AActor* DamagedActor, float TargetInfoHeight, i
 		FVector2D OutScreenPos;
 		if(UGameplayStatics::ProjectWorldToScreen( Pc, Location, OutScreenPos ))
 		{
-			const float ViewportScale = UWidgetLayoutLibrary::GetViewportScale( this );
-			OutScreenPos.X = OutScreenPos.X / ViewportScale;
-			OutScreenPos.Y = OutScreenPos.Y / ViewportScale;
-
 			if ( UCanvasPanelSlot* PanelSlot = Cast< UCanvasPanelSlot >( Slot ) )
 			{
-				PanelSlot->SetPosition( OutScreenPos );
+				FVector2D ParentPoint;
+				if(const UCfHUDWidget* HUDWidget = Cast<UCfHUDWidget>(GetParent()))
+				{
+					ParentPoint = HUDWidget->GetStartPoint();
+				}
+				PanelSlot->SetPosition( OutScreenPos - ParentPoint );
 			}
 		}
 	}

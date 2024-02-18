@@ -18,23 +18,16 @@ void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			FVector WorldAimDirection;
 			if(ACfHUD::GetAimWorldTransform(GetWorld(), WorldAimLocation, WorldAimDirection))
 			{
-				CF_TODO("스크린좌표부터 각도까지 정확하지 않다. 대충 코딩했으니 하나씩 맞춰봐야함")
-				//::DrawDebugDirectionalArrow(GetWorld(), WorldAimLocation, WorldAimLocation+WorldAimLocation * 10, 1, FColor::Red, false, 10.0f);
-				//::DrawDebugSphere(GetWorld(), WorldAimLocation, 10, 12, FColor::Red, false, 10.0f);
-				//::DrawDebugSphere(GetWorld(), Target->GetComponentLocation(), 10, 12, FColor::Blue, false, 10.0f);
-				FRotator CurrentRot = PC->GetDesiredRotation();
-				const FRotator AimRot = (Target->GetComponentLocation() - WorldAimLocation).Rotation();
-				FRotator CamRot = (Target->GetComponentLocation() - GetUnfixedCameraPosition()).Rotation();
-				// float NewPitch = AimRot.Pitch - CamRot.Pitch;
-				// CamRot.Pitch = CamRot.Pitch + NewPitch;
+				const FVector CameraLocation = PC->PlayerCameraManager->GetCameraLocation();
+				FRotator CameraRotation = PC->PlayerCameraManager->GetCameraRotation();
+				const FVector AimDirection = (WorldAimLocation - CameraLocation).GetSafeNormal();
+				const FVector TargetDirection = (Target->GetComponentLocation() - CameraLocation).GetSafeNormal();
+				const FRotator AimToTargetRotation = FQuat::FindBetweenNormals(AimDirection, TargetDirection).Rotator();
+				FRotator TargetRotation = CameraRotation + AimToTargetRotation;
+				TargetRotation.Roll = 0;
 
-				//CF_LOG(TEXT("%f / %f"), AimRot.Pitch, TargetRot.Pitch);
-				//TargetRot.Pitch = AimRot.Pitch;
-				//TargetRot.Pitch -= 10;
-				//::DrawDebugLine(GetWorld(), WorldAimLocation, Target->GetComponentLocation(), FColor::Red);
-				//::DrawDebugLine(GetWorld(), GetUnfixedCameraPosition(), Target->GetComponentLocation(), FColor::Blue);
-				CurrentRot = FMath::RInterpTo(CurrentRot, CamRot, DeltaTime, 7.5f);
-				PC->SetControlRotation(CurrentRot);
+				CameraRotation = FMath::RInterpTo(CameraRotation, TargetRotation, DeltaTime, 7.5f);
+				PC->SetControlRotation(CameraRotation);
 			}
 		}
 	}

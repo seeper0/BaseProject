@@ -7,9 +7,11 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "CfLogger.h"
+#include "CfUtil.h"
 #include "Actions/CfActionComponent.h"
 #include "HUD/CfHUDWidget.h"
-#include "CfUtil.h"
+#include "Tests/AutomationCommon.h"
 
 ACfHUD* ACfHUD::GetInstance(UWorld* World)
 {
@@ -36,8 +38,11 @@ bool ACfHUD::GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVec
 {
 	if(const UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
-		const FVector2D Screen = HUDWidget->GetCrossHairScreenLocation();
-		return World->GetFirstPlayerController()->DeprojectScreenPositionToWorld(Screen.X, Screen.Y, WorldAimLocation, WorldAimDirection);
+		const FVector2D AimLocation = HUDWidget->GetCrossHairScreenLocation();
+		FVector2D Size;
+		World->GetGameViewport()->GetViewportSize(Size);
+		//CF_LOG(TEXT("%f,%f / %f,%f (%f/%f)"), Size.X, Size.Y, AimLocation.X, AimLocation.Y,  AimLocation.X/Size.X, AimLocation.Y/Size.Y);
+		return World->GetFirstPlayerController()->DeprojectScreenPositionToWorld(AimLocation.X, AimLocation.Y, WorldAimLocation, WorldAimDirection);
 	}
 
 	return false;
@@ -127,8 +132,7 @@ FString ACfHUD::PrintfImpl(const TCHAR* Fmt, ...)
 	return ResultString;
 }
 
-void ACfHUD::DrawInfo(UWorld* World, const FVector& Location, const FColor Color, const float Scale,
-	const FString& Text)
+void ACfHUD::DrawInfo(UWorld* World, const FVector& Location, const FColor Color, const float Scale, const FString& Text)
 {
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, 0);
 	if (PlayerController == nullptr)
