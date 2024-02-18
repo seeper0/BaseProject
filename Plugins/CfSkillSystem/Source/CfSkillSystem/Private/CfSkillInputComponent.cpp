@@ -53,10 +53,6 @@ void UCfSkillInputComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(UCharacterMovementComponent* MovementComponent = OwnerChar ? OwnerChar->GetCharacterMovement() : nullptr)
 	{
 		MovementComponent->bUseControllerDesiredRotation = bUseControllerDesiredRotation;
-		// if(CurrentAction)
-		// 	MovementComponent->bUseControllerDesiredRotation = true;
-		// else
-		// 	MovementComponent->bUseControllerDesiredRotation = bUseControllerDesiredRotation;
 	}
 }
 

@@ -31,11 +31,6 @@ AUfCharacter::AUfCharacter(const FObjectInitializer& ObjectInitializer)
 	bUseControllerRotationYaw = false; // 그냥 폰을 돌린다. (루트모션보다 우선순위가 높다.)
 	bUseControllerRotationRoll = false;
 
-	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->bUseControllerDesiredRotation = false; // 원하는 방향으로 RotationRate 로 돌린다. (단, 루트모션보다 우선순위가 낮다.) 
-
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
