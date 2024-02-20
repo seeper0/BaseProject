@@ -7,11 +7,11 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
-#include "CfLogger.h"
-#include "CfUtil.h"
 #include "Actions/CfActionComponent.h"
 #include "HUD/CfHUDWidget.h"
-#include "Tests/AutomationCommon.h"
+#include "HUD/OverlayLockonComponent.h"
+#include "CfLogger.h"
+#include "CfUtil.h"
 
 ACfHUD* ACfHUD::GetInstance(UWorld* World)
 {
@@ -34,21 +34,24 @@ UCfHUDWidget* ACfHUD::GetHUDWidget(UWorld* World)
 	return nullptr;
 }
 
-bool ACfHUD::GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVector& WorldAimDirection)
+bool ACfHUD::GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVector& WorldAimDirection, FVector& WorldCenterLocation)
 {
 	if(const UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
 		const FVector2D AimLocation = HUDWidget->GetCrossHairScreenLocation();
-		FVector2D Size;
-		World->GetGameViewport()->GetViewportSize(Size);
+		const FVector2D CenterLocation = HUDWidget->GetHudCenterScreenLocation();
+		// FVector2D Size;
+		// World->GetGameViewport()->GetViewportSize(Size);
 		//CF_LOG(TEXT("%f,%f / %f,%f (%f/%f)"), Size.X, Size.Y, AimLocation.X, AimLocation.Y,  AimLocation.X/Size.X, AimLocation.Y/Size.Y);
+		FVector WorldCenterDirection;
+		World->GetFirstPlayerController()->DeprojectScreenPositionToWorld(CenterLocation.X, CenterLocation.Y, WorldCenterLocation, WorldCenterDirection);
 		return World->GetFirstPlayerController()->DeprojectScreenPositionToWorld(AimLocation.X, AimLocation.Y, WorldAimLocation, WorldAimDirection);
 	}
 
 	return false;
 }
 
-void ACfHUD::RegisterTargetWidget(UWorld* World, UCfMarkingComponent* InTarget)
+void ACfHUD::RegisterTargetWidget(UWorld* World, UOverlayLockOnComponent* InTarget)
 {
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
@@ -64,7 +67,7 @@ void ACfHUD::UnregisterTargetWidget(UWorld* World)
 	}
 }
 
-void ACfHUD::ToggleTargetWidget(UWorld* World, UCfMarkingComponent* InTarget)
+void ACfHUD::ToggleTargetWidget(UWorld* World, UOverlayLockOnComponent* InTarget)
 {
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
@@ -72,13 +75,22 @@ void ACfHUD::ToggleTargetWidget(UWorld* World, UCfMarkingComponent* InTarget)
 	}
 }
 
-UCfMarkingComponent* ACfHUD::GetLockingTarget(UWorld* World)
+UOverlayLockOnComponent* ACfHUD::GetLockingTarget(UWorld* World)
 {
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
 		return HUDWidget->GetLockingTarget();
 	}
 	return nullptr;
+}
+
+FVector2D ACfHUD::ToAbsolute(UWorld* World, const FVector2D& Local)
+{
+	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
+	{
+		return HUDWidget->ToAbsolute(Local);
+	}
+	return FVector2D();
 }
 
 void ACfHUD::DrawHUD()

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CfMarkingComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "CfHUDWidget.generated.h"
 
@@ -20,16 +19,20 @@ protected:
 
 #pragma region COMMON
 public:
-	float GetDPIScale() const { return DPIScale; }
-	FVector2D GetStartPoint() const { return HUDStartPoint; }
+	FVector2D GetTopLeft() const { return HUDTopLeft; }
+	FVector2D GetBottomRight() const { return HUDBottomRight; }
+	FVector2D ToAbsolute(const FVector2D& Local) const;
+
 protected:
-	float DPIScale = 1.0f;
-	FVector2D HUDStartPoint;
+	FVector2D HUDSize;
+	FVector2D HUDTopLeft;
+	FVector2D HUDBottomRight;
 #pragma endregion
 	
 #pragma region CROSSHAIR
 public:
 	FVector2D GetCrossHairScreenLocation() const;
+	FVector2D GetHudCenterScreenLocation() const;
 
 	UPROPERTY(meta = (BindWidget))
 	class UCfCrossHairWidget* CrossHair = nullptr;
@@ -37,19 +40,13 @@ public:
 
 #pragma region TARGET
 public:
-	void RegisterTargetWidget(UCfMarkingComponent* InTarget);
+	void RegisterTargetWidget(class UOverlayLockOnComponent* InTarget);
 	void UnregisterTargetWidget();
-	void ToggleTargetWidget(UCfMarkingComponent* InTarget);
-	UCfMarkingComponent* GetLockingTarget() const { return LockingTarget; }
+	void ToggleTargetWidget(class UOverlayLockOnComponent* InTarget);
+	class UOverlayLockOnComponent* GetLockingTarget() const { return LockingTarget; }
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class UUserWidget> TargetWidgetClass;
-
 	UPROPERTY()
-	UUserWidget* TargetMarkingWidget;
-
-	UPROPERTY()
-	UCfMarkingComponent* LockingTarget;
+	class UOverlayLockOnComponent* LockingTarget;
 #pragma endregion
 };

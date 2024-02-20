@@ -2,32 +2,35 @@
 
 
 #include "CfCameraBoomComponent.h"
+#include "GameFramework/Character.h"
 #include "HUD/CfHUD.h"
-#include "CfMarkingComponent.h"
+#include "HUD/OverlayLockOnComponent.h"
 #include "CfLogger.h"
 
 void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(const UCfMarkingComponent* Target = GetLockingComponent())
+	if(const UOverlayLockOnComponent* Target = GetLockingComponent())
 	{
 		if(APlayerController* PC = GetWorld()->GetFirstPlayerController())
 		{
 			FVector WorldAimLocation;
 			FVector WorldAimDirection;
-			if(ACfHUD::GetAimWorldTransform(GetWorld(), WorldAimLocation, WorldAimDirection))
+			FVector WorldCenterLocation;
+			if(ACfHUD::GetAimWorldTransform(GetWorld(), WorldAimLocation, WorldAimDirection, WorldCenterLocation))
 			{
 				const FVector CameraLocation = PC->PlayerCameraManager->GetCameraLocation();
-				FRotator CameraRotation = PC->PlayerCameraManager->GetCameraRotation();
+				const FRotator CameraRotation = PC->PlayerCameraManager->GetCameraRotation();
 				const FVector AimDirection = (WorldAimLocation - CameraLocation).GetSafeNormal();
 				const FVector TargetDirection = (Target->GetComponentLocation() - CameraLocation).GetSafeNormal();
-				const FRotator AimToTargetRotation = FQuat::FindBetweenNormals(AimDirection, TargetDirection).Rotator();
-				FRotator TargetRotation = CameraRotation + AimToTargetRotation;
-				TargetRotation.Roll = 0;
+				const FQuat AimToTargetRotation = FQuat::FindBetweenNormals(AimDirection, TargetDirection);
+				FRotator TargetRotation = (AimToTargetRotation * CameraRotation.Quaternion()).Rotator();
+				TargetRotation.Roll = 0.0f;
 
-				CameraRotation = FMath::RInterpTo(CameraRotation, TargetRotation, DeltaTime, 7.5f);
-				PC->SetControlRotation(CameraRotation);
+				FRotator CurrentRotation = PC->PlayerCameraManager->GetCameraRotation();
+				CurrentRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 7.5f);
+				PC->SetControlRotation(CurrentRotation);
 			}
 		}
 	}
@@ -35,26 +38,26 @@ void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UCfCameraBoomComponent::ToggleLockOn()
 {
-	UCfMarkingComponent* LockingTarget = FindLockingTarget();
-	ACfHUD::ToggleTargetWidget(GetWorld(), LockingTarget);
+	UOverlayLockOnComponent* Target = FindLockingTarget();
+	ACfHUD::ToggleTargetWidget(GetWorld(), Target);
 }
 
-UCfMarkingComponent* UCfCameraBoomComponent::GetLockingComponent() const
+UOverlayLockOnComponent* UCfCameraBoomComponent::GetLockingComponent() const
 {
 	return ACfHUD::GetLockingTarget(GetWorld());
 }
 
-UCfMarkingComponent* UCfCameraBoomComponent::FindLockingTarget() const
+UOverlayLockOnComponent* UCfCameraBoomComponent::FindLockingTarget() const
 {
 	FVector WorldAimLocation;
 	FVector WorldAimDirection;
+	FVector WorldCenterLocation;
 	bool bOverlap = false;
 	TArray<FOverlapResult> Overlaps;
 
-	if(ACfHUD::GetAimWorldTransform(GetWorld(), WorldAimLocation, WorldAimDirection))
+	if(ACfHUD::GetAimWorldTransform(GetWorld(), WorldAimLocation, WorldAimDirection, WorldCenterLocation))
 	{
 		FCollisionObjectQueryParams ObjectParams;
-		ObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 		ObjectParams.AddObjectTypesToQuery(ECC_Pawn);
 		ObjectParams.AddObjectTypesToQuery(ECC_Vehicle);
 		FCollisionQueryParams CollisionParams;
@@ -66,40 +69,45 @@ UCfMarkingComponent* UCfCameraBoomComponent::FindLockingTarget() const
 		bOverlap = GetWorld()->OverlapMultiByObjectType(Overlaps, OwnerLocation, OwnerRotation, ObjectParams, FCollisionShape::MakeSphere(LockingDistance), CollisionParams);
 	}
 
-	UCfMarkingComponent* NearMarkingComponent = nullptr;
+	TArray<UOverlayLockOnComponent*> AllOverlayLockOnComponents;
+	UOverlayLockOnComponent* NearLockOnComponent = nullptr;
 	if(bOverlap)
 	{
-		float MinDistSq = LockingDistance * LockingDistance;
-		UCfMarkingComponent* NearDistMarkingComponent = nullptr;
-		float MinAngle = LockingAngle;
-		UCfMarkingComponent* NearAngleMarkingComponent = nullptr;
 		for(const FOverlapResult& Overlap : Overlaps)
 		{
-			if(UCfMarkingComponent* MarkingComponent = Cast<UCfMarkingComponent>(Overlap.GetComponent()))
+			if(ACharacter* Pawn = Cast<ACharacter>(Overlap.GetActor()))
 			{
-				if(MarkingComponent->ComponentHasTag(UCfMarkingComponent::TAG_Locking))
-				{
-					FVector MarkingLocation = MarkingComponent->GetComponentLocation();
-					const float DistSq = FVector::DistSquared(WorldAimLocation, MarkingLocation);
-					//::DrawDebugSphere(GetWorld(), MarkingLocation, 100.0f, 12, FColor::Red, false, 10.0f);
-					if(DistSq < MinDistSq)
-					{
-						NearDistMarkingComponent = MarkingComponent;
-						MinDistSq = DistSq;
-					}
-					
-					const FVector MarkingDirection = (MarkingLocation - WorldAimLocation).GetSafeNormal();
-					const float Angle = FMath::Acos( FVector::DotProduct(WorldAimDirection, MarkingDirection) );
-					if(Angle < MinAngle)
-					{
-						NearAngleMarkingComponent = MarkingComponent;
-						MinAngle = Angle;
-					}
-				}
+				TArray< UOverlayLockOnComponent* > Components;
+				Pawn->GetComponents<UOverlayLockOnComponent>(Components);
+				AllOverlayLockOnComponents.Append(Components);
 			}
 		}
-		NearMarkingComponent = NearAngleMarkingComponent ? NearAngleMarkingComponent : NearDistMarkingComponent;
 	}
 
-	return NearMarkingComponent;
+	float MinDistSq = LockingDistance * LockingDistance;
+	UOverlayLockOnComponent* NearDistLockOnComponent = nullptr;
+	float MinAngle = LockingAngle;
+	UOverlayLockOnComponent* NearAngleLockOnComponent = nullptr;
+	for(UOverlayLockOnComponent* LockOn :  AllOverlayLockOnComponents)
+	{
+		FVector LockOnLocation = LockOn->GetComponentLocation();
+		const float DistSq = FVector::DistSquared(WorldAimLocation, LockOnLocation);
+		//::DrawDebugSphere(GetWorld(), LockOnLocation, 100.0f, 12, FColor::Red, false, 10.0f);
+		if(DistSq < MinDistSq)
+		{
+			NearDistLockOnComponent = LockOn;
+			MinDistSq = DistSq;
+		}
+			
+		const FVector LockOnDirection = (LockOnLocation - WorldAimLocation).GetSafeNormal();
+		const float Angle = FMath::Acos( FVector::DotProduct(WorldAimDirection, LockOnDirection) );
+		if(Angle < MinAngle)
+		{
+			NearAngleLockOnComponent = LockOn;
+			MinAngle = Angle;
+		}
+	}
+	NearLockOnComponent = NearAngleLockOnComponent ? NearAngleLockOnComponent : NearDistLockOnComponent;
+
+	return NearLockOnComponent;
 }

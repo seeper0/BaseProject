@@ -3,6 +3,7 @@
 
 #include "Actions/CfActionSkill.h"
 #include "GameFramework/Character.h"
+#include "HUD/OverlayLockonComponent.h"
 #include "CfCameraBoomComponent.h"
 #include "CfSkillData.h"
 
@@ -66,9 +67,9 @@ void UCfActionSkill::OnTick(float DeltaTime)
 {
 	Super::OnTick(DeltaTime);
 
-	const UCfMarkingComponent* Target = CameraBoomComponent ? CameraBoomComponent->GetLockingComponent() : nullptr;
+	const UOverlayLockOnComponent* LockonComponent = CameraBoomComponent ? CameraBoomComponent->GetLockingComponent() : nullptr;
 
-	if(!bReachedDesiredRotation && Target == nullptr)
+	if(!bReachedDesiredRotation && LockonComponent == nullptr)
 	{
 		const float CurrentYaw = Owner->GetActorRotation().Yaw;
 		const float TargetYaw = Owner->GetBaseAimRotation().Yaw;

@@ -2,7 +2,6 @@
 
 
 #include "HUD/CfTargetInfoWidget.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/PanelWidget.h"
 #include "HUD/CfHUDWidget.h"
@@ -27,7 +26,7 @@ void UCfTargetInfoWidget::Update(AActor* DamagedActor, float TargetInfoHeight, i
 				FVector2D ParentPoint;
 				if(const UCfHUDWidget* HUDWidget = Cast<UCfHUDWidget>(GetParent()))
 				{
-					ParentPoint = HUDWidget->GetStartPoint();
+					ParentPoint = HUDWidget->GetTopLeft();
 				}
 				PanelSlot->SetPosition( OutScreenPos - ParentPoint );
 			}

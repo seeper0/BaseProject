@@ -22,11 +22,13 @@ class CFSKILLSYSTEM_API ACfHUD : public AHUD
 #pragma region HUDWidget & etc
 public:
 	static class UCfHUDWidget* GetHUDWidget(UWorld* World);
-	static bool GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVector& WorldAimDirection);
-	static void RegisterTargetWidget(UWorld* World, class UCfMarkingComponent* InTarget);
+	static bool GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVector& WorldAimDirection, FVector& WorldCenterLocation);
+	static void RegisterTargetWidget(UWorld* World, class UOverlayLockOnComponent* InTarget);
 	static void UnregisterTargetWidget(UWorld* World);
-	static void ToggleTargetWidget(UWorld* World, UCfMarkingComponent* InTarget);
-	static UCfMarkingComponent* GetLockingTarget(UWorld* World);
+	static void ToggleTargetWidget(UWorld* World, UOverlayLockOnComponent* InTarget);
+	static UOverlayLockOnComponent* GetLockingTarget(UWorld* World);
+	static FVector2D ToAbsolute(UWorld* World, const FVector2D& Local);
+
 protected:
 	UPROPERTY()
 	class UCfHUDWidget* HUDWidget;

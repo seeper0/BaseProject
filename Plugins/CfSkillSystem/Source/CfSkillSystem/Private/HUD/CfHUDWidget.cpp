@@ -4,11 +4,10 @@
 #include "HUD/CfHUDWidget.h"
 
 #include "CfLogger.h"
-#include "CfSkill.h"
-#include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
 #include "Components/PanelWidget.h"
 #include "HUD/CfCrossHairWidget.h"
+#include "HUD/OverlayLockOnComponent.h"
 
 void UCfHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
@@ -16,33 +15,15 @@ void UCfHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 	if(GetWorld() && GetWorld()->GetGameViewport())
 	{
-		DPIScale = GetWorld()->GetGameViewport()->GetDPIScale();
-		HUDStartPoint = GetCachedGeometry().LocalToAbsolute(FVector2D(0, 0)) * DPIScale;
+		GetWorld()->GetGameViewport()->GetViewportSize(HUDSize);
+		HUDTopLeft = GetCachedGeometry().LocalToAbsolute(FVector2D(0, 0));
+		HUDBottomRight = GetCachedGeometry().LocalToAbsolute(GetCachedGeometry().GetLocalSize());
 	}
+}
 
-	if(TargetMarkingWidget)
-	{
-		if(LockingTarget)
-		{
-			if(APlayerController* PC = LockingTarget->GetWorld()->GetFirstPlayerController())
-			{
-				FVector2D ScreenLocation;
-				if(PC->ProjectWorldLocationToScreen(LockingTarget->GetComponentLocation(), ScreenLocation))
-				{
-					TargetMarkingWidget->SetVisibility(ESlateVisibility::Visible);
-					TargetMarkingWidget->SetPositionInViewport(ScreenLocation);
-				}
-				else
-				{
-					TargetMarkingWidget->SetVisibility(ESlateVisibility::Hidden);
-				}
-			}
-		}
-		else
-		{
-			UnregisterTargetWidget();
-		}
-	}
+FVector2D UCfHUDWidget::ToAbsolute(const FVector2D& Local) const
+{
+	return (Local * (HUDBottomRight - HUDTopLeft) / HUDSize) - HUDTopLeft;
 }
 
 FVector2D UCfHUDWidget::GetCrossHairScreenLocation() const
@@ -51,39 +32,42 @@ FVector2D UCfHUDWidget::GetCrossHairScreenLocation() const
 	{
 		const FGeometry& CrossHairGeometry = CrossHair->GetCachedGeometry();
 		const FVector2D LocalPoint = FVector2D(CrossHairGeometry.GetLocalSize() / 2.0f);
-		const FVector2D CrossHairPoint = CrossHairGeometry.LocalToAbsolute(LocalPoint) * DPIScale;
+		const FVector2D CrossHairPoint = CrossHairGeometry.LocalToAbsolute(LocalPoint);
 
-		const FVector2D AbsolutePoint = CrossHairPoint - GetStartPoint();
-		//CF_LOG(TEXT("[%f,%f] %f,%f / %f,%f"), CrossHairPoint.X, CrossHairPoint.Y, ParentPoint.X, ParentPoint.Y, AbsolutePoint.X, AbsolutePoint.Y);
+		const FVector2D AbsolutePoint = ToAbsolute(CrossHairPoint);
+		//CF_LOG(TEXT("[%f,%f] %f,%f"), CrossHairPoint.X, CrossHairPoint.Y, AbsolutePoint.X, AbsolutePoint.Y);
 		return AbsolutePoint;
 	}
 	return FVector2D();
 }
 
-void UCfHUDWidget::RegisterTargetWidget(UCfMarkingComponent* InTarget)
+FVector2D UCfHUDWidget::GetHudCenterScreenLocation() const
 {
-	if(TargetWidgetClass == nullptr || InTarget == nullptr)
+	const FGeometry& Geometry = GetCachedGeometry();
+	const FVector2D LocalPoint = FVector2D(Geometry.GetLocalSize() / 2.0f);
+	const FVector2D CenterPoint = Geometry.LocalToAbsolute(LocalPoint);
+	return ToAbsolute(CenterPoint);
+}
+
+void UCfHUDWidget::RegisterTargetWidget(UOverlayLockOnComponent* InTarget)
+{
+	if(InTarget == nullptr)
 		return;
 
 	LockingTarget = InTarget;
-	TargetMarkingWidget = CreateWidget< UUserWidget >( GetWorld(), TargetWidgetClass );
-	TargetMarkingWidget->AddToViewport(static_cast<int32>(ECfZOrder::Marker));
+	LockingTarget->ShowWidget(true);
 }
 
 void UCfHUDWidget::UnregisterTargetWidget()
 {
-	if(TargetWidgetClass == nullptr)
+	if(LockingTarget == nullptr)
 		return;
 
-	if(TargetMarkingWidget)
-	{
-		TargetMarkingWidget->RemoveFromParent();
-		TargetMarkingWidget = nullptr;
-	}
+	LockingTarget->ShowWidget(false);
 	LockingTarget = nullptr;
 }
 
-void UCfHUDWidget::ToggleTargetWidget(UCfMarkingComponent* InTarget)
+void UCfHUDWidget::ToggleTargetWidget(UOverlayLockOnComponent* InTarget)
 {
 	if(LockingTarget)
 	{
