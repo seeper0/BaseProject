@@ -9,7 +9,7 @@
 #include "GameFramework/Character.h"
 #include "Actions/CfActionComponent.h"
 #include "HUD/CfHUDWidget.h"
-#include "HUD/OverlayLockonComponent.h"
+#include "HUD/CfOverlayLockOnComponent.h"
 #include "CfLogger.h"
 #include "CfUtil.h"
 
@@ -51,7 +51,7 @@ bool ACfHUD::GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVec
 	return false;
 }
 
-void ACfHUD::RegisterTargetWidget(UWorld* World, UOverlayLockOnComponent* InTarget)
+void ACfHUD::RegisterTargetWidget(UWorld* World, UCfOverlayLockOnComponent* InTarget)
 {
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
@@ -67,7 +67,7 @@ void ACfHUD::UnregisterTargetWidget(UWorld* World)
 	}
 }
 
-void ACfHUD::ToggleTargetWidget(UWorld* World, UOverlayLockOnComponent* InTarget)
+void ACfHUD::ToggleTargetWidget(UWorld* World, UCfOverlayLockOnComponent* InTarget)
 {
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
@@ -75,7 +75,7 @@ void ACfHUD::ToggleTargetWidget(UWorld* World, UOverlayLockOnComponent* InTarget
 	}
 }
 
-UOverlayLockOnComponent* ACfHUD::GetLockingTarget(UWorld* World)
+UCfOverlayLockOnComponent* ACfHUD::GetLockingTarget(UWorld* World)
 {
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{

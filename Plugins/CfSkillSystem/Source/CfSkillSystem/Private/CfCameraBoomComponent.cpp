@@ -4,14 +4,14 @@
 #include "CfCameraBoomComponent.h"
 #include "GameFramework/Character.h"
 #include "HUD/CfHUD.h"
-#include "HUD/OverlayLockOnComponent.h"
+#include "HUD/CfOverlayLockOnComponent.h"
 #include "CfLogger.h"
 
 void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(const UOverlayLockOnComponent* Target = GetLockingComponent())
+	if(const UCfOverlayLockOnComponent* Target = GetLockingComponent())
 	{
 		if(APlayerController* PC = GetWorld()->GetFirstPlayerController())
 		{
@@ -38,16 +38,16 @@ void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UCfCameraBoomComponent::ToggleLockOn()
 {
-	UOverlayLockOnComponent* Target = FindLockingTarget();
+	UCfOverlayLockOnComponent* Target = FindLockingTarget();
 	ACfHUD::ToggleTargetWidget(GetWorld(), Target);
 }
 
-UOverlayLockOnComponent* UCfCameraBoomComponent::GetLockingComponent() const
+UCfOverlayLockOnComponent* UCfCameraBoomComponent::GetLockingComponent() const
 {
 	return ACfHUD::GetLockingTarget(GetWorld());
 }
 
-UOverlayLockOnComponent* UCfCameraBoomComponent::FindLockingTarget() const
+UCfOverlayLockOnComponent* UCfCameraBoomComponent::FindLockingTarget() const
 {
 	FVector WorldAimLocation;
 	FVector WorldAimDirection;
@@ -69,26 +69,26 @@ UOverlayLockOnComponent* UCfCameraBoomComponent::FindLockingTarget() const
 		bOverlap = GetWorld()->OverlapMultiByObjectType(Overlaps, OwnerLocation, OwnerRotation, ObjectParams, FCollisionShape::MakeSphere(LockingDistance), CollisionParams);
 	}
 
-	TArray<UOverlayLockOnComponent*> AllOverlayLockOnComponents;
-	UOverlayLockOnComponent* NearLockOnComponent = nullptr;
+	TArray<UCfOverlayLockOnComponent*> AllOverlayLockOnComponents;
+	UCfOverlayLockOnComponent* NearLockOnComponent = nullptr;
 	if(bOverlap)
 	{
 		for(const FOverlapResult& Overlap : Overlaps)
 		{
 			if(ACharacter* Pawn = Cast<ACharacter>(Overlap.GetActor()))
 			{
-				TArray< UOverlayLockOnComponent* > Components;
-				Pawn->GetComponents<UOverlayLockOnComponent>(Components);
+				TArray< UCfOverlayLockOnComponent* > Components;
+				Pawn->GetComponents<UCfOverlayLockOnComponent>(Components);
 				AllOverlayLockOnComponents.Append(Components);
 			}
 		}
 	}
 
 	float MinDistSq = LockingDistance * LockingDistance;
-	UOverlayLockOnComponent* NearDistLockOnComponent = nullptr;
+	UCfOverlayLockOnComponent* NearDistLockOnComponent = nullptr;
 	float MinAngle = LockingAngle;
-	UOverlayLockOnComponent* NearAngleLockOnComponent = nullptr;
-	for(UOverlayLockOnComponent* LockOn :  AllOverlayLockOnComponents)
+	UCfOverlayLockOnComponent* NearAngleLockOnComponent = nullptr;
+	for(UCfOverlayLockOnComponent* LockOn :  AllOverlayLockOnComponents)
 	{
 		FVector LockOnLocation = LockOn->GetComponentLocation();
 		const float DistSq = FVector::DistSquared(WorldAimLocation, LockOnLocation);

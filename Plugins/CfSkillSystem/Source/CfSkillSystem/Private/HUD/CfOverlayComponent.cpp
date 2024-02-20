@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/OverlayComponent.h"
+#include "HUD/CfOverlayComponent.h"
 
-void UOverlayComponent::BeginPlay()
+void UCfOverlayComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -13,7 +13,7 @@ void UOverlayComponent::BeginPlay()
 	}
 }
 
-void UOverlayComponent::ShowWidget(bool bShow)
+void UCfOverlayComponent::ShowWidget(bool bShow)
 {
 	if(UUserWidget* OverlayWidget = GetWidget())
 	{

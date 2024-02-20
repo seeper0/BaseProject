@@ -18,7 +18,7 @@ class CFSKILLSYSTEM_API UCfCameraBoomComponent : public USpringArmComponent
 
 public:
 	void ToggleLockOn();
-	class UOverlayLockOnComponent* GetLockingComponent() const;
+	class UCfOverlayLockOnComponent* GetLockingComponent() const;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -28,7 +28,7 @@ private:
 	float LockingAngle = 15.0f;
 	
 	UFUNCTION()
-	class UOverlayLockOnComponent* FindLockingTarget() const;
+	class UCfOverlayLockOnComponent* FindLockingTarget() const;
 
 	// 락온 기능
 	// 락온 돌리기 기능

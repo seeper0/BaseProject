@@ -7,7 +7,7 @@
 #include "Components/Image.h"
 #include "Components/PanelWidget.h"
 #include "HUD/CfCrossHairWidget.h"
-#include "HUD/OverlayLockOnComponent.h"
+#include "HUD/CfOverlayLockOnComponent.h"
 
 void UCfHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
@@ -49,7 +49,7 @@ FVector2D UCfHUDWidget::GetHudCenterScreenLocation() const
 	return ToAbsolute(CenterPoint);
 }
 
-void UCfHUDWidget::RegisterTargetWidget(UOverlayLockOnComponent* InTarget)
+void UCfHUDWidget::RegisterTargetWidget(UCfOverlayLockOnComponent* InTarget)
 {
 	if(InTarget == nullptr)
 		return;
@@ -67,7 +67,7 @@ void UCfHUDWidget::UnregisterTargetWidget()
 	LockingTarget = nullptr;
 }
 
-void UCfHUDWidget::ToggleTargetWidget(UOverlayLockOnComponent* InTarget)
+void UCfHUDWidget::ToggleTargetWidget(UCfOverlayLockOnComponent* InTarget)
 {
 	if(LockingTarget)
 	{

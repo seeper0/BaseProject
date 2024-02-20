@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/WidgetComponent.h"
-#include "OverlayComponent.generated.h"
+#include "CfOverlayComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CFSKILLSYSTEM_API UOverlayComponent : public UWidgetComponent
+class CFSKILLSYSTEM_API UCfOverlayComponent : public UWidgetComponent
 {
 	GENERATED_BODY()
 

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "OverlayComponent.h"
-#include "OverlayInfoComponent.generated.h"
+#include "CfOverlayComponent.h"
+#include "CfOverlayLockOnComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (CombatFoundation), meta = (BlueprintSpawnableComponent))
-class CFSKILLSYSTEM_API UOverlayInfoComponent : public UOverlayComponent
+class CFSKILLSYSTEM_API UCfOverlayLockOnComponent : public UCfOverlayComponent
 {
 	GENERATED_BODY()
 };

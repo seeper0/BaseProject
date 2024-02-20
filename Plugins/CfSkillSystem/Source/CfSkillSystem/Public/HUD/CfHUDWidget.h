@@ -40,13 +40,13 @@ public:
 
 #pragma region TARGET
 public:
-	void RegisterTargetWidget(class UOverlayLockOnComponent* InTarget);
+	void RegisterTargetWidget(class UCfOverlayLockOnComponent* InTarget);
 	void UnregisterTargetWidget();
-	void ToggleTargetWidget(class UOverlayLockOnComponent* InTarget);
-	class UOverlayLockOnComponent* GetLockingTarget() const { return LockingTarget; }
+	void ToggleTargetWidget(class UCfOverlayLockOnComponent* InTarget);
+	class UCfOverlayLockOnComponent* GetLockingTarget() const { return LockingTarget; }
 
 private:
 	UPROPERTY()
-	class UOverlayLockOnComponent* LockingTarget;
+	class UCfOverlayLockOnComponent* LockingTarget;
 #pragma endregion
 };
