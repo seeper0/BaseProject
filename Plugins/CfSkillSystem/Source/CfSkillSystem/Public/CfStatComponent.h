@@ -29,17 +29,11 @@ protected:
 	virtual void BeginPlay() override;
 	UFUNCTION()
 	void OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* InDamageType, AController* InstigatedBy, AActor* DamageCauser);
+	// Owner가 이미 LockOn 되어있다.
+	UFUNCTION()
+	bool IsLockOn() const;
 	
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UCfTargetInfoWidget> TargetInfoWidgetClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float TargetInfoHeight = 80;
-	
-	UPROPERTY()
-	UCfTargetInfoWidget* TargetInfo = nullptr;
-	
 	int32 HP = 100;
 	int32 MaxHP = 100;
 	int32 Attack = 10;

@@ -2,12 +2,12 @@
 
 
 #include "HUD/CfHUDWidget.h"
-
-#include "CfLogger.h"
 #include "Components/Image.h"
 #include "Components/PanelWidget.h"
 #include "HUD/CfCrossHairWidget.h"
+#include "HUD/CfOverlayInfoComponent.h"
 #include "HUD/CfOverlayLockOnComponent.h"
+#include "CfLogger.h"
 
 void UCfHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
@@ -56,6 +56,10 @@ void UCfHUDWidget::RegisterTargetWidget(UCfOverlayLockOnComponent* InTarget)
 
 	LockingTarget = InTarget;
 	LockingTarget->ShowWidget(true);
+	if(UCfOverlayInfoComponent* Info = LockingTarget->GetOwner()->GetComponentByClass<UCfOverlayInfoComponent>())
+	{
+		Info->ShowWidget(true);
+	}
 }
 
 void UCfHUDWidget::UnregisterTargetWidget()
@@ -64,6 +68,10 @@ void UCfHUDWidget::UnregisterTargetWidget()
 		return;
 
 	LockingTarget->ShowWidget(false);
+	if(UCfOverlayInfoComponent* Info = LockingTarget->GetOwner()->GetComponentByClass<UCfOverlayInfoComponent>())
+	{
+		Info->ShowWidget(false);
+	}
 	LockingTarget = nullptr;
 }
 

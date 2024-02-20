@@ -3,6 +3,10 @@
 
 #include "CfStatComponent.h"
 
+#include "HUD/CfHUD.h"
+#include "HUD/CfOverlayInfoComponent.h"
+#include "HUD/CfOverlayLockOnComponent.h"
+
 // Sets default values for this component's properties
 UCfStatComponent::UCfStatComponent()
 {
@@ -11,12 +15,6 @@ UCfStatComponent::UCfStatComponent()
 void UCfStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//TargetInfo = CreateWidget<UCfTargetInfoWidget>( GetWorld()->GetGameInstance(), TargetInfoWidgetClass, NAME_None );
-	if(TargetInfo)
-	{
-		//TargetInfo->AddToViewport(static_cast<int32>(ECfZOrder::TargetInfo));
-	}
 
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UCfStatComponent::OnTakeDamage);
 }
@@ -36,9 +34,26 @@ void UCfStatComponent::OnTakeDamage(AActor* DamagedActor, float Damage, const UD
 {
 	HP = FMath::Clamp(HP - Damage, 0.0f, MaxHP);
 
-	if(TargetInfo)
+	if(UCfOverlayInfoComponent* Info = GetOwner()->GetComponentByClass<UCfOverlayInfoComponent>())
 	{
-		TargetInfo->Update(DamagedActor, TargetInfoHeight, HP, MaxHP);
+		Info->ShowWidget(true);
+		Info->Update(GetOwner(), HP, MaxHP);
+		if(!IsLockOn())
+		{
+			Info->ShowWidget(false);
+		}
 	}
+}
+
+bool UCfStatComponent::IsLockOn() const
+{
+	if(const UCfOverlayLockOnComponent* Target = ACfHUD::GetLockingTarget(GetWorld()))
+	{
+		if(Target->GetOwner() == GetOwner())
+		{
+			return true;
+		}
+	}
+	return false; 
 }
 
