@@ -31,7 +31,7 @@ UCfAnimInstance* UCfWeaponAnimInstance::GetMainAnimInstance()
 #define RETURN_SEQUENCE(SequenceName) \
 	if(LocomotionData) \
 	{ \
-		return LocomotionData->As_##SequenceName; \
+		return LocomotionData->##SequenceName; \
 	} \
 	return nullptr;
 
