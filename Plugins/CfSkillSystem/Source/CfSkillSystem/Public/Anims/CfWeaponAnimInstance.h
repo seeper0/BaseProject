@@ -15,58 +15,80 @@ class CFSKILLSYSTEM_API UCfWeaponAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 public:
+	virtual void NativeInitializeAnimation() override;
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta=(BlueprintThreadSafe))
 	class UCfAnimInstance* GetMainAnimInstance();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_Idle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sequence", meta = (AllowPrivateAccess = "true"))
+	UDataTable* LocomotionTable = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_WalkFwd;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_WalkFwdLeft;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_WalkFwdRight;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_WalkLeft;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sequence", meta = (AllowPrivateAccess = "true"))
+	FName CharacterName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_WalkRight;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_WalkBwd;
+	const struct FCfAnimLocomotionData* LocomotionData = nullptr; 
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_WalkBwdLeft;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_WalkBwdRight;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_RunFwd;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_RunFwdLeft;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_RunFwdRight;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_RunLeft;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetIdle() const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_RunRight;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalk() const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_RunBwd;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Walk", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalkFwd() const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_RunBwdLeft;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Walk", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalkFwdLeft() const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
-	UAnimSequence* As_RunBwdRight;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Walk", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalkFwdRight() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Walk", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalkLeft() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Walk", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalkRight() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Walk", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalkBwd() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Walk", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalkBwdLeft() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Walk", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetWalkBwdRight() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Run", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetRunFwd() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Run", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetRunFwdLeft() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Run", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetRunFwdRight() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Run", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetRunLeft() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Run", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetRunRight() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Run", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetRunBwd() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Run", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetRunBwdLeft() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Run", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetRunBwdRight() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Jump", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetJumpStart() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Jump", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetJumpLoop() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Jump", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetJumpEnd() const;
 };
