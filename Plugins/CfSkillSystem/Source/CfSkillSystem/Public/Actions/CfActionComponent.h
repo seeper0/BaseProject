@@ -60,7 +60,6 @@ public:
 	ECfSkillState GetSkillState() const { return SkillState; }
 	ACharacter* GetOwnerChar() const { return OwnerChar; }
 	AController* GetController() const { return OwnerChar ? OwnerChar->Controller : nullptr; }
-	const UDataTable* GetSkillTable() const { return SkillTable; }
 	class UCfActionBase* GetCurrentAction() const { return CurrentAction; }
 
 	UAnimMontage* GetKnockBackMontage() const { return KnockBackMontage; }
@@ -84,9 +83,6 @@ private:
 	void ReserveSkill(const FCfSkillData* InSkillData);
 
 	/** Skill Table */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Data", meta = (AllowPrivateAccess = "true"))
-	UDataTable* SkillTable = nullptr;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="KnockBack"))
 	UAnimMontage* KnockBackMontage = nullptr;
 

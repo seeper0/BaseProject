@@ -7,6 +7,7 @@
 #include "Actions/CfActionBase.h"
 #include "Actions/CfActionComponent.h"
 #include "CfCameraBoomComponent.h"
+#include "CfSkillAsset.h"
 #include "CfSkillData.h"
 
 UCfSkillInputComponent::UCfSkillInputComponent()
@@ -69,7 +70,7 @@ ECfSkillKey UCfSkillInputComponent::GetSkillSlot(const FInputActionInstance& Inp
 TArray<FName> UCfSkillInputComponent::FetchSkillsByInput(const ECfSkillKey SkillKey, const ETriggerEvent KeyEvent) const
 {
 	TArray<FName> FetchedSkills;
-	const UDataTable* SkillTable = ActionComponent->GetSkillTable();
+	const UDataTable* SkillTable = UCfSkillAsset::GetSkillTable();
 	const ECfSkillState SkillState = ActionComponent->GetSkillState();
 	if(SkillTable == nullptr)
 		return FetchedSkills;

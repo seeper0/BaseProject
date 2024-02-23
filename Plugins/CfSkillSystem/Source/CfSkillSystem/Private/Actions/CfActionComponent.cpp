@@ -8,6 +8,7 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "Actions/CfActionBase.h"
 #include "CfLogger.h"
+#include "CfSkillAsset.h"
 #include "CfSkillData.h"
 #include "CfUtil.h"
 
@@ -64,6 +65,7 @@ void UCfActionComponent::SetSkillState(ECfSkillState InSkillState)
 	// 	Action->SetSkillState(InSkillState);
 
 	// 선입력으로 예약된 스킬을 발동한다.
+	const UDataTable* SkillTable = UCfSkillAsset::GetSkillTable();
 	if(SkillTable && SkillState == ECfSkillState::CanCancel)
 	{
 		if(ReservedRowName != NAME_None)
@@ -81,7 +83,8 @@ void UCfActionComponent::SetSkillState(ECfSkillState InSkillState)
 const FCfSkillData* UCfActionComponent::GetDesiredSkill(const TArray<FName>& RowNames) const
 {
 	// 체인 조건이 있다면 먼저 찾는다. (일단 현재 실행되는 스킬이 있어야함)
-	if(CurrentAction)
+	const UDataTable* SkillTable = UCfSkillAsset::GetSkillTable();
+	if(CurrentAction && SkillTable)
 	{
 		const FName CurrentName = CurrentAction->GetActionName();
 		for (const FName RowName : RowNames)

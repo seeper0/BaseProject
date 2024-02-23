@@ -5,11 +5,13 @@
 #include "Anims/CfAnimInstance.h"
 #include "Anims/CfAnimLocomotionData.h"
 #include "CfLogger.h"
+#include "CfSkillAsset.h"
 
 void UCfWeaponAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
+	const UDataTable* LocomotionTable = UCfSkillAsset::GetLocomotionTable();
 	if(LocomotionTable == nullptr)
 		return;
 
