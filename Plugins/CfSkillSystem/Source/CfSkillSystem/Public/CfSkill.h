@@ -73,6 +73,14 @@ enum class ECfHitDirection : uint8
 	Radial,
 };
 
+UENUM(BlueprintType)
+enum class ECfWeaponType : uint8
+{
+	None,
+	Unarmed,
+	Gun,
+};
+
 USTRUCT(BlueprintType)
 struct CFSKILLSYSTEM_API FCfHitData
 {

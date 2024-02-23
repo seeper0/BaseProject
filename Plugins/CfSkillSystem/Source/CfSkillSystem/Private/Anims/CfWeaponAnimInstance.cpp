@@ -13,7 +13,17 @@ void UCfWeaponAnimInstance::NativeInitializeAnimation()
 	if(LocomotionTable == nullptr)
 		return;
 
-	LocomotionData = LocomotionTable->FindRow<FCfAnimLocomotionData>(CharacterName, CF_FUNCTION);
+	CF_TODO("데이터 많아지만 문제가 될 부분. 일단 그냥 진행한다.");
+	TArray<FName> RowNames = LocomotionTable->GetRowNames();
+	for (const FName& RowName : RowNames)
+	{
+		const FCfAnimLocomotionData* RowData = LocomotionTable->FindRow<FCfAnimLocomotionData>(RowName, CF_FUNCTION);
+		if(RowData->CharacterName == CharacterName && RowData->WeaponType == WeaponType)
+		{
+			LocomotionData = RowData;
+			break;
+		}
+	}
 }
 
 UCfAnimInstance* UCfWeaponAnimInstance::GetMainAnimInstance()
@@ -31,7 +41,7 @@ UCfAnimInstance* UCfWeaponAnimInstance::GetMainAnimInstance()
 #define RETURN_SEQUENCE(SequenceName) \
 	if(LocomotionData) \
 	{ \
-		return LocomotionData->##SequenceName; \
+		return LocomotionData->SequenceName; \
 	} \
 	return nullptr;
 

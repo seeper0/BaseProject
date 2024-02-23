@@ -31,6 +31,12 @@ public:
 	UPROPERTY(Transient)
 	FName RowName;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (AllowPrivateAccess = "true"))
+	FName CharacterName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (AllowPrivateAccess = "true"))
+	ECfWeaponType WeaponType = ECfWeaponType::None;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* Idle;
 
