@@ -80,6 +80,7 @@ enum class ECfWeaponType : uint8
 	None,
 	Unarmed,
 	Gun,
+	Sword,
 };
 
 USTRUCT(BlueprintType)
