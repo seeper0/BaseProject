@@ -55,11 +55,23 @@ void UCfActionSkill::OnBegin()
 {
 	Super::OnBegin();
 
-	if(SkillTable && Owner &&
-		SkillTable->Orientation == ECfSkillOrientation::AimOriented)
+	if(SkillTable == nullptr || Owner == nullptr)
+		return;
+
+	Target = UCfCameraBoomComponent::FindLockingTarget(Owner,  SkillTable->Range, 180.0f);
+	if(SkillTable->Orientation == ECfSkillOrientation::AimOriented)
 	{
 		bReachedDesiredRotation = false;
 	}
+	else if(SkillTable->Orientation == ECfSkillOrientation::AutoOriented && Target != nullptr)
+	{
+		bReachedDesiredRotation = false;
+	}
+	else
+	{
+		bReachedDesiredRotation = true;
+	}
+
 	CameraBoomComponent = Owner->GetComponentByClass<UCfCameraBoomComponent>();
 }
 
@@ -67,12 +79,17 @@ void UCfActionSkill::OnTick(float DeltaTime)
 {
 	Super::OnTick(DeltaTime);
 
-	const UCfOverlayLockOnComponent* LockonComponent = CameraBoomComponent ? CameraBoomComponent->GetLockingComponent() : nullptr;
+	const UCfOverlayLockOnComponent* LockonComponent = UCfCameraBoomComponent::GetLockingComponent(GetWorld());
 
 	if(!bReachedDesiredRotation && LockonComponent == nullptr)
 	{
 		const float CurrentYaw = Owner->GetActorRotation().Yaw;
-		const float TargetYaw = Owner->GetBaseAimRotation().Yaw;
+		float TargetYaw = Owner->GetBaseAimRotation().Yaw;
+		if(SkillTable->Orientation == ECfSkillOrientation::AutoOriented && Target != nullptr)
+		{
+			TargetYaw = (Target->GetComponentLocation() - Owner->GetActorLocation()).Rotation().Yaw;
+		}
+
 		const float NewYaw = FMath::FInterpTo(CurrentYaw, TargetYaw, DeltaTime, 15.0f);
 		Owner->SetActorRotation(FRotator(0, NewYaw, 0));
 		if(FMath::IsNearlyEqual(TargetYaw, NewYaw, 0.1f))

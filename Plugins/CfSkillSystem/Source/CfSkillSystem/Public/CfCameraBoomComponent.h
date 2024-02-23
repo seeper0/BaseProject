@@ -18,7 +18,10 @@ class CFSKILLSYSTEM_API UCfCameraBoomComponent : public USpringArmComponent
 
 public:
 	void ToggleLockOn();
-	class UCfOverlayLockOnComponent* GetLockingComponent() const;
+	// 현재 락킹된 컴포넌트를 가져온다.
+	static class UCfOverlayLockOnComponent* GetLockingComponent(UWorld* World);
+	// 락온될 대상에서 가장 가까운 락온 컴포넌트를 찾는다.
+	static class UCfOverlayLockOnComponent* FindLockingTarget(AActor* Owner, float LockingDistance, float LockingAngle = 15.0f);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -26,16 +29,4 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	float LockingAngle = 15.0f;
-	
-	UFUNCTION()
-	class UCfOverlayLockOnComponent* FindLockingTarget() const;
-
-	// 락온 기능
-	// 락온 돌리기 기능
-	// 에임, 캐릭터 선택 기능
-
-	// 락온이면 캐릭터가 돌고 카메라 쫓아간다.
-	// 락온이 아니면 에임 방향으로 공격한다.
-
-	// 에임에서 HitBox를 추적하고 그 HitBox에서 가장 가까운 UOverlayLockOnComponent을 찾는다.
 };

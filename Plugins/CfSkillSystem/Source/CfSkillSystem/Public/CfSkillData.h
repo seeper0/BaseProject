@@ -47,7 +47,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ECfSkillOrientation Orientation = ECfSkillOrientation::None;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Range = 150.0f;
+
 #pragma region Hit
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Type"))
 	ECfHitType HitType = ECfHitType::None;

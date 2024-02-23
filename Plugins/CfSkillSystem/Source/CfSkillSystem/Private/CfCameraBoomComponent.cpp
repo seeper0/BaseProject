@@ -11,7 +11,7 @@ void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(const UCfOverlayLockOnComponent* Target = GetLockingComponent())
+	if(const UCfOverlayLockOnComponent* Target = GetLockingComponent(GetWorld()))
 	{
 		if(APlayerController* PC = GetWorld()->GetFirstPlayerController())
 		{
@@ -38,16 +38,16 @@ void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UCfCameraBoomComponent::ToggleLockOn()
 {
-	UCfOverlayLockOnComponent* Target = FindLockingTarget();
+	UCfOverlayLockOnComponent* Target = FindLockingTarget(GetOwner(), LockingDistance, LockingAngle);
 	ACfHUD::ToggleTargetWidget(GetWorld(), Target);
 }
 
-UCfOverlayLockOnComponent* UCfCameraBoomComponent::GetLockingComponent() const
+UCfOverlayLockOnComponent* UCfCameraBoomComponent::GetLockingComponent(UWorld* World)
 {
-	return ACfHUD::GetLockingTarget(GetWorld());
+	return ACfHUD::GetLockingTarget(World);
 }
 
-UCfOverlayLockOnComponent* UCfCameraBoomComponent::FindLockingTarget() const
+UCfOverlayLockOnComponent* UCfCameraBoomComponent::FindLockingTarget(AActor* Owner, float LockingDistance, float LockingAngle)
 {
 	FVector WorldAimLocation;
 	FVector WorldAimDirection;
@@ -55,18 +55,18 @@ UCfOverlayLockOnComponent* UCfCameraBoomComponent::FindLockingTarget() const
 	bool bOverlap = false;
 	TArray<FOverlapResult> Overlaps;
 
-	if(ACfHUD::GetAimWorldTransform(GetWorld(), WorldAimLocation, WorldAimDirection, WorldCenterLocation))
+	if(ACfHUD::GetAimWorldTransform(Owner->GetWorld(), WorldAimLocation, WorldAimDirection, WorldCenterLocation))
 	{
 		FCollisionObjectQueryParams ObjectParams;
 		ObjectParams.AddObjectTypesToQuery(ECC_Pawn);
 		ObjectParams.AddObjectTypesToQuery(ECC_Vehicle);
 		FCollisionQueryParams CollisionParams;
-		CollisionParams.AddIgnoredActor(GetOwner());
+		CollisionParams.AddIgnoredActor(Owner);
 
-		const FVector OwnerLocation = GetOwner()->GetActorLocation();
-		const FQuat OwnerRotation = GetOwner()->GetActorRotation().Quaternion();
+		const FVector OwnerLocation = Owner->GetActorLocation();
+		const FQuat OwnerRotation = Owner->GetActorRotation().Quaternion();
 		
-		bOverlap = GetWorld()->OverlapMultiByObjectType(Overlaps, OwnerLocation, OwnerRotation, ObjectParams, FCollisionShape::MakeSphere(LockingDistance), CollisionParams);
+		bOverlap = Owner->GetWorld()->OverlapMultiByObjectType(Overlaps, OwnerLocation, OwnerRotation, ObjectParams, FCollisionShape::MakeSphere(LockingDistance), CollisionParams);
 	}
 
 	TArray<UCfOverlayLockOnComponent*> AllOverlayLockOnComponents;

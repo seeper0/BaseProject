@@ -54,6 +54,7 @@ enum class ECfSkillOrientation : uint8
 	None,				// 추적 무시하고 즉시 사용한다.
 	AimOriented,		// Aim이 가리키는곳 또는 LockOn 된곳을 추적한다.
 	ForwardOriented,	// 캐릭터의 전방에서 추척이 된다.
+	AutoOriented,		// 타겟이 레인지 안에 있다면 AimOriented를 밖에 있다면 ForwardOriented를 사용한다.  
 };
 
 UENUM(BlueprintType)

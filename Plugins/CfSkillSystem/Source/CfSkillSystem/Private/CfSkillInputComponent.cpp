@@ -220,14 +220,9 @@ void UCfSkillInputComponent::ToggleLockOn()
 
 bool UCfSkillInputComponent::HasLockingComponent() const
 {
-	if(const ACharacter* OwnerChar = ActionComponent->GetOwnerChar())
-	{
-		if(UCfCameraBoomComponent* Camera = OwnerChar->GetComponentByClass<UCfCameraBoomComponent>())
-		{
-			if(Camera->GetLockingComponent())
-				return true;
-		}
-	}
+	if(UCfCameraBoomComponent::GetLockingComponent(GetWorld()))
+		return true;
+
 	return false;
 }
 
