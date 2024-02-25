@@ -70,7 +70,6 @@ const FCfWeaponData* UCfSkillAsset::GetWeaponData(int32 WeaponKey, const TCHAR* 
 	for(const FName& RowName : RowNames)
 	{
 		const FCfWeaponData* Data = GetWeaponTable()->FindRow<FCfWeaponData>(RowName, ContextString);
-		CF_LOG(TEXT("[%s] %lld"), *Data->RowName.ToString(), Data->RowName.ToUnstableInt());
 		FString Tmp = Data->RowName.ToString();
 		if(Tmp.IsNumeric())
 		{
