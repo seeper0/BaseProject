@@ -30,6 +30,8 @@ public:
 	
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	
+	void SetLookAtRotation(const FRotator& Rotator);
 
 private:
 	void UpdateCharacterMomentum(float DeltaSeconds, ACharacter* InOwner);
@@ -93,4 +95,13 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient)
 	ECfCardinalDirection CardinalDirection = ECfCardinalDirection::Forward;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient)
+	float LookAtYaw;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient)
+	float LookAtPitch;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient)
+	float LookAtAlpha = 1.0f;
 };

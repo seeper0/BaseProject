@@ -30,6 +30,12 @@ void UCfAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	UpdateDebugArrow(DeltaSeconds, Owner);
 }
 
+void UCfAnimInstance::SetLookAtRotation(const FRotator& Rotator)
+{
+	LookAtYaw = Rotator.Yaw;
+	LookAtPitch = Rotator.Pitch;
+}
+
 void UCfAnimInstance::UpdateCharacterMomentum(float DeltaSeconds, ACharacter* InOwner)
 {
 	if(InOwner == nullptr)

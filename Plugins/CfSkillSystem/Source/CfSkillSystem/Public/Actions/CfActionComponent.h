@@ -42,14 +42,15 @@ public:
 	};
 
 public:
+	inline static FName ComponentName = TEXT("SkillComponent");
 	// Sets default values for this component's properties
 	UCfActionComponent();
-	inline static FName ComponentName = TEXT("SkillComponent");
 	static UCfActionComponent* GetActionComponent(const AActor* Actor);
 	static UCfActionComponent* GetActionComponent(const UActorComponent* MeshComp);
 
 protected:
 	// Called when the game starts
+	virtual void OnRegister() override;
 	virtual void BeginPlay() override;
 
 public:
@@ -62,10 +63,10 @@ public:
 	AController* GetController() const { return OwnerChar ? OwnerChar->Controller : nullptr; }
 	class UCfActionBase* GetCurrentAction() const { return CurrentAction; }
 
-	UAnimMontage* GetKnockBackMontage() const { return KnockBackMontage; }
-	UAnimMontage* GetDownMontage() const { return DownMontage; }
-	UAnimMontage* GetAirborneMontage() const { return AirborneMontage; }	
-	UAnimMontage* GetWakeupMontage() const { return WakeupMontage; }	
+	UAnimMontage* GetKnockBackMontage() const;
+	UAnimMontage* GetDownMontage() const;
+	UAnimMontage* GetAirborneMontage() const;	
+	UAnimMontage* GetWakeupMontage() const;	
 
 	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
 	void InputSkill(const FCfSkillData* InSkillData);
@@ -73,6 +74,10 @@ public:
 	void ReserveAction(const FActionInfo& ActionInfo);
 	void SetStun(const float InRecoveryTime, const float InStunPlayRate);
 	bool IsSuperArmorActive() const;
+
+	void ChangeWeaponType(ECfWeaponType NewWeaponType); 
+	ECfWeaponType GetWeaponType() const { return WeaponType; }
+	const FName& GetCharacterName() const { return CharacterName; }
 
 private:
 	bool CanCancelSkill(const FCfSkillData* InSkillData) const;
@@ -82,18 +87,13 @@ private:
 	void ClearAction();
 	void ReserveSkill(const FCfSkillData* InSkillData);
 
-	/** Skill Table */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="KnockBack"))
-	UAnimMontage* KnockBackMontage = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data", meta = (AllowPrivateAccess = "true"))
+	FName CharacterName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="Down"))
-	UAnimMontage* DownMontage = nullptr;
+	UPROPERTY(Transient)
+	ECfWeaponType WeaponType = ECfWeaponType::Unarmed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="Airborne"))
-	UAnimMontage* AirborneMontage = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Data", meta = (AllowPrivateAccess = "true", DisplayName="Getup"))
-	UAnimMontage* WakeupMontage = nullptr;
+	const struct FCfCharacterData* CharacterData = nullptr;
 
 	UPROPERTY(Transient)
 	TMap<const UInputAction*, ECfSkillKey> SkillSlotCache;

@@ -40,63 +40,90 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* Idle;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* Walk;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* WalkFwd;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* WalkFwdLeft;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* WalkFwdRight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* WalkLeft;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* WalkRight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* WalkBwd;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* WalkBwdLeft;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Walk", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Walk", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* WalkBwdRight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Run", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* RunFwd;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Run", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* RunFwdLeft;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Run", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* RunFwdRight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Run", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* RunLeft;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Run", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* RunRight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Run", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* RunBwd;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Run", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* RunBwdLeft;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Run", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Run", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* RunBwdRight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Jump", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Jump", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* JumpStart;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Jump", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Jump", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* JumpLoop;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence|Jump", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_Jump", meta = (AllowPrivateAccess = "true"))
 	UAnimSequence* JumpEnd;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetCC;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetCU;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetCD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetLC;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetLU;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetLD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetRC;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetRU;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sequence_AimOffset", meta = (AllowPrivateAccess = "true"))
+	UAnimSequence* AimOffsetRD;
 };

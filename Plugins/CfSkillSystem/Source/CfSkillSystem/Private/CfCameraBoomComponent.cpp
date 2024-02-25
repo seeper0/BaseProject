@@ -44,6 +44,7 @@ void UCfCameraBoomComponent::ToggleLockOn()
 
 UCfOverlayLockOnComponent* UCfCameraBoomComponent::GetLockingComponent(UWorld* World)
 {
+	check(World);
 	return ACfHUD::GetLockingTarget(World);
 }
 

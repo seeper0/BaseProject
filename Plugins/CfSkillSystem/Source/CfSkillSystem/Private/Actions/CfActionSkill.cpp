@@ -77,9 +77,12 @@ void UCfActionSkill::OnBegin()
 
 void UCfActionSkill::OnTick(float DeltaTime)
 {
+	check(Owner);
+	check(Owner->GetWorld());
+
 	Super::OnTick(DeltaTime);
 
-	const UCfOverlayLockOnComponent* LockonComponent = UCfCameraBoomComponent::GetLockingComponent(GetWorld());
+	const UCfOverlayLockOnComponent* LockonComponent = UCfCameraBoomComponent::GetLockingComponent(Owner->GetWorld());
 
 	if(!bReachedDesiredRotation && LockonComponent == nullptr)
 	{

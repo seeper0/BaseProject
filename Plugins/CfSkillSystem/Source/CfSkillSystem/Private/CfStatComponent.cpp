@@ -2,7 +2,6 @@
 
 
 #include "CfStatComponent.h"
-
 #include "HUD/CfHUD.h"
 #include "HUD/CfOverlayInfoComponent.h"
 #include "HUD/CfOverlayLockOnComponent.h"

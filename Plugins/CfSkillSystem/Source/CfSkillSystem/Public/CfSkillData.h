@@ -37,6 +37,12 @@ public:
 	FName RowName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName CharacterName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ECfWeaponType WeaponType = ECfWeaponType::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ECfSkillKey InputKey = ECfSkillKey::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

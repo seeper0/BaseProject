@@ -15,18 +15,17 @@
 
 ACfHUD* ACfHUD::GetInstance(UWorld* World)
 {
-	if(World)
+	check(World);
+	for (TActorIterator<ACfHUD> It(World); It; ++It)
 	{
-		for (TActorIterator<ACfHUD> It(World); It; ++It)
-		{
-			return *It;
-		}
+		return *It;
 	}
 	return nullptr;
 }
 
 UCfHUDWidget* ACfHUD::GetHUDWidget(UWorld* World)
 {
+	check(World);
 	if(ACfHUD* HUD = GetInstance(World))
 	{
 		return HUD->HUDWidget;
@@ -36,6 +35,7 @@ UCfHUDWidget* ACfHUD::GetHUDWidget(UWorld* World)
 
 bool ACfHUD::GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVector& WorldAimDirection, FVector& WorldCenterLocation)
 {
+	check(World);
 	if(const UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
 		const FVector2D AimLocation = HUDWidget->GetCrossHairScreenLocation();
@@ -53,6 +53,7 @@ bool ACfHUD::GetAimWorldTransform(UWorld* World, FVector& WorldAimLocation, FVec
 
 void ACfHUD::RegisterTargetWidget(UWorld* World, UCfOverlayLockOnComponent* InTarget)
 {
+	check(World);
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
 		HUDWidget->RegisterTargetWidget(InTarget);
@@ -61,6 +62,7 @@ void ACfHUD::RegisterTargetWidget(UWorld* World, UCfOverlayLockOnComponent* InTa
 
 void ACfHUD::UnregisterTargetWidget(UWorld* World)
 {
+	check(World);
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
 		HUDWidget->UnregisterTargetWidget();
@@ -69,6 +71,7 @@ void ACfHUD::UnregisterTargetWidget(UWorld* World)
 
 void ACfHUD::ToggleTargetWidget(UWorld* World, UCfOverlayLockOnComponent* InTarget)
 {
+	check(World);
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
 		HUDWidget->ToggleTargetWidget(InTarget);
@@ -77,7 +80,9 @@ void ACfHUD::ToggleTargetWidget(UWorld* World, UCfOverlayLockOnComponent* InTarg
 
 UCfOverlayLockOnComponent* ACfHUD::GetLockingTarget(UWorld* World)
 {
-	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
+	check(World);
+	UCfHUDWidget* HUDWidget = GetHUDWidget(World);
+	if(HUDWidget)
 	{
 		return HUDWidget->GetLockingTarget();
 	}
@@ -86,6 +91,7 @@ UCfOverlayLockOnComponent* ACfHUD::GetLockingTarget(UWorld* World)
 
 FVector2D ACfHUD::ToAbsolute(UWorld* World, const FVector2D& Local)
 {
+	check(World);
 	if(UCfHUDWidget* HUDWidget = GetHUDWidget(World))
 	{
 		return HUDWidget->ToAbsolute(Local);

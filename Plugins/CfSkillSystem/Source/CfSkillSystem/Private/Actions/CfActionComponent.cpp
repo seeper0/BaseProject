@@ -2,6 +2,9 @@
 
 
 #include "Actions/CfActionComponent.h"
+
+#include "CfAvatarComponent.h"
+#include "CfCharacterData.h"
 #include "InputAction.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Character.h"
@@ -41,12 +44,29 @@ UCfActionComponent* UCfActionComponent::GetActionComponent(const UActorComponent
 	return nullptr;
 }
 
+void UCfActionComponent::OnRegister()
+{
+	Super::OnRegister();
+
+	OwnerChar = Cast<ACharacter>(GetOwner());
+	check(OwnerChar);
+
+	CharacterData = UCfSkillAsset::GetCharacterData(CharacterName, CF_FUNCTION);
+
+	if(UCfAvatarComponent* AvatarComponent = OwnerChar->GetComponentByClass<UCfAvatarComponent>())
+	{
+		AvatarComponent->Initialize(CharacterData);
+		//CharacterData->DefaultWeaponSlot1
+		//CharacterData->DefaultWeaponSlot2
+		//CharacterData->WeaponType1
+		//AvatarComponent->Equip();
+	}
+}
+
 // Called when the game starts
 void UCfActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	OwnerChar = Cast<ACharacter>(GetOwner());
 }
 
 
@@ -78,6 +98,26 @@ void UCfActionComponent::SetSkillState(ECfSkillState InSkillState)
 			ReservedRowName = NAME_None;
 		}
 	}
+}
+
+UAnimMontage* UCfActionComponent::GetKnockBackMontage() const
+{
+	return CharacterData ? CharacterData->KnockBackMontage : nullptr;
+}
+
+UAnimMontage* UCfActionComponent::GetDownMontage() const
+{
+	return CharacterData ? CharacterData->DownMontage : nullptr;
+}
+
+UAnimMontage* UCfActionComponent::GetAirborneMontage() const
+{
+	return CharacterData ? CharacterData->AirborneMontage : nullptr;
+}
+
+UAnimMontage* UCfActionComponent::GetWakeupMontage() const
+{
+	return CharacterData ? CharacterData->WakeupMontage : nullptr;
 }
 
 const FCfSkillData* UCfActionComponent::GetDesiredSkill(const TArray<FName>& RowNames) const
@@ -192,6 +232,11 @@ bool UCfActionComponent::IsSuperArmorActive() const
 	if(CurrentAction)
 		return CurrentAction->IsSuperArmorActive();
 	return false;
+}
+
+void UCfActionComponent::ChangeWeaponType(ECfWeaponType NewWeaponType)
+{
+	WeaponType = NewWeaponType;
 }
 
 void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData)

@@ -92,4 +92,31 @@ protected:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|Jump", meta=(BlueprintThreadSafe))
 	UAnimSequence* GetJumpEnd() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetCC() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetCU() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetCD() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetLC() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetLU() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetLD() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetRC() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetRU() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sequence|AimOffset", meta=(BlueprintThreadSafe))
+	UAnimSequence* GetAimOffsetRD() const;
 };

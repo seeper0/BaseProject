@@ -17,6 +17,9 @@ UCfSkillInputComponent::UCfSkillInputComponent()
 
 void UCfSkillInputComponent::SetupComponent(class UCfActionComponent* InActionComponent, UEnhancedInputComponent* EnhancedInputComponent)
 {
+	check(InActionComponent);
+	check(EnhancedInputComponent);
+
 	ActionComponent = InActionComponent;
 	InputSlotCache.Empty();
 	for (const auto& SkillSlot : InputSlotMapping)
@@ -69,11 +72,12 @@ ECfSkillKey UCfSkillInputComponent::GetSkillSlot(const FInputActionInstance& Inp
 
 TArray<FName> UCfSkillInputComponent::FetchSkillsByInput(const ECfSkillKey SkillKey, const ETriggerEvent KeyEvent) const
 {
+	check(ActionComponent);
+	
 	TArray<FName> FetchedSkills;
 	const UDataTable* SkillTable = UCfSkillAsset::GetSkillTable();
+	check(SkillTable);
 	const ECfSkillState SkillState = ActionComponent->GetSkillState();
-	if(SkillTable == nullptr)
-		return FetchedSkills;
 
 	const TArray<FName> RowNames = SkillTable->GetRowNames();
 	switch (SkillState)
@@ -90,6 +94,12 @@ TArray<FName> UCfSkillInputComponent::FetchSkillsByInput(const ECfSkillKey Skill
 			{
 				const FCfSkillData* RowData = SkillTable->FindRow<FCfSkillData>(RowName, CF_FUNCTION);
 				if(RowData == nullptr)
+					continue;
+
+				if(RowData->CharacterName != ActionComponent->GetCharacterName())
+					continue;
+
+				if(RowData->WeaponType != ActionComponent->GetWeaponType())
 					continue;
 
 				if(RowData->InputKey != SkillKey) // 입력키가 맞을 경우만 체크
@@ -115,32 +125,34 @@ void UCfSkillInputComponent::BeginMove()
 
 void UCfSkillInputComponent::Move(const FInputActionValue& Value)
 {
+	check(ActionComponent);
+
 	ACharacter* OwnerChar = ActionComponent->GetOwnerChar();
 	const AController* Controller = ActionComponent->GetController();
 	const UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
-	
+
+	check(OwnerChar);
+	check(Controller);
+
 	if(CurrentAction && !CurrentAction->CanMoveDuring())
 		return;
 
 	// input is a Vector2D
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if (OwnerChar && Controller)
-	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+	// find out which way is forward
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	// get forward vector
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
-		// add movement 
-		OwnerChar->AddMovementInput(ForwardDirection, MovementVector.Y);
-		OwnerChar->AddMovementInput(RightDirection, MovementVector.X);
-	}
+	// get right vector 
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	// add movement 
+	OwnerChar->AddMovementInput(ForwardDirection, MovementVector.Y);
+	OwnerChar->AddMovementInput(RightDirection, MovementVector.X);
 }
 
 void UCfSkillInputComponent::EndMove()
@@ -150,20 +162,21 @@ void UCfSkillInputComponent::EndMove()
 
 void UCfSkillInputComponent::Look(const FInputActionValue& Value)
 {
+	check(ActionComponent);
 	ACharacter* OwnerChar = ActionComponent->GetOwnerChar();
 	const AController* Controller = ActionComponent->GetController();
-	
+
+	check(OwnerChar);
+	check(Controller);
+
 	// input is a Vector2D
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (OwnerChar && Controller)
+	// add yaw and pitch input to controller
+	if(HasLockingComponent() == false)
 	{
-		// add yaw and pitch input to controller
-		if(HasLockingComponent() == false)
-		{
-			OwnerChar->AddControllerYawInput(LookAxisVector.X);
-			OwnerChar->AddControllerPitchInput(LookAxisVector.Y);
-		}
+		OwnerChar->AddControllerYawInput(LookAxisVector.X);
+		OwnerChar->AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
 
@@ -210,12 +223,14 @@ void UCfSkillInputComponent::OnRelease(const FInputActionInstance& InputActionIn
 
 void UCfSkillInputComponent::ToggleLockOn()
 {
-	if(const ACharacter* OwnerChar = ActionComponent->GetOwnerChar())
+	check(ActionComponent);
+
+	const ACharacter* OwnerChar = ActionComponent->GetOwnerChar();
+	check(OwnerChar);
+
+	if(UCfCameraBoomComponent* Camera = OwnerChar->GetComponentByClass<UCfCameraBoomComponent>())
 	{
-		if(UCfCameraBoomComponent* Camera = OwnerChar->GetComponentByClass<UCfCameraBoomComponent>())
-		{
-			Camera->ToggleLockOn();
-		}
+		Camera->ToggleLockOn();
 	}
 }
 

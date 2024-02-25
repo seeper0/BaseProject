@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "HUD/CfTargetInfoWidget.h"
 #include "CfStatComponent.generated.h"
 
 
@@ -32,7 +31,7 @@ protected:
 	// Owner가 이미 LockOn 되어있다.
 	UFUNCTION()
 	bool IsLockOn() const;
-	
+
 private:
 	int32 HP = 100;
 	int32 MaxHP = 100;

@@ -10,22 +10,7 @@
 void UCfWeaponAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-
-	const UDataTable* LocomotionTable = UCfSkillAsset::GetLocomotionTable();
-	if(LocomotionTable == nullptr)
-		return;
-
-	CF_TODO("데이터 많아지만 문제가 될 부분. 일단 그냥 진행한다.");
-	TArray<FName> RowNames = LocomotionTable->GetRowNames();
-	for (const FName& RowName : RowNames)
-	{
-		const FCfAnimLocomotionData* RowData = LocomotionTable->FindRow<FCfAnimLocomotionData>(RowName, CF_FUNCTION);
-		if(RowData->CharacterName == CharacterName && RowData->WeaponType == WeaponType)
-		{
-			LocomotionData = RowData;
-			break;
-		}
-	}
+	LocomotionData = UCfSkillAsset::GetLocomotionData(CharacterName, WeaponType, CF_FUNCTION);
 }
 
 UCfAnimInstance* UCfWeaponAnimInstance::GetMainAnimInstance()
@@ -150,6 +135,51 @@ UAnimSequence* UCfWeaponAnimInstance::GetJumpLoop() const
 UAnimSequence* UCfWeaponAnimInstance::GetJumpEnd() const
 {
 	RETURN_SEQUENCE(JumpEnd)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetCC() const
+{
+	RETURN_SEQUENCE(AimOffsetCC)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetCU() const
+{
+	RETURN_SEQUENCE(AimOffsetCU)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetCD() const
+{
+	RETURN_SEQUENCE(AimOffsetCD)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetLC() const
+{
+	RETURN_SEQUENCE(AimOffsetLC)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetLU() const
+{
+	RETURN_SEQUENCE(AimOffsetLU)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetLD() const
+{
+	RETURN_SEQUENCE(AimOffsetLD)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetRC() const
+{
+	RETURN_SEQUENCE(AimOffsetRC)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetRU() const
+{
+	RETURN_SEQUENCE(AimOffsetRU)
+}
+
+UAnimSequence* UCfWeaponAnimInstance::GetAimOffsetRD() const
+{
+	RETURN_SEQUENCE(AimOffsetRD)
 }
 
 #undef RETURN_SEQUENCE
