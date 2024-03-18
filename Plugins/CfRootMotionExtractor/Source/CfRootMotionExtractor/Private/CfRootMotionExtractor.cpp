@@ -266,36 +266,6 @@ void FCfRootMotionExtractorModule::GetRootMotionCurvesFromMontage(UAnimMontage* 
 		YawRotations.Add(YawRotation);
 		KeyTimes.Add(CurrentTime);
 	}
-
-	// int32 TotalFrames = 0;
-	//
-	// // Montage의 각 SlotTrack을 순회
-	// for (const FSlotAnimationTrack& SlotTrack : Montage->SlotAnimTracks)
-	// {
-	// 	// 각 AnimSegment를 순회
-	// 	for (const FAnimSegment& Segment : SlotTrack.AnimTrack.AnimSegments)
-	// 	{
-	// 		UAnimSequence* AnimSequence = Cast<UAnimSequence>(Segment.AnimReference);
-	// 		if (AnimSequence != nullptr)
-	// 		{
-	// 			float SegmentPlayRate = Segment.AnimPlayRate;
-	// 			float AnimSeqLength = AnimSequence->GetPlayLength();
-	// 			float StartFrame = Segment.StartPos * AnimSequence->RateScale;
-	// 			float EndFrame = Segment.GetEndPos() * AnimSequence->RateScale;
-	//
-	// 			// 시작 프레임과 종료 프레임을 순회
-	// 			for (int32 Frame = FMath::RoundToInt(StartFrame); Frame < FMath::RoundToInt(EndFrame); ++Frame)
-	// 			{
-	// 				float CurrentTime = Frame / AnimSequence->RateScale;
-	// 				// ExtractRootMotion 함수를 이용하여 루트 모션 추출
-	// 				FTransform RootTransform = AnimSequence->ExtractRootMotionFromRange(CurrentTime, CurrentTime + (1.0f / AnimSequence->GetFrameRate()));
-	//
-	// 				// RootTransform를 사용 (예: 출력, 저장 등)
-	// 				// ...
-	// 			}
-	// 		}
-	// 	}
-	// }
 }
 
 void FCfRootMotionExtractorModule::WriteMontage(UAnimMontage* Montage, const TArray<float>& ForwardMovements, const TArray<float>& UpMovements, const TArray<float>& YawRotations, const TArray<float>& KeyTimes)
