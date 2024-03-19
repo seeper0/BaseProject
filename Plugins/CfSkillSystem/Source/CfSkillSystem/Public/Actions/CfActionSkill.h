@@ -30,8 +30,13 @@ protected:
 
 private:
 	bool bReachedDesiredRotation = true;
+
 	UPROPERTY()
 	class UCfOverlayLockOnComponent* Target; 
 	UPROPERTY()
 	class UCfCameraBoomComponent* CameraBoomComponent;
+
+	float PrevForwardValue = 0.0f;
+	float PrevUpValue = 0.0f;
+	float PrevYawValue = 0.0f;
 };

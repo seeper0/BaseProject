@@ -1,12 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "CfRootMotionExtractor.h"
-
-#include "AnimationBlueprintLibrary.h"
-#include "CfLogger.h"
 #include "CfRootMotionExtractorStyle.h"
 #include "PropertyCustomizationHelpers.h"
-#include "Widgets/SCanvas.h"
 #include "Widgets/Layout/SWrapBox.h"
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"

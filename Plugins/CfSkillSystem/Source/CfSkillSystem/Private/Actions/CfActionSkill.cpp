@@ -79,6 +79,8 @@ void UCfActionSkill::OnTick(float DeltaTime)
 {
 	check(Owner);
 	check(Owner->GetWorld());
+	check(SkillTable);
+	check(Montage);
 
 	Super::OnTick(DeltaTime);
 
@@ -99,5 +101,28 @@ void UCfActionSkill::OnTick(float DeltaTime)
 		{
 			bReachedDesiredRotation = true;
 		}
+	}
+
+	if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance() &&
+		Montage && Montage->IsValidLowLevel() &&
+		SkillTable->MobileType == ECfMobileType::Curve)
+	{
+		const float ForwardValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("ForwardMovement");
+		const float UpValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("UpMovement");
+		const float YawValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("YawRotation");
+
+		const float ForwardSpeed = (ForwardValue - PrevForwardValue) / DeltaTime;
+		const float UpSpeed = (UpValue - PrevUpValue) / DeltaTime;
+		const float YawSpeed = (YawValue - PrevYawValue) / DeltaTime;
+
+		PrevForwardValue = ForwardValue;
+		PrevUpValue = UpValue;
+		PrevYawValue = YawValue;
+
+		const FVector MovementDirection = FVector(ForwardSpeed, 0.f, UpSpeed);
+		const FRotator Rotator(0.f, YawSpeed, 0.f);
+		const FVector Velocity = Rotator.RotateVector(MovementDirection);
+
+		Owner->GetCharacterMovement()->MoveSmooth(MovementDirection, DeltaTime);
 	}
 }
