@@ -123,6 +123,6 @@ void UCfActionSkill::OnTick(float DeltaTime)
 		const FRotator Rotator(0.f, YawSpeed, 0.f);
 		const FVector Velocity = Rotator.RotateVector(MovementDirection);
 
-		Owner->GetCharacterMovement()->MoveSmooth(MovementDirection, DeltaTime);
+		Owner->GetCharacterMovement()->MoveSmooth(Velocity, DeltaTime);
 	}
 }
