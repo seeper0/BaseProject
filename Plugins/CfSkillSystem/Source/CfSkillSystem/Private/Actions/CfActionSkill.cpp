@@ -119,10 +119,11 @@ void UCfActionSkill::OnTick(float DeltaTime)
 		PrevUpValue = UpValue;
 		PrevYawValue = YawValue;
 
-		const FVector MovementDirection = FVector(ForwardSpeed, 0.f, UpSpeed);
-		const FRotator Rotator(0.f, YawSpeed, 0.f);
-		const FVector Velocity = Rotator.RotateVector(MovementDirection);
+		const FRotator Rotator(0.f, Owner->GetActorRotation().Yaw + YawSpeed * DeltaTime, 0.f);
+		Owner->SetActorRotation(Rotator);
 
-		Owner->GetCharacterMovement()->MoveSmooth(Velocity, DeltaTime);
+		const FVector ForwardDirection = Owner->GetActorForwardVector();
+		const FVector MovementDirection = ForwardSpeed * ForwardDirection + FVector(0.f, 0.f, UpSpeed);
+		Owner->GetCharacterMovement()->MoveSmooth(MovementDirection, DeltaTime);
 	}
 }
