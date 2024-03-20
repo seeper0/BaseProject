@@ -58,7 +58,15 @@ void UCfActionSkill::OnBegin()
 	if(SkillTable == nullptr || Owner == nullptr)
 		return;
 
-	Target = UCfCameraBoomComponent::FindLockingTarget(Owner,  SkillTable->Range, 180.0f);
+	if(UCfOverlayLockOnComponent* LockonComponent = UCfCameraBoomComponent::GetLockingComponent(Owner->GetWorld()))
+	{
+		Target = LockonComponent;
+	}
+	else
+	{
+		Target = UCfCameraBoomComponent::FindLockingTarget(Owner,  SkillTable->Range, 180.0f);
+	}
+
 	if(SkillTable->Orientation == ECfSkillOrientation::AimOriented)
 	{
 		bReachedDesiredRotation = false;
@@ -80,13 +88,15 @@ void UCfActionSkill::OnTick(float DeltaTime)
 	check(Owner);
 	check(Owner->GetWorld());
 	check(SkillTable);
-	check(Montage);
 
 	Super::OnTick(DeltaTime);
 
-	const UCfOverlayLockOnComponent* LockonComponent = UCfCameraBoomComponent::GetLockingComponent(Owner->GetWorld());
+	if(Montage == nullptr)
+	{
+		return;
+	}
 
-	if(!bReachedDesiredRotation && LockonComponent == nullptr)
+	if(!bReachedDesiredRotation)
 	{
 		const float CurrentYaw = Owner->GetActorRotation().Yaw;
 		float TargetYaw = Owner->GetBaseAimRotation().Yaw;
@@ -104,7 +114,7 @@ void UCfActionSkill::OnTick(float DeltaTime)
 	}
 
 	if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance() &&
-		Montage && Montage->IsValidLowLevel() &&
+		Montage->IsValidLowLevel() &&
 		SkillTable->MobileType == ECfMobileType::Curve)
 	{
 		const float ForwardValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("ForwardMovement");

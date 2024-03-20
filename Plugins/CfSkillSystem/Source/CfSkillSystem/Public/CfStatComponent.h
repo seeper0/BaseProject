@@ -31,6 +31,8 @@ protected:
 	// Owner가 이미 LockOn 되어있다.
 	UFUNCTION()
 	bool IsLockOn() const;
+	UFUNCTION(Blueprintable, BlueprintCallable, BlueprintPure)
+	bool IsDead() const { return HP <= 0; }
 
 private:
 	int32 HP = 100;

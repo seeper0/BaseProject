@@ -6,6 +6,7 @@
 #include "HUD/CfHUD.h"
 #include "HUD/CfOverlayLockOnComponent.h"
 #include "CfLogger.h"
+#include "CfUtil.h"
 
 void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -20,6 +21,7 @@ void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			FVector WorldCenterLocation;
 			if(ACfHUD::GetAimWorldTransform(GetWorld(), WorldAimLocation, WorldAimDirection, WorldCenterLocation))
 			{
+				// 카메라를 타겟 방향으로 회전
 				const FVector CameraLocation = PC->PlayerCameraManager->GetCameraLocation();
 				const FRotator CameraRotation = PC->PlayerCameraManager->GetCameraRotation();
 				const FVector AimDirection = (WorldAimLocation - CameraLocation).GetSafeNormal();
@@ -28,6 +30,12 @@ void UCfCameraBoomComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 				FRotator TargetRotation = (AimToTargetRotation * CameraRotation.Quaternion()).Rotator();
 				TargetRotation.Roll = 0.0f;
 
+				// 너무 아래를 바라보지 않게 보정
+				const FVector ActorDirection = (FCfUtil::GetCapsuleBottomLocation(Target->GetOwner()) - FCfUtil::GetCapsuleBottomLocation(GetOwner())).GetSafeNormal();
+				const double BasePitch = FMath::RadiansToDegrees(atan2(ActorDirection.Z, FVector(ActorDirection.X, ActorDirection.Y, 0.0f).Size())) - 30.0;
+				TargetRotation.Pitch = FMath::Max(TargetRotation.Pitch, BasePitch);
+
+				// 적용
 				FRotator CurrentRotation = PC->PlayerCameraManager->GetCameraRotation();
 				CurrentRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 7.5f);
 				PC->SetControlRotation(CurrentRotation);

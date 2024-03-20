@@ -53,13 +53,13 @@ void UCfActionComponent::OnRegister()
 
 	CharacterData = UCfSkillAsset::GetCharacterData(CharacterName, CF_FUNCTION);
 
-	if(UCfAvatarComponent* AvatarComponent = OwnerChar->GetComponentByClass<UCfAvatarComponent>())
+	if(CharacterData)
 	{
-		AvatarComponent->Initialize(CharacterData);
-		//CharacterData->DefaultWeaponSlot1
-		//CharacterData->DefaultWeaponSlot2
-		//CharacterData->WeaponType1
-		//AvatarComponent->Equip();
+		if(UCfAvatarComponent* AvatarComponent = OwnerChar->GetComponentByClass<UCfAvatarComponent>())
+		{
+			AvatarComponent->Initialize(CharacterData);
+		}
+		ChangeWeaponType(CharacterData->WeaponType1);
 	}
 }
 
