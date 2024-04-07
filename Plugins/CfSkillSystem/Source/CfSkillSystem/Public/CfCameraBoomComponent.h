@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup=Camera, meta=(BlueprintSpawnableComponent), hideCategories=(Mobility))
 class CFSKILLSYSTEM_API UCfCameraBoomComponent : public USpringArmComponent
 {
 	GENERATED_BODY()
