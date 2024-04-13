@@ -49,6 +49,25 @@ void UCfAvatarComponent::Initialize(const FCfCharacterData* CharacterData)
 	}
 }
 
+void UCfAvatarComponent::SwitchWeapon(const ECfWeaponType WeaponType)
+{
+	if(WeaponActor1 && WeaponData1)
+	{
+		if(WeaponData1->WeaponType == WeaponType)
+			WeaponActor1->AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponData1->EquipSocket);
+		else
+			WeaponActor1->AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponData1->UnEquipSocket);
+	}
+
+	if(WeaponActor2 && WeaponData2)
+	{
+		if(WeaponData2->WeaponType == WeaponType)
+			WeaponActor2->AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponData2->EquipSocket);
+		else
+			WeaponActor2->AttachToComponent(OwnerChar->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponData2->UnEquipSocket);
+	}
+}
+
 // Called every frame
 void UCfAvatarComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {

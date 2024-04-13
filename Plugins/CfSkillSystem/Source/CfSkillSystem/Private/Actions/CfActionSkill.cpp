@@ -36,19 +36,14 @@ bool UCfActionSkill::CanMoveDuring() const
 	return (Owner && SkillTable && SkillTable->MobileType == ECfMobileType::Input);
 }
 
-bool UCfActionSkill::CanInputDuring() const
+bool UCfActionSkill::CanInputAutoRapid() const
 {
-	if(SkillTable)
-	{
-		switch (SkillTable->InputType)
-		{
-		case ECfInputType::AutoRapid:
-			return true;
-		default:
-			return false;
-		}
-	}
-	return false;
+	return SkillTable && SkillTable->InputType == ECfInputType::AutoRapid;
+}
+
+bool UCfActionSkill::HasSkillKey(ECfSkillKey InSkillKey) const
+{
+	return SkillTable && SkillTable->InputKey == InSkillKey;
 }
 
 void UCfActionSkill::OnBegin()
@@ -64,7 +59,7 @@ void UCfActionSkill::OnBegin()
 	}
 	else
 	{
-		Target = UCfCameraBoomComponent::FindLockingTarget(Owner,  SkillTable->Range, 180.0f);
+		Target = UCfCameraBoomComponent::FindLockingTarget(Owner,  SkillTable->LockingRange, 180.0f);
 	}
 
 	if(SkillTable->Orientation == ECfSkillOrientation::AimOriented)
@@ -135,5 +130,14 @@ void UCfActionSkill::OnTick(float DeltaTime)
 		const FVector ForwardDirection = Owner->GetActorForwardVector();
 		const FVector MovementDirection = ForwardSpeed * ForwardDirection + FVector(0.f, 0.f, UpSpeed);
 		Owner->GetCharacterMovement()->MoveSmooth(MovementDirection, DeltaTime);
+	}
+}
+
+void UCfActionSkill::OnButtonReleased(const ECfSkillKey InSkillKey)
+{
+	if(AnimInstance)
+	{
+		const FName SectionName = TEXT("Action");
+		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }

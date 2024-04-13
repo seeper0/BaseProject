@@ -37,11 +37,6 @@ bool UCfActionJump::CanMoveDuring() const
 	return Super::CanMoveDuring();
 }
 
-bool UCfActionJump::CanInputDuring() const
-{
-	return false;
-}
-
 bool UCfActionJump::IsSuperArmorActive() const
 {
 	return true;

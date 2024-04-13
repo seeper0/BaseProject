@@ -53,7 +53,7 @@ void UCfAnimInstance::UpdateCharacterMomentum(float DeltaSeconds, ACharacter* In
 	LocalVelocity2D = WorldRotation.UnrotateVector(WorldVelocity2D);
 	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(WorldVelocity2D, WorldRotation);
 	GroundSpeed = LocalVelocity2D.Length();
-	HasVelocity = FMath::IsNearlyZero(GroundSpeed, 0.0f);
+	HasVelocity = !FMath::IsNearlyZero(GroundSpeed, 0.0f);
 	ShouldMove = !FMath::IsNearlyZero(GroundSpeed, 3.0f);
 	IsFalling = InOwner->GetMovementComponent()->IsFalling();
 

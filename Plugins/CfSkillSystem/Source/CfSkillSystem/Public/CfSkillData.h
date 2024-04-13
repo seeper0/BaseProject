@@ -36,78 +36,94 @@ public:
 	UPROPERTY(Transient)
 	FName RowName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+#pragma region Base
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
 	FName CharacterName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
 	ECfWeaponType WeaponType = ECfWeaponType::None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
 	ECfSkillKey InputKey = ECfSkillKey::None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
 	ECfInputType InputType = ECfInputType::None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
 	ECfMobileType MobileType = ECfMobileType::None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
 	ECfSkillOrientation Orientation = ECfSkillOrientation::None;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Range = 150.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
+	float LockingRange = 150.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
+	UAnimMontage* Montage = nullptr;
+#pragma endregion
 
 #pragma region Hit
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Type"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit, meta=(DisplayName="Type"))
 	ECfHitType HitType = ECfHitType::None;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Dir"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit, meta=(DisplayName="Dir"))
 	ECfHitDirection HitDirection = ECfHitDirection::None;
 
 	// 넉백거리
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="KB)Dist"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit, meta=(DisplayName="KB)Dist"))
 	float KnockBackDistance = 0.0f;
 
 	// 넉백시간
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="KB)DistTime"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit, meta=(DisplayName="KB)DistTime"))
 	float KnockBackDistanceTime = 0.0f;
 
 	// 넉백커브
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="KB)Curve"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit, meta=(DisplayName="KB)Curve"))
 	UCurveFloat* KnockBackCurve;
 
 	// 히트리액션 시간 (애니메이션보다 우선된다. 애니메이션을 자르던 마지막 프레임을 길게 늘리던 이 시간을 맞춘다.)
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(DisplayName="Reactime"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit, meta=(DisplayName="Reactime"))
 	float HitReactionTime = 0.0f;
 
 	// 경직시간
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit)
 	float HitStunDuration = 0.0f;
 
 	// 경직시간 동안 AnimPlay 속도
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit)
 	float HitStunPlayRate = 1.0f;
 
 	// 역경직시간
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit)
 	float HitStopDuration = 0.0f;
 
 	// 역경직시간 동안 AnimPlay 속도
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Hit)
 	float HitStopPlayRate = 1.0f;
 #pragma endregion
-	
+
 #pragma region GetMaxRequireSkill
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(DisplayName="Req1"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Req1"))
 	FName RequireSkill1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(DisplayName="Req2"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Req2"))
 	FName RequireSkill2;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(DisplayName="Req3"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Req3"))
 	FName RequireSkill3;
 #pragma endregion // GetMaxRequireSkill
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* Montage = nullptr;
+#pragma region Skill
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill|Move")
+	float SkillMoveRange = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill|Move")
+	float SkillStopRange = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill|Move")
+	float SkillMoveTime = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Skill|Move")
+	UCurveFloat* SkillMoveCurve;
+#pragma endregion	
 };

@@ -26,6 +26,7 @@ protected:
 
 public:	
 	void Initialize(const FCfCharacterData* CharacterData);
+	void SwitchWeapon(const ECfWeaponType WeaponType);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:

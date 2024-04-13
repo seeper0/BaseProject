@@ -59,6 +59,8 @@ void UCfActionBase::InitAction(ACharacter* InOwner, UCfActionComponent* InCompon
 	Movement = Owner ? Owner->GetCharacterMovement() : nullptr;
 	Component = InComponent;
 	Montage = InMontage;
+	Mesh = Owner ? Owner->GetMesh() : nullptr;
+	AnimInstance = Mesh ? Mesh->GetAnimInstance() : nullptr;
 	ElapsedRecoveryTime = 0.0f;
 }
 
@@ -108,6 +110,10 @@ void UCfActionBase::OnTick(float DeltaTime)
 
 void UCfActionBase::OnEnd()
 {
+	if(AnimInstance)
+	{
+		AnimInstance->Montage_Stop(0.1f);
+	}
 }
 
 void UCfActionBase::OnButtonReleased(const ECfSkillKey InSkillKey)
@@ -116,12 +122,9 @@ void UCfActionBase::OnButtonReleased(const ECfSkillKey InSkillKey)
 
 bool UCfActionBase::IsEnd() const
 {
-	if(Owner && Montage)
+	if(AnimInstance)
 	{
-		if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance())
-		{
-			return !Owner->GetMesh()->GetAnimInstance()->Montage_IsPlaying(Montage);
-		}
+		return !AnimInstance->Montage_IsPlaying(Montage);
 	}
 	return false;
 }
@@ -131,7 +134,12 @@ bool UCfActionBase::CanMoveDuring() const
 	return false;
 }
 
-bool UCfActionBase::CanInputDuring() const
+bool UCfActionBase::CanInputAutoRapid() const
+{
+	return false;
+}
+
+bool UCfActionBase::CanInputRelease() const
 {
 	return false;
 }
@@ -139,6 +147,28 @@ bool UCfActionBase::CanInputDuring() const
 bool UCfActionBase::IsSuperArmorActive() const
 {
 	return false;
+}
+
+bool UCfActionBase::HasSkillKey(ECfSkillKey InSkillKey) const
+{
+	return false;
+}
+
+FName UCfActionBase::GetCurrentSection() const
+{
+	if(AnimInstance)
+	{
+		if(AnimInstance->Montage_IsPlaying(Montage))
+		{
+			return AnimInstance->Montage_GetCurrentSection();
+		}
+	}
+	return NAME_None;
+}
+
+bool UCfActionBase::HasSection(FName InSection) const
+{
+	return GetCurrentSection() == InSection; 
 }
 
 void UCfActionBase::SetStun(const float InRecoveryTime, const float InStunPlayRate)
@@ -149,7 +179,7 @@ void UCfActionBase::SetStun(const float InRecoveryTime, const float InStunPlayRa
 
 	if(IsStunned)
 	{
-		if(const UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance())
+		if(AnimInstance)
 		{
 			if (FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(Montage))
 			{
@@ -173,7 +203,7 @@ void UCfActionBase::TickAnimStun(float DeltaTime)
 	{
 		IsStunned = false;
 		StunPlayRate = 1.0f;
-		if(const UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance())
+		if(AnimInstance)
 		{
 			if (FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(Montage))
 			{

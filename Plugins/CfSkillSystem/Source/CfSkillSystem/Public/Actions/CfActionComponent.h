@@ -70,12 +70,19 @@ public:
 
 	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
 	void InputSkill(const FCfSkillData* InSkillData);
+	void ReleaseSkill(const ECfSkillKey InSkillKey);
 	void PlayAction(const FActionInfo& ActionInfo);
 	void ReserveAction(const FActionInfo& ActionInfo);
+	void StopSkill();
 	void SetStun(const float InRecoveryTime, const float InStunPlayRate);
 	bool IsSuperArmorActive() const;
+	bool IsReservedNext() const;
+	bool IsEndSkill() const;
 
-	void ChangeWeaponType(ECfWeaponType NewWeaponType); 
+private:
+	void SetWeaponType(const ECfWeaponType NewWeaponType);
+public:
+	void SwitchWeapon(const ECfWeaponType NewWeaponType); 
 	ECfWeaponType GetWeaponType() const { return WeaponType; }
 	const FName& GetCharacterName() const { return CharacterName; }
 
@@ -84,7 +91,7 @@ private:
 	bool CanPlaySkill(const FCfSkillData* InSkillData) const;
 	void PlaySkill(const FCfSkillData* InSkillData);
 	void TickAction(float DeltaTime);
-	void ClearAction();
+	void ClearAction();		
 	void ReserveSkill(const FCfSkillData* InSkillData);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data", meta = (AllowPrivateAccess = "true"))

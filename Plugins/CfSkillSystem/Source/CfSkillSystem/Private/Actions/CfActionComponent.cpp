@@ -59,7 +59,7 @@ void UCfActionComponent::OnRegister()
 		{
 			AvatarComponent->Initialize(CharacterData);
 		}
-		ChangeWeaponType(CharacterData->WeaponType1);
+		SetWeaponType(CharacterData->WeaponType1);
 	}
 }
 
@@ -153,7 +153,16 @@ const FCfSkillData* UCfActionComponent::GetDesiredSkill(const TArray<FName>& Row
 
 bool UCfActionComponent::CanCancelSkill(const FCfSkillData* InSkillData) const
 {
-	// 특정 조건일때만 Cancel 되어야한다.
+	// 무조건 불가능한 구간
+	switch (SkillState)
+	{
+		case ECfSkillState::NoInput:
+		case ECfSkillState::PreInput:
+			return false;
+	}
+
+	// InSkillData 와 SkillTable 비교해서 우선권이 높다면 Cancel 가능
+	// 나머지 모두 가능
 	return true;
 }
 
@@ -194,6 +203,17 @@ void UCfActionComponent::InputSkill(const FCfSkillData* InSkillData)
 	}
 }
 
+void UCfActionComponent::ReleaseSkill(const ECfSkillKey InSkillKey)
+{
+	if(CurrentAction)
+	{
+		if(CurrentAction->HasSkillKey(InSkillKey))
+		{
+			CurrentAction->ReleaseButton(InSkillKey);
+		}
+	}
+}
+
 void UCfActionComponent::PlayAction(const FActionInfo& ActionInfo)
 {
 	// 평타, 스킬, 점프, 맞기등 몽타주 관련된건 여기서 해야한다.
@@ -221,6 +241,11 @@ void UCfActionComponent::ReserveAction(const FActionInfo& ActionInfo)
 	ReverseActionInfo = FActionInfo(ActionInfo);
 }
 
+void UCfActionComponent::StopSkill()
+{
+	ClearAction();
+}
+
 void UCfActionComponent::SetStun(const float InRecoveryTime, const float InStunPlayRate)
 {
 	if(CurrentAction)
@@ -234,9 +259,35 @@ bool UCfActionComponent::IsSuperArmorActive() const
 	return false;
 }
 
-void UCfActionComponent::ChangeWeaponType(ECfWeaponType NewWeaponType)
+bool UCfActionComponent::IsReservedNext() const
+{
+	return ReservedRowName != NAME_None || ReverseActionInfo.IsValid;	
+}
+
+bool UCfActionComponent::IsEndSkill() const
+{
+	switch (SkillState)
+	{
+	case ECfSkillState::None:
+	case ECfSkillState::End:
+	case ECfSkillState::Over:
+		return true;
+	}
+	return false;
+}
+
+void UCfActionComponent::SetWeaponType(const ECfWeaponType NewWeaponType)
 {
 	WeaponType = NewWeaponType;
+}
+
+void UCfActionComponent::SwitchWeapon(const ECfWeaponType NewWeaponType)
+{
+	SetWeaponType(NewWeaponType);
+	if(UCfAvatarComponent* AvatarComponent = OwnerChar->GetComponentByClass<UCfAvatarComponent>())
+	{
+		AvatarComponent->SwitchWeapon(NewWeaponType);
+	}
 }
 
 void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData)

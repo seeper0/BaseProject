@@ -9,6 +9,7 @@
 #include "CfCameraBoomComponent.h"
 #include "CfSkillAsset.h"
 #include "CfSkillData.h"
+#include "CfUtil.h"
 
 UCfSkillInputComponent::UCfSkillInputComponent()
 {
@@ -57,6 +58,38 @@ void UCfSkillInputComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(UCharacterMovementComponent* MovementComponent = OwnerChar ? OwnerChar->GetCharacterMovement() : nullptr)
 	{
 		MovementComponent->bUseControllerDesiredRotation = bUseControllerDesiredRotation;
+	}
+
+	TickInput(DeltaTime, TickType, ThisTickFunction);
+}
+
+void UCfSkillInputComponent::TickInput(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	check(ActionComponent);
+	while(!InputQueue.IsEmpty() && !ActionComponent->IsReservedNext())
+	{
+		const FInputKey* Peek = InputQueue.Peek();
+		const bool Pressed = Peek ? Peek->KeyEvent == ETriggerEvent::Started : false;
+		if(Pressed)
+		{
+			FInputKey InputKey;
+			InputQueue.Dequeue(InputKey);
+
+			const TArray<FName> FetchedSkills = FetchSkillsByInput(InputKey.SkillKey, InputKey.KeyEvent);
+			const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills);
+			ActionComponent->InputSkill(SkillData);
+		}
+
+		const bool Released = Peek ? Peek->KeyEvent == ETriggerEvent::Completed : false;
+		if(Released)
+		{
+			FInputKey InputKey;
+			InputQueue.Dequeue(InputKey);
+
+			const TArray<FName> FetchedSkills = FetchSkillsByInput(InputKey.SkillKey, InputKey.KeyEvent);
+			const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills);
+			ActionComponent->ReleaseSkill(InputKey.SkillKey);
+		}
 	}
 }
 
@@ -126,6 +159,7 @@ void UCfSkillInputComponent::BeginMove()
 void UCfSkillInputComponent::Move(const FInputActionValue& Value)
 {
 	check(ActionComponent);
+	if(ActionComponent->IsEndSkill()) ActionComponent->StopSkill();
 
 	ACharacter* OwnerChar = ActionComponent->GetOwnerChar();
 	const AController* Controller = ActionComponent->GetController();
@@ -186,10 +220,21 @@ void UCfSkillInputComponent::OnPress(const FInputActionInstance& InputActionInst
 	if(SkillKey == ECfSkillKey::None)
 		return;
 
-	// 키를 눌렀을때 다음에 뭐쓸지 여기서 결정하자. 결정을 바꾸면 로직이 복잡해진다.
-	const TArray<FName> FetchedSkills = FetchSkillsByInput(SkillKey, ETriggerEvent::Started);
-	const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills);
-	ActionComponent->InputSkill(SkillData);
+	if(GetWorld()->GetTimeSeconds() - LastInputTime > 0.2f || InputQueueSize > 10)
+	{
+		InputQueueSize = 0;
+		InputQueue.Empty();
+	}
+
+	//CF_LOG(TEXT("%s"), *FCfUtil::GetEnumString(SkillKey));
+	InputQueue.Enqueue({SkillKey, ETriggerEvent::Started});
+	++InputQueueSize;
+	LastInputTime = GetWorld()->GetTimeSeconds();
+
+	// // 키를 눌렀을때 다음에 뭐쓸지 여기서 결정하자. 결정을 바꾸면 로직이 복잡해진다.
+	// const TArray<FName> FetchedSkills = FetchSkillsByInput(SkillKey, ETriggerEvent::Started);
+	// const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills);
+	// ActionComponent->InputSkill(SkillData, ETriggerEvent::Started);
 }
 
 void UCfSkillInputComponent::OnHold(const FInputActionInstance& InputActionInstance)
@@ -198,13 +243,23 @@ void UCfSkillInputComponent::OnHold(const FInputActionInstance& InputActionInsta
 	if(SkillKey == ECfSkillKey::None)
 		return;
 
-	const UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
-	if(CurrentAction && CurrentAction->CanInputDuring()) // 차지 스킬일때는 딱히 아무것도 안해도 됨
+	if(GetWorld()->GetTimeSeconds() - LastInputTime > 0.2f || InputQueueSize > 10)
 	{
-		// 키를 눌렀을때 다음에 뭐쓸지 여기서 결정하자. 결정을 바꾸면 로직이 복잡해진다.
-		const TArray<FName> FetchedSkills = FetchSkillsByInput(SkillKey, ETriggerEvent::Ongoing);
-		const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills);
-		ActionComponent->InputSkill(SkillData);
+		InputQueueSize = 0;
+		InputQueue.Empty();
+	}
+
+	const UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
+	if(CurrentAction && CurrentAction->CanInputAutoRapid()) // 연타라면 입력된것 처럼 해준다.
+	{
+		InputQueue.Enqueue({SkillKey, ETriggerEvent::Started});
+		++InputQueueSize;
+		LastInputTime = GetWorld()->GetTimeSeconds();
+
+		// // 키를 눌렀을때 다음에 뭐쓸지 여기서 결정하자. 결정을 바꾸면 로직이 복잡해진다.
+		// const TArray<FName> FetchedSkills = FetchSkillsByInput(SkillKey, ETriggerEvent::Ongoing);
+		// const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills);
+		// ActionComponent->InputSkill(SkillData, ETriggerEvent::Ongoing);
 	}
 }
 
@@ -214,11 +269,16 @@ void UCfSkillInputComponent::OnRelease(const FInputActionInstance& InputActionIn
 	if(SkillKey == ECfSkillKey::None)
 		return;
 
-	UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
-	if(CurrentAction)
+	if(GetWorld()->GetTimeSeconds() - LastInputTime > 0.2f || InputQueueSize > 10)
 	{
-		CurrentAction->ReleaseButton(SkillKey);
+		InputQueueSize = 0;
+		InputQueue.Empty();
 	}
+
+	InputQueue.Enqueue({SkillKey, ETriggerEvent::Completed});
+	++InputQueueSize;
+	LastInputTime = GetWorld()->GetTimeSeconds();
+	//ActionComponent->ReleaseSkill(SkillKey);
 }
 
 void UCfSkillInputComponent::ToggleLockOn()

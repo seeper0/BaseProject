@@ -53,20 +53,17 @@ void UCfActionHit::OnBegin()
 {
 	//Super::OnBegin();
 	// 모든 히트 모션은 마지막 프레임으로 유지한다.
-	if(Owner && Montage && Component)
+	if(Montage && AnimInstance && Component)
 	{
-		if(UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance())
+		AnimInstance->Montage_PlayWithBlendIn(Montage, FAlphaBlendArgs(0.1f * DamageEvent.SkillData->HitStunPlayRate));
+		if (FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(Montage))
 		{
-			AnimInstance->Montage_PlayWithBlendIn(Montage, FAlphaBlendArgs(0.1f * DamageEvent.SkillData->HitStunPlayRate));
-			if (FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(Montage))
-			{
-				MontageInstance->bEnableAutoBlendOut = false;
-				SetStun(DamageEvent.SkillData->HitStunDuration, DamageEvent.SkillData->HitStunPlayRate);
+			MontageInstance->bEnableAutoBlendOut = false;
+			SetStun(DamageEvent.SkillData->HitStunDuration, DamageEvent.SkillData->HitStunPlayRate);
 
-				if(UCfActionComponent* CauserComponent = DamageEvent.DamageCauser->GetComponentByClass<UCfActionComponent>())
-				{
-					CauserComponent->SetStun(DamageEvent.SkillData->HitStopDuration, DamageEvent.SkillData->HitStopPlayRate);
-				}
+			if(UCfActionComponent* CauserComponent = DamageEvent.DamageCauser->GetComponentByClass<UCfActionComponent>())
+			{
+				CauserComponent->SetStun(DamageEvent.SkillData->HitStopDuration, DamageEvent.SkillData->HitStopPlayRate);
 			}
 		}
 	}

@@ -13,6 +13,12 @@ class CFSKILLSYSTEM_API UCfSkillInputComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	struct FInputKey
+	{
+		ECfSkillKey SkillKey;
+		ETriggerEvent KeyEvent;
+	};
+
 public:
 	inline static FName ComponentName = TEXT("SkillInputComponent");
 	UCfSkillInputComponent();
@@ -20,6 +26,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	void TickInput(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction);
+	
 	ECfSkillKey GetSkillSlot(const struct FInputActionInstance& InputActionInstance) const;
 	/** CurrentAction, SkillState, SkillKey, KeyEvent 조합으로 적절한 스킬을 찾는다. */
 	TArray<FName> FetchSkillsByInput(const ECfSkillKey SkillKey, const ETriggerEvent KeyEvent) const;
@@ -48,5 +56,9 @@ private:
 	class UCfActionComponent* ActionComponent;
 
 	bool bUseControllerDesiredRotation = false;
+
+	TQueue<FInputKey> InputQueue;
+	int32 InputQueueSize = 0; 
+	double LastInputTime = 0.0; 
 };
 

@@ -38,8 +38,12 @@ protected:
 public:
 	virtual bool IsEnd() const;
 	virtual bool CanMoveDuring() const;
-	virtual bool CanInputDuring() const;
+	virtual bool CanInputAutoRapid() const;
+	virtual bool CanInputRelease() const;
 	virtual bool IsSuperArmorActive() const;
+	virtual bool HasSkillKey(ECfSkillKey InSkillKey) const;
+	FName GetCurrentSection() const;
+	bool HasSection(FName InSection) const;
 
 protected:
 	UPROPERTY(Transient)
@@ -52,7 +56,13 @@ protected:
 	UCfActionComponent* Component = nullptr;
 
 	UPROPERTY(Transient);
+	USkeletalMeshComponent* Mesh = nullptr;
+
+	UPROPERTY(Transient);
 	UAnimMontage* Montage = nullptr;
+
+	UPROPERTY(Transient);
+	UAnimInstance* AnimInstance = nullptr;
 
 #pragma region Stun
 public:

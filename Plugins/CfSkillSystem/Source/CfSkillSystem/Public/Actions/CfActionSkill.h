@@ -20,11 +20,13 @@ public:
 	virtual FName GetActionName() const override;
 	virtual FString ToString() const override;
 	virtual bool CanMoveDuring() const override;
-	virtual bool CanInputDuring() const override;
+	virtual bool CanInputAutoRapid() const override;
+	virtual bool HasSkillKey(ECfSkillKey InSkillKey) const override;
 
 protected:
 	virtual void OnBegin() override;
 	virtual void OnTick(float DeltaTime) override;
+	virtual void OnButtonReleased(const ECfSkillKey InSkillKey) override;
 
 	const struct FCfSkillData* SkillTable = nullptr;
 
