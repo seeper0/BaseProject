@@ -3,9 +3,10 @@
 
 #include "Actions/CfActionSkill.h"
 #include "GameFramework/Character.h"
+#include "CfSkillData.h"
 #include "HUD/CfOverlayLockOnComponent.h"
 #include "CfCameraBoomComponent.h"
-#include "CfSkillData.h"
+#include "Actions/CfActionComponent.h"
 
 void UCfActionSkill::InitSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillTable)
 {
@@ -49,9 +50,10 @@ bool UCfActionSkill::HasSkillKey(ECfSkillKey InSkillKey) const
 void UCfActionSkill::OnBegin()
 {
 	Super::OnBegin();
-
-	if(SkillTable == nullptr || Owner == nullptr)
-		return;
+	
+	check(Component);
+	check(SkillTable);
+	check(Owner);
 
 	if(UCfOverlayLockOnComponent* LockonComponent = UCfCameraBoomComponent::GetLockingComponent(Owner->GetWorld()))
 	{
@@ -76,6 +78,10 @@ void UCfActionSkill::OnBegin()
 	}
 
 	CameraBoomComponent = Owner->GetComponentByClass<UCfCameraBoomComponent>();
+	ElapsedTime = 0.0f;
+	Component->SetChargeLevel(-1);
+
+	InitMoveSmooth(Owner);
 }
 
 void UCfActionSkill::OnTick(float DeltaTime)
@@ -85,6 +91,7 @@ void UCfActionSkill::OnTick(float DeltaTime)
 	check(SkillTable);
 
 	Super::OnTick(DeltaTime);
+	ElapsedTime += DeltaTime;
 
 	if(Montage == nullptr)
 	{
@@ -116,28 +123,31 @@ void UCfActionSkill::OnTick(float DeltaTime)
 		const float UpValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("UpMovement");
 		const float YawValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("YawRotation");
 
-		const float ForwardSpeed = (ForwardValue - PrevForwardValue) / DeltaTime;
-		const float UpSpeed = (UpValue - PrevUpValue) / DeltaTime;
-		const float YawSpeed = (YawValue - PrevYawValue) / DeltaTime;
+		TickMoveSmooth(DeltaTime, Owner, ForwardValue, UpValue, YawValue);
+	}
 
-		PrevForwardValue = ForwardValue;
-		PrevUpValue = UpValue;
-		PrevYawValue = YawValue;
-
-		const FRotator Rotator(0.f, Owner->GetActorRotation().Yaw + YawSpeed * DeltaTime, 0.f);
-		Owner->SetActorRotation(Rotator);
-
-		const FVector ForwardDirection = Owner->GetActorForwardVector();
-		const FVector MovementDirection = ForwardSpeed * ForwardDirection + FVector(0.f, 0.f, UpSpeed);
-		Owner->GetCharacterMovement()->MoveSmooth(MovementDirection, DeltaTime);
+	if(!bReleased && SkillTable->InputType == ECfInputType::Charge)
+	{
+		if(ElapsedTime > SkillTable->GetChargeInputTime(SkillTable->GetMaxCharge()-1))
+		{
+			ReleaseButton(SkillTable->InputKey);
+		}
 	}
 }
 
 void UCfActionSkill::OnButtonReleased(const ECfSkillKey InSkillKey)
 {
-	if(AnimInstance)
+	check(Component);
+	check(SkillTable);
+	check(AnimInstance);
+
+	if(SkillTable->InputType == ECfInputType::Charge && SkillTable->InputKey == InSkillKey)
 	{
 		const FName SectionName = TEXT("Action");
 		AnimInstance->Montage_JumpToSection(SectionName);
+
+		const int32 ChargeLevel = SkillTable->InputType == ECfInputType::Charge ? SkillTable->GetChargeLevel(ElapsedTime) : -1;
+		Component->SetChargeLevel(ChargeLevel);
+		bReleased = true;
 	}
 }

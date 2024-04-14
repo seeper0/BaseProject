@@ -18,8 +18,6 @@ struct CFSKILLSYSTEM_API FCfSkillData : public FTableRowBase
 public:
 	bool NotChain() const;
 	bool CanChain(const FName CurrentRowName) const;
-	FName GetRequireSkill(int32 Index) const;
-	int32 GetMaxRequireSkill() const { return 3; }
 
 	virtual void OnPostDataImport(const UDataTable* InDataTable, const FName InRowName, TArray<FString>& OutCollectedImportProblems) override
 	{
@@ -102,7 +100,7 @@ public:
 	float HitStopPlayRate = 1.0f;
 #pragma endregion
 
-#pragma region GetMaxRequireSkill
+#pragma region RequireSkill
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Req1"))
 	FName RequireSkill1;
 
@@ -111,19 +109,42 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Req3"))
 	FName RequireSkill3;
+
+	FName GetRequireSkill(int32 Index) const;
+	int32 GetMaxRequireSkill() const { return 3; }
 #pragma endregion // GetMaxRequireSkill
 
-#pragma region Skill
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill|Move")
+#pragma region Skill(Move)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
 	float SkillMoveRange = 0.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill|Move")
-	float SkillStopRange = 0.0f;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
+	// float SkillStopRange = 0.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill|Move")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
 	float SkillMoveTime = 0.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Skill|Move")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Move")
 	UCurveFloat* SkillMoveCurve;
 #pragma endregion	
+
+#pragma region Skill(Charge)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge")
+	float ChargeInputTime1 = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge")
+	float ChargeDamageRate1 = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge")
+	float ChargeInputTime2 = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge")
+	float ChargeDamageRate2 = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge")
+	float ChargeInputTime3 = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge")
+	float ChargeDamageRate3 = 1.0f;
+
+	float GetChargeInputTime(int32 Index) const;
+	float GetChargeDamageRate(int32 Index) const;
+	int32 GetMaxCharge() const { return 3; }
+	int32 GetChargeLevel(float ChargeTime) const;
+#pragma endregion
 };

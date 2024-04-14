@@ -44,7 +44,7 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 	if(CurrentSkill == nullptr)
 		return;
 
-	const FCfSkillData* SkillData =CurrentSkill->GetSkillTable();
+	const FCfSkillData* SkillData = CurrentSkill->GetSkillTable();
 	if(SkillData == nullptr)
 		return;
 
@@ -56,7 +56,8 @@ void UCfAnimNotifyState_Hit::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 
 	const UCfStatComponent* InstigatorStat = Skill->GetOwnerChar()->GetComponentByClass<UCfStatComponent>();
 	const bool IsCritical = InstigatorStat->IsCritical();
-	const float Damage = InstigatorStat->GetDamage(HitData.DamageMultiplier, IsCritical);
+	const float ChargeDamageRate = SkillData->GetChargeDamageRate(Skill->GetChargeLevel());
+	const float Damage = InstigatorStat->GetDamage(HitData.DamageMultiplier * ChargeDamageRate, IsCritical);
 
 	AController* EventInstigator = Skill->GetController();
 	ACharacter* DamageCauser = Skill->GetOwnerChar();

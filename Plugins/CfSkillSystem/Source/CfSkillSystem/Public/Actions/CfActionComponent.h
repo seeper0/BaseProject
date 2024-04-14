@@ -45,8 +45,33 @@ public:
 	inline static FName ComponentName = TEXT("SkillComponent");
 	// Sets default values for this component's properties
 	UCfActionComponent();
+	template<class T>
+	static T* GetComponentOwner(const UActorComponent* Component)
+	{
+		if(Component)
+			return Cast<T>(Component->GetOwner());
+		return nullptr;
+	}
+	template<class T>
+	static T* GetComponentByClass(const AActor* Actor)
+	{
+		if(Actor)
+		{
+			return Actor->GetComponentByClass<T>();
+		}
+		return nullptr;
+	}
+	template<class T>
+	static T* GetComponentByClass(const UActorComponent* Component)
+	{
+		if(Component && Component->GetOwner())
+		{
+			return GetComponentByClass<T>(Component->GetOwner());
+		}
+		return nullptr;
+	}
 	static UCfActionComponent* GetActionComponent(const AActor* Actor);
-	static UCfActionComponent* GetActionComponent(const UActorComponent* MeshComp);
+	static UCfActionComponent* GetActionComponent(const UActorComponent* Component);
 
 protected:
 	// Called when the game starts
@@ -78,6 +103,8 @@ public:
 	bool IsSuperArmorActive() const;
 	bool IsReservedNext() const;
 	bool IsEndSkill() const;
+	void SetChargeLevel(int32 InChargeLevel) { ChargeLevel = InChargeLevel; }
+	int32 GetChargeLevel() const { return ChargeLevel; }
 
 private:
 	void SetWeaponType(const ECfWeaponType NewWeaponType);
@@ -120,6 +147,7 @@ private:
 	UPROPERTY(Transient)
 	FName ReservedRowName;
 	FActionInfo ReverseActionInfo;
+	int32 ChargeLevel = -1;
 
 #pragma region HitList
 public:

@@ -131,12 +131,10 @@ bool UCfActionHit::IsSuperArmorActive() const
 
 void UCfActionHit::InitKnockBack(const FCfDamageEvent& InDamageEvent)
 {
-	ElapsedKnockBackTime = 0.0f;
-	StartLocation = Owner->GetActorLocation();
+	FVector StartLocation = Owner->GetActorLocation();
 	FVector CauserLocation = InDamageEvent.DamageCauser->GetActorLocation();
 	StartLocation.Z = 0;
 	CauserLocation.Z = 0;
-	PrevLocation = StartLocation;
 
 	FVector Direction;
 	switch (DamageEvent.SkillData->HitDirection)
@@ -150,25 +148,11 @@ void UCfActionHit::InitKnockBack(const FCfDamageEvent& InDamageEvent)
 		break;
 	}
 
-	EndLocation = StartLocation + Direction * DamageEvent.SkillData->KnockBackDistance;
-	EndLocation.Z = 0;
-
 	Owner->SetActorRotation(Direction.Rotation() + FRotator(0, 180, 0));
+	InitMoveSmooth(Owner, Direction, DamageEvent.SkillData->KnockBackDistance, DamageEvent.SkillData->KnockBackDistanceTime);
 }
 
 void UCfActionHit::TickKnockBack(float DeltaTime)
 {
-	ElapsedKnockBackTime += DeltaTime;
-	float DistProgress = ElapsedKnockBackTime / DamageEvent.SkillData->KnockBackDistanceTime;
-	
-	if(DamageEvent.SkillData->KnockBackCurve)
-	{
-		DistProgress = DamageEvent.SkillData->KnockBackCurve->GetFloatValue(DistProgress);
-	}
-
-	const FVector CurrentLocation = FMath::Lerp(StartLocation, EndLocation, DistProgress);
-	const FVector LocationDelta = CurrentLocation - PrevLocation;
-	const FVector InstantVelocity = DeltaTime <= 0.f ? FVector::ZeroVector : FVector(LocationDelta) / DeltaTime;
-	MovementComponent->MoveSmooth(InstantVelocity, DeltaTime);
-	PrevLocation = CurrentLocation;
+	TickMoveSmooth(DeltaTime, Owner, DamageEvent.SkillData->KnockBackCurve);
 }

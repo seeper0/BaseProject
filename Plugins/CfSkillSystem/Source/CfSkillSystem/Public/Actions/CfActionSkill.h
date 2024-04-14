@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "CfActionBase.h"
+#include "SmoothMovable.h"
 #include "CfActionSkill.generated.h"
 
 /**
  * 스킬
  */
 UCLASS()
-class CFSKILLSYSTEM_API UCfActionSkill : public UCfActionBase
+class CFSKILLSYSTEM_API UCfActionSkill : public UCfActionBase, public ISmoothMovable
 {
 	GENERATED_BODY()
 public:
@@ -31,14 +32,22 @@ protected:
 	const struct FCfSkillData* SkillTable = nullptr;
 
 private:
+	UPROPERTY()
+	float ElapsedTime = 0.0f;
+	UPROPERTY()
 	bool bReachedDesiredRotation = true;
+	UPROPERTY()
+	bool bReleased = false;
 
 	UPROPERTY()
 	class UCfOverlayLockOnComponent* Target; 
 	UPROPERTY()
 	class UCfCameraBoomComponent* CameraBoomComponent;
 
+	UPROPERTY()
 	float PrevForwardValue = 0.0f;
+	UPROPERTY()
 	float PrevUpValue = 0.0f;
+	UPROPERTY()
 	float PrevYawValue = 0.0f;
 };

@@ -28,20 +28,12 @@ UCfActionComponent::UCfActionComponent()
 
 UCfActionComponent* UCfActionComponent::GetActionComponent(const AActor* Actor)
 {
-	if(Actor)
-	{
-		return Actor->GetComponentByClass<UCfActionComponent>();
-	}
-	return nullptr;
+	return GetComponentByClass<UCfActionComponent>(Actor);
 }
 
 UCfActionComponent* UCfActionComponent::GetActionComponent(const UActorComponent* Component)
 {
-	if(Component && Component->GetOwner())
-	{
-		return GetActionComponent(Component->GetOwner());
-	}
-	return nullptr;
+	return GetComponentByClass<UCfActionComponent>(Component);
 }
 
 void UCfActionComponent::OnRegister()

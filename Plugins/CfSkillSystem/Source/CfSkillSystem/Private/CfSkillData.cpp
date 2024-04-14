@@ -36,3 +36,41 @@ FName FCfSkillData::GetRequireSkill(int32 Index) const
 		return NAME_None;
 	}
 }
+
+float FCfSkillData::GetChargeInputTime(int32 Index) const
+{
+	switch (Index)
+	{
+	case 1:
+		return ChargeInputTime2;
+	case 2:
+		return ChargeInputTime3;
+	}
+	return ChargeInputTime1;
+}
+
+float FCfSkillData::GetChargeDamageRate(int32 Index) const
+{
+	switch (Index)
+	{
+	case 0:
+		return ChargeDamageRate1;
+	case 1:
+		return ChargeDamageRate2;
+	case 2:
+		return ChargeDamageRate3;
+	}
+	return 1.0f;
+}
+
+int32 FCfSkillData::GetChargeLevel(float ChargeTime) const
+{
+	for(int32 i=0; i<GetMaxCharge(); ++i)
+	{
+		if(ChargeTime < GetChargeInputTime(i))
+		{
+			return i;
+		}
+	}
+	return GetMaxCharge() - 1;
+}
