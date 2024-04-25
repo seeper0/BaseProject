@@ -17,7 +17,8 @@ struct CFSKILLSYSTEM_API FCfSkillData : public FTableRowBase
 
 public:
 	bool NotChain() const;
-	bool CanChain(const FName CurrentRowName) const;
+	bool CanChain(const FName CurrentRowName, const bool bJustTiming) const;
+	bool IsDirectionValid(const ECfCardinalDirection Direction) const;
 
 	virtual void OnPostDataImport(const UDataTable* InDataTable, const FName InRowName, TArray<FString>& OutCollectedImportProblems) override
 	{
@@ -55,7 +56,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
 	float LockingRange = 150.0f;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
+	float DamageRate = 1.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Base)
 	UAnimMontage* Montage = nullptr;
 #pragma endregion
@@ -104,13 +108,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Req1"))
 	FName RequireSkill1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Just1"))
+	bool bJustSkill1;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Req2"))
 	FName RequireSkill2;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Just2"))
+	bool bJustSkill2;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Req3"))
 	FName RequireSkill3;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Require, meta=(DisplayName="Just3"))
+	bool bJustSkill3;
+
 	FName GetRequireSkill(int32 Index) const;
+	bool IsJustSkill(int32 Index) const;
 	int32 GetMaxRequireSkill() const { return 3; }
 #pragma endregion // GetMaxRequireSkill
 
@@ -123,6 +137,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
 	float SkillMoveTime = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
+	ECfCardinalDirection SkillDefaultDirection = ECfCardinalDirection::None;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
+	ECfCardinalDirection SkillMoveDirection = ECfCardinalDirection::None; 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Move")
 	UCurveFloat* SkillMoveCurve;

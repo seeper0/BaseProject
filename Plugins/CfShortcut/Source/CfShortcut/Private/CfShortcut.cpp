@@ -62,8 +62,7 @@ void FCfShortcutModule::RegisterMenus()
 		UToolMenu* SubMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.PlayToolBar.CfShortcut");
 		FToolMenuSection& SubSection = SubMenu->AddSection("LevelShortcut", LOCTEXT("LevelShortcut", "Level Shortcut"));
 
-		SubSection.AddDynamicEntry("CfShortcut", FNewToolMenuSectionDelegate::CreateLambda([this](FToolMenuSection& InSection)
-		{
+		SubSection.AddDynamicEntry("CfShortcut", FNewToolMenuSectionDelegate::CreateLambda([this](FToolMenuSection& InSection) {
 			for(const FString& FavoriteLevelPath : FavoriteLevelPaths )
 			{
 				const FString BaseFilename = FPaths::GetBaseFilename(FavoriteLevelPath);

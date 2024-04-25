@@ -6,12 +6,15 @@
 #include "CfSkillData.h"
 #include "HUD/CfOverlayLockOnComponent.h"
 #include "CfCameraBoomComponent.h"
+#include "CfSkillInputComponent.h"
 #include "Actions/CfActionComponent.h"
 
-void UCfActionSkill::InitSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillTable)
+void UCfActionSkill::InitSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillTable, const FVector& InInputDirection)
 {
 	Super::InitAction(InOwner, InComponent, InSkillTable->Montage);
+	InputComponent = InOwner->GetComponentByClass<UCfSkillInputComponent>();
 	SkillTable = InSkillTable;
+	InputDirection = InInputDirection;
 }
 
 FName UCfActionSkill::GetActionName() const
@@ -81,7 +84,25 @@ void UCfActionSkill::OnBegin()
 	ElapsedTime = 0.0f;
 	Component->SetChargeLevel(-1);
 
-	InitMoveSmooth(Owner);
+	// InputDirection
+	if(SkillTable->Orientation == ECfSkillOrientation::MoveOriented)
+	{
+		// ::DrawDebugDirectionalArrow(Owner->GetWorld(),
+		// 	Owner->GetActorLocation(),
+		// 	Owner->GetActorLocation() + InputDirection * SkillTable->SkillMoveRange,
+		// 	10.0f, FColor::Red, false, 10);
+		InputDirection = InputComponent->GetInputDirection(InputDirection, SkillTable->SkillDefaultDirection);
+		// ::DrawDebugDirectionalArrow(Owner->GetWorld(),
+		// 	Owner->GetActorLocation(),
+		// 	Owner->GetActorLocation() + InputDirection * SkillTable->SkillMoveRange,
+		// 	10.0f, FColor::Blue, false, 10);
+
+		InitMoveSmooth(Owner, InputDirection, SkillTable->SkillMoveRange, SkillTable->SkillMoveTime);
+	}
+	else
+	{
+		InitMoveSmooth(Owner);
+	}
 }
 
 void UCfActionSkill::OnTick(float DeltaTime)
@@ -115,18 +136,23 @@ void UCfActionSkill::OnTick(float DeltaTime)
 		}
 	}
 
-	if(Owner->GetMesh() && Owner->GetMesh()->GetAnimInstance() &&
-		Montage->IsValidLowLevel() &&
-		SkillTable->MobileType == ECfMobileType::Curve)
+	if(AnimInstance &&
+		SkillTable->MobileType == ECfMobileType::AnimCurve)
 	{
-		const float ForwardValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("ForwardMovement");
-		const float UpValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("UpMovement");
-		const float YawValue = Owner->GetMesh()->GetAnimInstance()->GetCurveValue("YawRotation");
+		const float ForwardValue = AnimInstance->GetCurveValue("ForwardMovement");
+		const float UpValue = AnimInstance->GetCurveValue("UpMovement");
+		const float YawValue = AnimInstance->GetCurveValue("YawRotation");
 
 		TickMoveSmooth(DeltaTime, Owner, ForwardValue, UpValue, YawValue);
 	}
 
-	if(!bReleased && SkillTable->InputType == ECfInputType::Charge)
+	if(SkillTable->Orientation == ECfSkillOrientation::MoveOriented)
+	{
+		TickMoveSmooth(DeltaTime, Owner, SkillTable->SkillMoveCurve);
+	}
+
+	if(!bReleased &&
+		SkillTable->InputType == ECfInputType::Charge)
 	{
 		if(ElapsedTime > SkillTable->GetChargeInputTime(SkillTable->GetMaxCharge()-1))
 		{
@@ -141,7 +167,7 @@ void UCfActionSkill::OnButtonReleased(const ECfSkillKey InSkillKey)
 	check(SkillTable);
 	check(AnimInstance);
 
-	if(SkillTable->InputType == ECfInputType::Charge && SkillTable->InputKey == InSkillKey)
+	if(!bReleased && SkillTable->InputType == ECfInputType::Charge && SkillTable->InputKey == InSkillKey)
 	{
 		const FName SectionName = TEXT("Action");
 		AnimInstance->Montage_JumpToSection(SectionName);

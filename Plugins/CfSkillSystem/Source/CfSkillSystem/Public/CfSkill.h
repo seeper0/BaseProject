@@ -5,6 +5,16 @@
 #include "CfSkill.generated.h"
 
 UENUM(BlueprintType)
+enum class ECfCardinalDirection : uint8
+{
+	None,
+	Forward,
+	Backward,
+	Left,
+	Right,
+};
+
+UENUM(BlueprintType)
 enum class ECfSkillState : uint8
 {
 	None,		/// 스킬을 실행하지 않은 상태
@@ -54,7 +64,7 @@ enum class ECfMobileType : uint8
 	None,
 	Montage,
 	Input,
-	Curve,
+	AnimCurve,
 };
 
 UENUM(BlueprintType)
@@ -63,7 +73,8 @@ enum class ECfSkillOrientation : uint8
 	None,				// 추적 무시하고 즉시 사용한다.
 	AimOriented,		// Aim이 가리키는곳 또는 LockOn 된곳을 추적한다.
 	ForwardOriented,	// 캐릭터의 전방에서 추척이 된다.
-	AutoOriented,		// 타겟이 레인지 안에 있다면 AimOriented를 밖에 있다면 ForwardOriented를 사용한다.  
+	AutoOriented,		// 타겟이 레인지 안에 있다면 AimOriented를 밖에 있다면 ForwardOriented를 사용한다.
+	MoveOriented,		// 이동방향을 기준으로 추적한다.
 };
 
 UENUM(BlueprintType)

@@ -11,7 +11,7 @@
 #include "Actions/CfActionRecovery.h"
 #include "CfSkillData.h"
 
-UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillData)
+UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* InComponent, const FCfSkillData* InSkillData, const FVector& InputDirection)
 {
 	UCfActionSkill* ActionSkill = nullptr;
 	switch (InSkillData->InputKey)
@@ -26,7 +26,7 @@ UCfActionBase* UCfActionBase::NewSkill(ACharacter* InOwner, UCfActionComponent* 
 
 	if(ActionSkill)
 	{
-		ActionSkill->InitSkill(InOwner, InComponent, InSkillData);
+		ActionSkill->InitSkill(InOwner, InComponent, InSkillData, InputDirection);
 	}
 	return ActionSkill;
 }

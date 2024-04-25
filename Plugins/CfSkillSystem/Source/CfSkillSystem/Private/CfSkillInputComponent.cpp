@@ -54,6 +54,7 @@ void UCfSkillInputComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	ACharacter* OwnerChar = ActionComponent->GetOwnerChar();
 	const UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
+	//::DrawDebugDirectionalArrow(OwnerChar->GetWorld(), OwnerChar->GetActorLocation(), OwnerChar->GetActorLocation() + InputWorldDirection * 200, 100, FColor::Red);  
 
 	if(UCharacterMovementComponent* MovementComponent = OwnerChar ? OwnerChar->GetCharacterMovement() : nullptr)
 	{
@@ -61,6 +62,54 @@ void UCfSkillInputComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 
 	TickInput(DeltaTime, TickType, ThisTickFunction);
+}
+
+FVector UCfSkillInputComponent::GetInputDirection(const FVector& InInputDirection, const ECfCardinalDirection DefaultDirection)
+{
+	const AController* Controller = ActionComponent->GetController();
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+	if(InInputDirection.IsNearlyZero())
+	{
+		switch (DefaultDirection)
+		{
+		case ECfCardinalDirection::Forward:
+			return FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		case ECfCardinalDirection::Backward:
+			return FRotationMatrix(YawRotation + FRotator(0, 180, 0)).GetUnitAxis(EAxis::X);
+		case ECfCardinalDirection::Right:
+			return FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		case ECfCardinalDirection::Left:
+			return FRotationMatrix(YawRotation + FRotator(0, 180, 0)).GetUnitAxis(EAxis::Y);
+		}
+		return FVector::Zero();
+	}
+	return InInputDirection;
+}
+
+ECfCardinalDirection UCfSkillInputComponent::GetCardinalDirection(const FVector& InInputDirection)
+{
+	const AController* Controller = ActionComponent->GetController();
+	const FVector ControllerDirection = Controller->GetControlRotation().Vector();
+	const float AngleBetween = FMath::RadiansToDegrees(acosf(FVector::DotProduct(ControllerDirection, InInputDirection)));
+
+	if (AngleBetween < 45.0f)
+	{
+		return ECfCardinalDirection::Forward;
+	}
+	else if (AngleBetween > 135.0f)
+	{
+		return ECfCardinalDirection::Backward;
+	}
+
+	// 왼쪽 또는 오른쪽을 결정하기 위해 외적을 사용합니다.
+	const FVector CrossProduct = FVector::CrossProduct(ControllerDirection, InInputDirection);
+	if (CrossProduct.Z > 0)
+	{
+		return ECfCardinalDirection::Right;
+	}
+	return ECfCardinalDirection::Left;
 }
 
 void UCfSkillInputComponent::TickInput(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -76,8 +125,8 @@ void UCfSkillInputComponent::TickInput(float DeltaTime, ELevelTick TickType, FAc
 			InputQueue.Dequeue(InputKey);
 
 			const TArray<FName> FetchedSkills = FetchSkillsByInput(InputKey.SkillKey, InputKey.KeyEvent);
-			const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills);
-			ActionComponent->InputSkill(SkillData);
+			const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills, InputKey.InputDirection);
+			ActionComponent->InputSkill(SkillData, InputKey.InputDirection);
 		}
 
 		const bool Released = Peek ? Peek->KeyEvent == ETriggerEvent::Completed : false;
@@ -85,9 +134,6 @@ void UCfSkillInputComponent::TickInput(float DeltaTime, ELevelTick TickType, FAc
 		{
 			FInputKey InputKey;
 			InputQueue.Dequeue(InputKey);
-
-			const TArray<FName> FetchedSkills = FetchSkillsByInput(InputKey.SkillKey, InputKey.KeyEvent);
-			const FCfSkillData* SkillData = ActionComponent->GetDesiredSkill(FetchedSkills);
 			ActionComponent->ReleaseSkill(InputKey.SkillKey);
 		}
 	}
@@ -154,6 +200,7 @@ TArray<FName> UCfSkillInputComponent::FetchSkillsByInput(const ECfSkillKey Skill
 void UCfSkillInputComponent::BeginMove()
 {
 	bUseControllerDesiredRotation = true;
+	InputWorldDirection = FVector::ZeroVector;
 }
 
 void UCfSkillInputComponent::Move(const FInputActionValue& Value)
@@ -187,11 +234,14 @@ void UCfSkillInputComponent::Move(const FInputActionValue& Value)
 	// add movement 
 	OwnerChar->AddMovementInput(ForwardDirection, MovementVector.Y);
 	OwnerChar->AddMovementInput(RightDirection, MovementVector.X);
+
+	InputWorldDirection = (ForwardDirection * MovementVector.Y + RightDirection * MovementVector.X).GetSafeNormal();
 }
 
 void UCfSkillInputComponent::EndMove()
 {
 	bUseControllerDesiredRotation = false;
+	InputWorldDirection = FVector::ZeroVector;
 }
 
 void UCfSkillInputComponent::Look(const FInputActionValue& Value)
@@ -227,7 +277,7 @@ void UCfSkillInputComponent::OnPress(const FInputActionInstance& InputActionInst
 	}
 
 	//CF_LOG(TEXT("%s"), *FCfUtil::GetEnumString(SkillKey));
-	InputQueue.Enqueue({SkillKey, ETriggerEvent::Started});
+	InputQueue.Enqueue({SkillKey, ETriggerEvent::Started, InputWorldDirection});
 	++InputQueueSize;
 	LastInputTime = GetWorld()->GetTimeSeconds();
 
@@ -252,7 +302,7 @@ void UCfSkillInputComponent::OnHold(const FInputActionInstance& InputActionInsta
 	const UCfActionBase* CurrentAction = ActionComponent->GetCurrentAction();
 	if(CurrentAction && CurrentAction->CanInputAutoRapid()) // 연타라면 입력된것 처럼 해준다.
 	{
-		InputQueue.Enqueue({SkillKey, ETriggerEvent::Started});
+		InputQueue.Enqueue({SkillKey, ETriggerEvent::Started, InputWorldDirection});
 		++InputQueueSize;
 		LastInputTime = GetWorld()->GetTimeSeconds();
 

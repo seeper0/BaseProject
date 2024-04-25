@@ -3,18 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CfCheatManager.h"
 #include "Animation/AnimInstance.h"
+#include "CfCheatManager.h"
+#include "CfSkill.h"
 #include "CfAnimInstance.generated.h"
-
-UENUM(BlueprintType)
-enum class ECfCardinalDirection : uint8
-{
-	Forward,
-	Backward,
-	Left,
-	Right,
-};
 
 /**
  * 

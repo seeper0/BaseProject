@@ -15,7 +15,7 @@ class CFSKILLSYSTEM_API UCfActionSkill : public UCfActionBase, public ISmoothMov
 {
 	GENERATED_BODY()
 public:
-	void InitSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillTable);
+	void InitSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillTable, const FVector& InInputDirection);
 	const struct FCfSkillData* GetSkillTable() const { return SkillTable; }
 
 	virtual FName GetActionName() const override;
@@ -43,6 +43,8 @@ private:
 	class UCfOverlayLockOnComponent* Target; 
 	UPROPERTY()
 	class UCfCameraBoomComponent* CameraBoomComponent;
+	UPROPERTY()
+	class UCfSkillInputComponent* InputComponent;
 
 	UPROPERTY()
 	float PrevForwardValue = 0.0f;
@@ -50,4 +52,7 @@ private:
 	float PrevUpValue = 0.0f;
 	UPROPERTY()
 	float PrevYawValue = 0.0f;
+
+	UPROPERTY()
+	FVector InputDirection;
 };

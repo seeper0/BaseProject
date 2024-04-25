@@ -15,7 +15,7 @@ class CFSKILLSYSTEM_API UCfActionBase : public UObject
 {
 	GENERATED_BODY()
 public:
-	static UCfActionBase* NewSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillData);
+	static UCfActionBase* NewSkill(ACharacter* InOwner, class UCfActionComponent* InComponent, const struct FCfSkillData* InSkillData, const FVector& InputDirection);
 	static UCfActionBase* NewHitReaction(ACharacter* InOwner, class UCfActionComponent* InComponent, const FCfDamageEvent& DamageEvent);
 	static UCfActionBase* NewRecover(ACharacter* InOwner, class UCfActionComponent* InComponent);
 protected:

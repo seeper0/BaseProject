@@ -17,6 +17,7 @@ class CFSKILLSYSTEM_API UCfSkillInputComponent : public UActorComponent
 	{
 		ECfSkillKey SkillKey;
 		ETriggerEvent KeyEvent;
+		FVector InputDirection;
 	};
 
 public:
@@ -24,6 +25,8 @@ public:
 	UCfSkillInputComponent();
 	void SetupComponent(class UCfActionComponent* InActionComponent, UEnhancedInputComponent* EnhancedInputComponent);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	FVector GetInputDirection(const FVector& InInputDirection, const ECfCardinalDirection DefaultDirection);
+	ECfCardinalDirection GetCardinalDirection(const FVector& InInputDirection);
 
 private:
 	void TickInput(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction);
@@ -60,5 +63,7 @@ private:
 	TQueue<FInputKey> InputQueue;
 	int32 InputQueueSize = 0; 
 	double LastInputTime = 0.0; 
+
+	FVector InputWorldDirection;
 };
 

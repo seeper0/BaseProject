@@ -93,10 +93,10 @@ public:
 	UAnimMontage* GetAirborneMontage() const;	
 	UAnimMontage* GetWakeupMontage() const;	
 
-	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames) const;
-	void InputSkill(const FCfSkillData* InSkillData);
+	const FCfSkillData* GetDesiredSkill(const TArray<FName>& RowNames, const FVector& InputDirection) const;
+	void InputSkill(const FCfSkillData* InSkillData, const FVector& InputDirection);
 	void ReleaseSkill(const ECfSkillKey InSkillKey);
-	void PlayAction(const FActionInfo& ActionInfo);
+	void PlayAction(const FActionInfo& ActionInfo, const FVector& InputDirection = FVector());
 	void ReserveAction(const FActionInfo& ActionInfo);
 	void StopSkill();
 	void SetStun(const float InRecoveryTime, const float InStunPlayRate);
@@ -105,6 +105,7 @@ public:
 	bool IsEndSkill() const;
 	void SetChargeLevel(int32 InChargeLevel) { ChargeLevel = InChargeLevel; }
 	int32 GetChargeLevel() const { return ChargeLevel; }
+	void EnableJustTiming(bool bEnable);
 
 private:
 	void SetWeaponType(const ECfWeaponType NewWeaponType);
@@ -116,10 +117,10 @@ public:
 private:
 	bool CanCancelSkill(const FCfSkillData* InSkillData) const;
 	bool CanPlaySkill(const FCfSkillData* InSkillData) const;
-	void PlaySkill(const FCfSkillData* InSkillData);
+	void PlaySkill(const FCfSkillData* InSkillData, const FVector& InputDirection);
 	void TickAction(float DeltaTime);
 	void ClearAction();		
-	void ReserveSkill(const FCfSkillData* InSkillData);
+	void ReserveSkill(const FCfSkillData* InSkillData, const FVector& InputDirection);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data", meta = (AllowPrivateAccess = "true"))
 	FName CharacterName;
@@ -139,15 +140,20 @@ private:
 	ACharacter* OwnerChar = nullptr;
 
 	UPROPERTY(Transient)
-	UAnimInstance* AnimInstance = nullptr; 
+	UAnimInstance* AnimInstance = nullptr;
+
+	UPROPERTY(Transient)
+	class UCfSkillInputComponent* InputComponent = nullptr;
 
 	UPROPERTY(Transient)
 	class UCfActionBase* CurrentAction = nullptr;
 
 	UPROPERTY(Transient)
 	FName ReservedRowName;
+	FVector ReservedInputDirection;
 	FActionInfo ReverseActionInfo;
 	int32 ChargeLevel = -1;
+	bool bJustTiming = false;
 
 #pragma region HitList
 public:

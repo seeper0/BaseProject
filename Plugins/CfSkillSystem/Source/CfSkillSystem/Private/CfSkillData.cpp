@@ -3,12 +3,14 @@
 
 #include "CfSkillData.h"
 
+#include "CfLogger.h"
+
 bool FCfSkillData::NotChain() const
 {
 	return (RequireSkill1 == NAME_None);
 }
 
-bool FCfSkillData::CanChain(const FName CurrentRowName) const
+bool FCfSkillData::CanChain(const FName CurrentRowName, const bool bJustTiming) const
 {
 	if(NotChain())
 		return false;
@@ -16,10 +18,26 @@ bool FCfSkillData::CanChain(const FName CurrentRowName) const
 	for(int32 i=0; i<GetMaxRequireSkill(); ++i)
 	{
 		if(GetRequireSkill(i) == CurrentRowName)
-			return true;
+		{
+			//CF_LOG(TEXT("%d) [%s/%s] [%d/%d]"), i, *CurrentRowName.ToString(), *GetRequireSkill(i).ToString(), bJustTiming, IsJustSkill(i));
+			if(IsJustSkill(i) == bJustTiming)
+			{
+				return true;
+			}
+		}
 	}
 
 	return false;
+}
+
+bool FCfSkillData::IsDirectionValid(const ECfCardinalDirection Direction) const
+{
+	if(Orientation == ECfSkillOrientation::MoveOriented)
+	{
+		if(SkillMoveDirection != Direction)
+			return false;
+	}
+	return true;
 }
 
 FName FCfSkillData::GetRequireSkill(int32 Index) const
@@ -34,6 +52,21 @@ FName FCfSkillData::GetRequireSkill(int32 Index) const
 		return RequireSkill3;
 	default:
 		return NAME_None;
+	}
+}
+
+bool FCfSkillData::IsJustSkill(int32 Index) const
+{
+	switch (Index)
+	{
+	case 0:
+		return bJustSkill1;
+	case 1:
+		return bJustSkill2;
+	case 2:
+		return bJustSkill3;
+	default:
+		return false;
 	}
 }
 

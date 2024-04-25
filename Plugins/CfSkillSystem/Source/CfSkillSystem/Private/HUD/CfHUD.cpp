@@ -124,7 +124,7 @@ FString ACfHUD::PrintfImpl(const TCHAR* Fmt, ...)
 	int32 Result = -1;
 
 	// First try to print to a stack allocated location 
-	GET_VARARGS_RESULT( Buffer, BufferSize, BufferSize-1, Fmt, Fmt, Result );
+	GET_TYPED_VARARGS_RESULT( TCHAR, Buffer, BufferSize, BufferSize-1, Fmt, Fmt, Result );
 
 	// If that fails, start allocating regular memory
 	if( Result == -1 )
@@ -133,8 +133,8 @@ FString ACfHUD::PrintfImpl(const TCHAR* Fmt, ...)
 		while(Result == -1)
 		{
 			BufferSize *= 2;
-			Buffer = (TCHAR*) FMemory::Realloc( Buffer, BufferSize * sizeof(TCHAR) );
-			GET_VARARGS_RESULT( Buffer, BufferSize, BufferSize-1, Fmt, Fmt, Result );
+			Buffer = static_cast<TCHAR*>(FMemory::Realloc(Buffer, BufferSize * sizeof(TCHAR)));
+			GET_TYPED_VARARGS_RESULT( TCHAR, Buffer, BufferSize, BufferSize-1, Fmt, Fmt, Result );
 		};
 	}
 

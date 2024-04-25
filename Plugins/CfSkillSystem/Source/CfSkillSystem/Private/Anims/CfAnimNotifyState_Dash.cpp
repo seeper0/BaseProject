@@ -21,13 +21,12 @@ void UCfAnimNotifyState_Dash::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	ACharacter* Owner = UCfActionComponent::GetComponentOwner<ACharacter>(MeshComp);
-	ActionComponent = UCfActionComponent::GetActionComponent(MeshComp);
-	MovementComponent = UCfActionComponent::GetComponentByClass<UCharacterMovementComponent>(MeshComp);
-	const UCfActionSkill* ActionSkill = Cast<UCfActionSkill>(ActionComponent->GetCurrentAction());
-
-	if(ActionSkill && Owner)
+	if(ACharacter* Owner = UCfActionComponent::GetComponentOwner<ACharacter>(MeshComp))
 	{
+		ActionComponent = UCfActionComponent::GetActionComponent(MeshComp);
+		MovementComponent = UCfActionComponent::GetComponentByClass<UCharacterMovementComponent>(MeshComp);
+		const UCfActionSkill* ActionSkill = Cast<UCfActionSkill>(ActionComponent->GetCurrentAction());
+
 		SkillData = ActionSkill->GetSkillTable();
 		InitMoveSmooth(Owner, SkillData->SkillMoveRange, SkillData->SkillMoveTime);
 	}

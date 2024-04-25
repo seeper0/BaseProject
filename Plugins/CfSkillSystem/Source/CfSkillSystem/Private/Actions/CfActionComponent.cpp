@@ -13,6 +13,7 @@
 #include "CfLogger.h"
 #include "CfSkillAsset.h"
 #include "CfSkillData.h"
+#include "CfSkillInputComponent.h"
 #include "CfUtil.h"
 
 // Sets default values for this component's properties
@@ -53,6 +54,8 @@ void UCfActionComponent::OnRegister()
 		}
 		SetWeaponType(CharacterData->WeaponType1);
 	}
+
+	InputComponent = OwnerChar->GetComponentByClass<UCfSkillInputComponent>();
 }
 
 // Called when the game starts
@@ -85,9 +88,10 @@ void UCfActionComponent::SetSkillState(ECfSkillState InSkillState)
 			const FCfSkillData* SkillData = SkillTable->FindRow<FCfSkillData>(ReservedRowName, CF_FUNCTION);
 			if(CanCancelSkill(SkillData))
 			{
-				PlaySkill(SkillData);
+				PlaySkill(SkillData, ReservedInputDirection);
 			}
 			ReservedRowName = NAME_None;
+			ReservedInputDirection = FVector();
 		}
 	}
 }
@@ -112,17 +116,23 @@ UAnimMontage* UCfActionComponent::GetWakeupMontage() const
 	return CharacterData ? CharacterData->WakeupMontage : nullptr;
 }
 
-const FCfSkillData* UCfActionComponent::GetDesiredSkill(const TArray<FName>& RowNames) const
+const FCfSkillData* UCfActionComponent::GetDesiredSkill(const TArray<FName>& RowNames, const FVector& InputDirection) const
 {
 	// 체인 조건이 있다면 먼저 찾는다. (일단 현재 실행되는 스킬이 있어야함)
 	const UDataTable* SkillTable = UCfSkillAsset::GetSkillTable();
+	ECfCardinalDirection Direction = InputComponent->GetCardinalDirection(InputDirection);
 	if(CurrentAction && SkillTable)
 	{
 		const FName CurrentName = CurrentAction->GetActionName();
 		for (const FName RowName : RowNames)
 		{
 			const FCfSkillData* RowData = SkillTable->FindRow<FCfSkillData>(RowName, CF_FUNCTION);
-			if(RowData->CanChain(CurrentName))
+			if(!RowData->IsDirectionValid(Direction))
+			{
+				continue;
+			}
+			
+			if(RowData->CanChain(CurrentName, bJustTiming))
 			{
 				return  RowData;
 			}
@@ -132,6 +142,11 @@ const FCfSkillData* UCfActionComponent::GetDesiredSkill(const TArray<FName>& Row
 	for (const FName RowName : RowNames)
 	{
 		const FCfSkillData* RowData = SkillTable->FindRow<FCfSkillData>(RowName, CF_FUNCTION);
+		if(!RowData->IsDirectionValid(Direction))
+		{
+			continue;
+		}
+
 		if(RowData->NotChain())
 		{
 			return  RowData;
@@ -174,22 +189,25 @@ bool UCfActionComponent::CanPlaySkill(const FCfSkillData* InSkillData) const
 	return true;
 }
 
-void UCfActionComponent::InputSkill(const FCfSkillData* InSkillData)
+void UCfActionComponent::InputSkill(const FCfSkillData* InSkillData, const FVector& InputDirection)
 {
+	if(InSkillData == nullptr)
+		return;
+
 	switch (SkillState)
 	{
 	case ECfSkillState::None:
 	case ECfSkillState::End:
 	case ECfSkillState::Over:
-		PlaySkill(InSkillData);
+		PlaySkill(InSkillData, InputDirection);
 		break;
 	case ECfSkillState::PreInput:
-		ReserveSkill(InSkillData);
+		ReserveSkill(InSkillData, InputDirection);
 		break;
 	case ECfSkillState::CanCancel:
 		if(CanCancelSkill(InSkillData))
 		{
-			PlaySkill(InSkillData);
+			PlaySkill(InSkillData, InputDirection);
 		}
 		break;
 	}
@@ -206,7 +224,7 @@ void UCfActionComponent::ReleaseSkill(const ECfSkillKey InSkillKey)
 	}
 }
 
-void UCfActionComponent::PlayAction(const FActionInfo& ActionInfo)
+void UCfActionComponent::PlayAction(const FActionInfo& ActionInfo, const FVector& InputDirection)
 {
 	// 평타, 스킬, 점프, 맞기등 몽타주 관련된건 여기서 해야한다.
 	ClearAction();
@@ -214,7 +232,7 @@ void UCfActionComponent::PlayAction(const FActionInfo& ActionInfo)
 	SetSkillState(ECfSkillState::NoInput);
 	if(ActionInfo.SkillData)
 	{
-		CurrentAction = UCfActionBase::NewSkill(OwnerChar, this, ActionInfo.SkillData);
+		CurrentAction = UCfActionBase::NewSkill(OwnerChar, this, ActionInfo.SkillData, InputDirection);
 	}
 	else if(ActionInfo.DamageEvent.SkillData)
 	{
@@ -268,6 +286,11 @@ bool UCfActionComponent::IsEndSkill() const
 	return false;
 }
 
+void UCfActionComponent::EnableJustTiming(bool bEnable)
+{
+	bJustTiming = bEnable;
+}
+
 void UCfActionComponent::SetWeaponType(const ECfWeaponType NewWeaponType)
 {
 	WeaponType = NewWeaponType;
@@ -282,14 +305,14 @@ void UCfActionComponent::SwitchWeapon(const ECfWeaponType NewWeaponType)
 	}
 }
 
-void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData)
+void UCfActionComponent::PlaySkill(const FCfSkillData* InSkillData, const FVector& InputDirection)
 {
 	if(InSkillData == nullptr)
 		return;
 
 	if(CanPlaySkill(InSkillData))
 	{
-		PlayAction({InSkillData});
+		PlayAction({InSkillData}, InputDirection);
 	}
 }
 
@@ -322,10 +345,13 @@ void UCfActionComponent::ClearAction()
 	}
 }
 
-void UCfActionComponent::ReserveSkill(const FCfSkillData* InSkillData)
+void UCfActionComponent::ReserveSkill(const FCfSkillData* InSkillData, const FVector& InputDirection)
 {
 	if(ReservedRowName == NAME_None && InSkillData)
+	{
 		ReservedRowName = InSkillData->RowName;
+		ReservedInputDirection = InputDirection;
+	}
 }
 
 #pragma region HitList

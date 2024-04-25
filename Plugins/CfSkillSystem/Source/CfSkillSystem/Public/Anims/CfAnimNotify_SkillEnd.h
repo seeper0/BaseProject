@@ -15,6 +15,6 @@ class CFSKILLSYSTEM_API UCfAnimNotify_SkillEnd : public UAnimNotify
 	GENERATED_BODY()
 
 	UCfAnimNotify_SkillEnd(const FObjectInitializer& ObjectInitializer);
-	virtual FString GetNotifyName_Implementation() const override { return TEXT("3_End"); }
+	virtual FString GetNotifyName_Implementation() const override { return TEXT("4_End"); }
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 };
